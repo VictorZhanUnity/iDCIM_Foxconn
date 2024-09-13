@@ -37,6 +37,7 @@ public class DoTweenFadeController : MonoBehaviour
     // 淡入動畫
     public void FadeIn()
     {
+        gameObject.SetActive(true);
         canvasGroup.interactable = false;
         canvasGroup.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
         {

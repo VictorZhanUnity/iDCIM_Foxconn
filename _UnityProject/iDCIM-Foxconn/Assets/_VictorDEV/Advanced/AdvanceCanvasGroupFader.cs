@@ -25,7 +25,7 @@ namespace VictorDev.Advanced
         {
             if (coroutine != null) StopCoroutine(coroutine);
             float startAlpha = canvasGroup.alpha;
-            coroutine = StartCoroutine(LerpHandler.Lerping(startAlpha, toAlpha, (lerpValue) =>
+            coroutine = StartCoroutine(LerpHandler.ToLerpAlpha(startAlpha, toAlpha, (lerpValue) =>
             {
                 canvasGroup.alpha = lerpValue;
                 canvasGroup.interactable = lerpValue == 1;

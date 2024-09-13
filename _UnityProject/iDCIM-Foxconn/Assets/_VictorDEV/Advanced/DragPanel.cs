@@ -11,9 +11,9 @@ namespace VictorDev.Advanced
     public class DragPanel : MonoBehaviour, IPointerDownHandler, IDragHandler
     {
         [Header(">>> 是否啟動Drag功能")]
-        [SerializeField] private bool isActivated = true;
+        [SerializeField] private bool _isActivated = true;
 
-        public bool Activated { set => isActivated = value; }
+        public bool isActivated { set => _isActivated = value; }
 
         [Header(">>> 點選控制拖曳的標題列")]
         [SerializeField] private RectTransform titleBarRectTransform;
@@ -56,7 +56,7 @@ namespace VictorDev.Advanced
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (isDragging && isActivated)
+            if (isDragging && _isActivated)
             {
                 // 將滑鼠位置轉換為父物件的本地座標
                 Vector2 localPointerPosition;
