@@ -52,7 +52,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BlendOp: 0
-    - _BlurAmount: 10
+    - _BlurAmount: 50
     - _BlurRadius: 35
     - _Cull: 2
     - _Cutoff: 0.5
