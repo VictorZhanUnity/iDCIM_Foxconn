@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using VictorDev.Advanced;
 using VictorDev.CameraUtils;
@@ -38,15 +39,19 @@ public class DeviceModelVisualizer : MonoBehaviour
     {
         modelList.ForEach(model =>
         {
+            model.tag = landmarkCategory.ToString();
+            SelectableObject selectableObj = model.AddComponent<SelectableObject>();
             models.Add(model);
             Landmark landMark = ObjectPoolManager.GetInstanceFromQueuePool<Landmark>(landMarkPrefab, LandmarkManager.container);
             landMark.name = $"LandMark_{model.name}";
             landMark.Initialize(model, offsetHeight, landmarkCategory);
             landMark.onToggleChanged.AddListener((isOn) =>
             {
-                print($"Click: {landMark.name} / isOn: {isOn}");
-
-                if (isOn) OrbitCamera.MoveTargetTo(landMark.targetObject);
+                selectableObj.IsShow = isOn;
+                if (isOn)
+                {
+                    OrbitCamera.MoveTargetTo(landMark.targetObject);
+                }
             });
 
             LandmarkManager.AddLandMark(landMark);

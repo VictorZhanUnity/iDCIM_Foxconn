@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "Outline\u5916\u6846\u7279\u6548"
+  m_Name: MouseOver
   m_Shader: {fileID: -6465566751694194690, guid: 9e3c6c7e9773f0a4695ced180e08fa42, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -52,7 +52,7 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Scale: 1.0095
+    - _Scale: 1.0283
     m_Colors:
-    - _Color: {r: 5.9921575, g: 5.9921575, b: 5.9921575, a: 1}
+    - _Color: {r: 8, g: 5.3407893, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -83,7 +83,10 @@ namespace VictorDev.Common
             // 遞迴處理所有子物件
             foreach (Transform child in objTransform)
             {
-                ReplaceMaterialRecursively(child, material, exlcudeTargets);
+                if (exlcudeTargets != null && exlcudeTargets.Contains(objTransform) == false)
+                {
+                    ReplaceMaterialRecursively(child, material, exlcudeTargets);
+                }
             }
         }
 
