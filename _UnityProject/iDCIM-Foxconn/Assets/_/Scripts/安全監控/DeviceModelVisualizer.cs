@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using VictorDev.Advanced;
+using VictorDev.CameraUtils;
 using VictorDev.Common;
 
 public class DeviceModelVisualizer : MonoBehaviour
@@ -25,12 +25,14 @@ public class DeviceModelVisualizer : MonoBehaviour
     [Header(">>> 地標高度")]
     [SerializeField] private float offsetHeight;
 
+    [Header(">>> 地標列表")]
+    [SerializeField] private List<Landmark> landmarkList;
+
+
     /// <summary>
     /// 暫存模型
     /// </summary>
     private HashSet<Transform> models { get; set; } = new HashSet<Transform>();
-
-
 
     private void Awake()
     {
@@ -38,7 +40,19 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             models.Add(model);
             Landmark landMark = ObjectPoolManager.GetInstanceFromQueuePool<Landmark>(landMarkPrefab, LandmarkManager.container);
+            landMark.name = $"LandMark_{model.name}";
             landMark.Initialize(model, offsetHeight, landmarkCategory);
+            landMark.onToggleChanged.AddListener((isOn) =>
+            {
+                print($"Click: {landMark.name} / isOn: {isOn}");
+
+                if (isOn) OrbitCamera.MoveTargetTo(landMark.targetObject);
+            });
+
+            LandmarkManager.AddLandMark(landMark);
+
+            landMark.gameObject.SetActive(false);
+            landmarkList.Add(landMark);
         });
     }
 
@@ -48,6 +62,7 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             if (value) materialHandler.ReplaceMaterial(models);
             else materialHandler.RestoreOriginalMaterials();
+            landmarkList.ForEach(landmark => landmark.gameObject.SetActive(value));
         }
     }
 

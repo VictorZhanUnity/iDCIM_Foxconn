@@ -249,7 +249,7 @@ namespace VictorDev.CameraUtils
             MoveTargetToPos(obj.position);
 
             // 平滑移动相机位置
-            transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref targetVelocity, smoothTime);
+            transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref targetVelocity, moveSpeed);
 
             // 确保相机朝向目标
             transform.LookAt(obj.position);

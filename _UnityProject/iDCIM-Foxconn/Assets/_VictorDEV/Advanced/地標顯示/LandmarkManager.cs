@@ -30,7 +30,7 @@ namespace VictorDev.Advanced
             }
         }
 
-        private ToggleGroup toggleGroup;
+        [SerializeField] private ToggleGroup toggleGroup;
 
         /// <summary>
         /// 依照地標類別存放於字典
@@ -48,8 +48,6 @@ namespace VictorDev.Advanced
                 }
                 categorizedLandmarks[landmark.category].Add(landmark);
             });
-
-            toggleGroup ??= GetComponent<ToggleGroup>();
         }
 
         /// <summary>

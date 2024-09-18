@@ -26,8 +26,11 @@ public class Landmark : MonoBehaviour
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
     private void OnEnable() => toggle.onValueChanged.AddListener(onToggleChanged.Invoke);
-    private void OnDisable() => toggle.onValueChanged.RemoveAllListeners();
-
+    private void OnDisable()
+    {
+        toggle.isOn = false;
+        toggle.onValueChanged.RemoveAllListeners();
+    }
     /// <summary>
     /// 地標 {建筑物的Transform} {对应的UI元素} {地標高度}
     /// </summary>
