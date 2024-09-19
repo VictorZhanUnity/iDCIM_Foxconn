@@ -47,7 +47,7 @@ namespace VictorDev.Common
             // 如果物件有 Renderer 組件，替換材質
             if (objTransform.TryGetComponent<Renderer>(out Renderer renderer))
             {
-
+                //不屬於排除對像，則替換材質
                 if (exlcudeTargets != null && exlcudeTargets.Contains(objTransform) == false)
                 {
                     // 如果尚未保存原始材質，將它存儲到字典中
@@ -76,6 +76,12 @@ namespace VictorDev.Common
                     {
                         // 如果只有一個材質，直接替換
                         renderer.material = material;
+                    }
+
+                    //關閉Collider
+                    if (objTransform.TryGetComponent<Collider>(out Collider collider))
+                    {
+                        collider.enabled = false;
                     }
                 }
             }
@@ -106,6 +112,11 @@ namespace VictorDev.Common
                 if (objTransform.TryGetComponent<Renderer>(out Renderer renderer))
                 {
                     renderer.materials = originalMats;
+                    //開啟Collider
+                    if (objTransform.TryGetComponent<Collider>(out Collider collider))
+                    {
+                        collider.enabled = true;
+                    }
                 }
             }
         }

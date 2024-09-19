@@ -104,7 +104,7 @@ namespace VictorDev.Advanced
     /// </summary>
     public enum LandmarkCategory
     {
-        CCTV, IAQ, AccessDoor
+        CCTV, IAQ, AccessDoor, DCR, DCN, DCS
     }
 
     /* [System.Serializable]

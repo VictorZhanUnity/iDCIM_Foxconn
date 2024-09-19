@@ -1,15 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
-using static UnityEngine.Rendering.DebugUI;
+using VictorDev.CameraUtils;
 
 public class Landmark : MonoBehaviour
 {
-    [Header(">>> 目標對像的Transform")]
-    public Transform targetObject;
     [Header(">>> 地標高度")]
     public float offsetHeight;
+    [Header(">>> 目標對像")]
+    public Transform targetObject;
+
     [Header(">>> 地標分類")]
     public LandmarkCategory category;
 
@@ -25,20 +27,40 @@ public class Landmark : MonoBehaviour
 
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
-    private void OnEnable() => toggle.onValueChanged.AddListener(onToggleChanged.Invoke);
+    public void SetToggleIsOnWithNotify(bool isOn)
+    {
+        toggle.onValueChanged.RemoveListener(onToggleChanged.Invoke);
+        toggle.isOn = isOn;
+        toggle.onValueChanged.AddListener(onToggleChanged.Invoke);
+    }
+    private void OnEnable()
+    {
+        toggle.onValueChanged.AddListener(onToggleChanged.Invoke);
+    }
+
     private void OnDisable()
     {
-        toggle.isOn = false;
-        toggle.onValueChanged.RemoveAllListeners();
+        try
+        {
+            toggle.isOn = false;
+            toggle.onValueChanged.RemoveListener(onToggleChanged.Invoke);
+        }
+        catch (Exception e) { }
     }
     /// <summary>
-    /// 地標 {建筑物的Transform} {对应的UI元素} {地標高度}
+    /// 初始化 {目標模型、圖標位移高度、圖標分類}
     /// </summary>
     public void Initialize(Transform targetObject, float offsetHeight, LandmarkCategory category = default)
     {
         this.targetObject = targetObject;
         this.offsetHeight = offsetHeight;
         this.category = category;
+
+        gameObject.SetActive(false);
+        toggle.onValueChanged.AddListener((isOn) =>
+        {
+            if (isOn) OrbitCamera.MoveTargetTo(targetObject);
+        });
     }
 
     private void OnValidate()

@@ -3,13 +3,26 @@ using UnityEngine;
 using VictorDev.CameraUtils;
 using VictorDev.Common;
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     [SerializeField] private LayerMask layerDefault, layerMouseDown, layerMouseOver;
 
-    private SelectableObject currentSelectObject, lastMouseOverObject;
+    public SelectableObject currentSelectedObject, lastMouseOverObject;
 
     [SerializeField] private Material mouseOverMaterial;
+
+    /// <summary>
+    ///復原選擇物件的狀態
+    /// </summary>
+    public static void RestoreSelectedObject()
+    {
+        SelectableObject target = Instance.currentSelectedObject;
+
+        if(target != null)
+        {
+            target.IsOn = false;
+        }
+    }
 
     void Update()
     {
@@ -26,18 +39,25 @@ public class GameManager : MonoBehaviour
             {
                 if (result[0].TryGetComponent<SelectableObject>(out SelectableObject target))
                 {
-                    if (currentSelectObject != null)
+                    if (currentSelectedObject != null)
                     {
-                        currentSelectObject.IsShow = false;
-                        LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectObject.gameObject, layerDefault);
+                        currentSelectedObject.IsOn = false;
+                        LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerDefault);
+
+                        //若點選為同一個物件，則進行顯示/隱藏之切換
+                        if (currentSelectedObject == target)
+                        {
+                            currentSelectedObject = null;
+                            return;
+                        }
                     }
-                    currentSelectObject = target;
-                    currentSelectObject.IsShow = true;
+                    currentSelectedObject = target;
+                    currentSelectedObject.IsOn = true;
 
-                    LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectObject.gameObject, layerMouseDown);
-                    OrbitCamera.MoveTargetTo(currentSelectObject.transform);
+                    LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerMouseDown);
+                    OrbitCamera.MoveTargetTo(currentSelectedObject.transform);
 
-                    print($"Hit: {currentSelectObject.name}");
+                    print($"Hit: {currentSelectedObject.name}");
                 }
             }
         }

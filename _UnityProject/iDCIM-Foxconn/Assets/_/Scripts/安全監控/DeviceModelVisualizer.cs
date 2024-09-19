@@ -3,7 +3,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using VictorDev.Advanced;
-using VictorDev.CameraUtils;
 using VictorDev.Common;
 
 public class DeviceModelVisualizer : MonoBehaviour
@@ -29,7 +28,6 @@ public class DeviceModelVisualizer : MonoBehaviour
     [Header(">>> 地標列表")]
     [SerializeField] private List<Landmark> landmarkList;
 
-
     /// <summary>
     /// 暫存模型
     /// </summary>
@@ -37,27 +35,22 @@ public class DeviceModelVisualizer : MonoBehaviour
 
     private void Awake()
     {
+        //依照模型建立Landmark與SelectableObject架構
         modelList.ForEach(model =>
         {
             model.tag = landmarkCategory.ToString();
-            SelectableObject selectableObj = model.AddComponent<SelectableObject>();
             models.Add(model);
+
+            SelectableObject selectableObj = model.AddComponent<SelectableObject>();
             Landmark landMark = ObjectPoolManager.GetInstanceFromQueuePool<Landmark>(landMarkPrefab, LandmarkManager.container);
+
             landMark.name = $"LandMark_{model.name}";
             landMark.Initialize(model, offsetHeight, landmarkCategory);
-            landMark.onToggleChanged.AddListener((isOn) =>
-            {
-                selectableObj.IsShow = isOn;
-                if (isOn)
-                {
-                    OrbitCamera.MoveTargetTo(landMark.targetObject);
-                }
-            });
-
+            landMark.onToggleChanged.AddListener(selectableObj.SetIsOnWithoutNotify);
+            landmarkList.Add(landMark);
             LandmarkManager.AddLandMark(landMark);
 
-            landMark.gameObject.SetActive(false);
-            landmarkList.Add(landMark);
+            selectableObj.onSelectedEvent.AddListener(landMark.SetToggleIsOnWithNotify);
         });
     }
 
@@ -65,6 +58,8 @@ public class DeviceModelVisualizer : MonoBehaviour
     {
         set
         {
+            GameManager.RestoreSelectedObject();
+
             if (value) materialHandler.ReplaceMaterial(models);
             else materialHandler.RestoreOriginalMaterials();
             landmarkList.ForEach(landmark => landmark.gameObject.SetActive(value));
