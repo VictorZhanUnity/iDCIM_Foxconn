@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VictorDev.Common;
+using static UnityEditor.PlayerSettings;
 
 namespace VictorDev.CameraUtils
 {
@@ -230,6 +231,11 @@ namespace VictorDev.CameraUtils
             followTarget = null;
         }
 
+
+        /// <summary>
+        /// 攝影機置中
+        /// </summary>
+        public static void MoveToCenter() => Instance.MoveTargetToPos(new Vector3(0, 1, 0));
         /// <summary>
         /// 移动到某个目标位置并旋转相机面向目标
         /// </summary>

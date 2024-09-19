@@ -23,6 +23,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             target.IsOn = false;
         }
     }
+ 
+
 
     void Update()
     {
