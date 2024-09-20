@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace VictorDev.Advanced
@@ -25,11 +26,11 @@ namespace VictorDev.Advanced
         [SerializeField] private RectTransform rectTransform;
         [Header(">>> 父物件RectTransform")]
         [SerializeField] private RectTransform parentRectTransform;
-        [Header(">>> 本身物件的Canvas(設定SortOrder先後順序用)")]
-        [SerializeField] private Canvas canvas;
-
+        
         private Vector2 pointerOffset;
         private bool isDragging { get; set; }
+
+        public UnityEvent onDragged = new UnityEvent();
 
         private void OnValidate()
         {
@@ -72,6 +73,7 @@ namespace VictorDev.Advanced
                     rectTransform.localPosition = clampedPosition;
                 }
             }
+            onDragged?.Invoke();
         }
 
         // 限制 Panel 的位置使其不會移動到父物件外，並加上 gap

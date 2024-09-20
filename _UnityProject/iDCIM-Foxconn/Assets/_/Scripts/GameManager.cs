@@ -65,6 +65,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
+    public void CloseApp()=>Application.Quit();
+
     /* private void MouseOverHandler()
      {
          List<Transform> result = RaycastManager.RaycastHitObjects();

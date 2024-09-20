@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
 using VictorDev.CameraUtils;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Landmark : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Landmark : MonoBehaviour
 
     [Header(">>> 地標分類")]
     public LandmarkCategory category;
+
+    public ListItem listItem;
 
     [Header(">>> 當點選Toggle時")]
     public UnityEvent<bool> onToggleChanged = new UnityEvent<bool>();
@@ -26,6 +29,11 @@ public class Landmark : MonoBehaviour
     [SerializeField] public RectTransform uiElement;
 
     public ToggleGroup toggleGroup { set => toggle.group = value; }
+
+    private void Awake()
+    {
+        toggle.onValueChanged.AddListener((isOn)=> listItem?.SetIsOnWithoutNotify(isOn));
+    }
 
     public void SetToggleIsOnWithNotify(bool isOn)
     {

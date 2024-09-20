@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VictorDev.Common;
-using static UnityEditor.PlayerSettings;
 
 namespace VictorDev.CameraUtils
 {

@@ -27,6 +27,15 @@ namespace VictorDev.Advanced
         private float initialWidth; // 起始寬度
         private Coroutine lerpCoroutine; // 用於儲存 Coroutine
 
+        public void Restore()
+        {
+            if (lerpCoroutine != null)
+            {
+                StopCoroutine(lerpCoroutine); // 停止正在運行的 Coroutine
+            }
+            rectTransform.sizeDelta = new Vector2(initialWidth, initialHeight);
+        }
+
         /// <summary>
         /// 控制isOn來進行Lerp動畫
         /// </summary>

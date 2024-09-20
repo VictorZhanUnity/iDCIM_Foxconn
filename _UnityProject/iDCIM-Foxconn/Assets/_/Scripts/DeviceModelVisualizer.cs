@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.Common;
 
 public class DeviceModelVisualizer : MonoBehaviour
@@ -15,20 +16,28 @@ public class DeviceModelVisualizer : MonoBehaviour
     [Header(">>> 處理模型材質替換")]
     [SerializeField] protected MaterialHandler materialHandler;
 
+    public UnityEvent<List<SelectableObject>> onInitlialized = new UnityEvent<List<SelectableObject>>();
+
+    public List<Transform> ModelList => modelList;
 
     /// <summary>
-    /// 暫存模型
+    /// 暫存模型, 供材質替換進行哈希表比對
     /// </summary>
     protected HashSet<Transform> models { get; set; } = new HashSet<Transform>();
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
+        List<SelectableObject> selectableObjects = new List<SelectableObject>();
+
         //依照模型建立Landmark與SelectableObject架構
         modelList.ForEach(model =>
         {
             models.Add(model);
             SelectableObject selectableObj = model.AddComponent<SelectableObject>();
+            selectableObjects.Add(selectableObj); 
         });
+
+        onInitlialized.Invoke(selectableObjects);
     }
 
     public virtual bool isOn
