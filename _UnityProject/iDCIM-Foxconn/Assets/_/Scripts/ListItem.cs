@@ -13,7 +13,7 @@ public class ListItem : MonoBehaviour
     [SerializeField] private Toggle toggle;
     [SerializeField] private TextMeshProUGUI txtLabel;
     
-    public UnityEvent<bool> onToggled { get; set; } = new UnityEvent<bool>();
+    protected UnityEvent<bool> onToggled { get; set; } = new UnityEvent<bool>();
 
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
@@ -53,7 +53,7 @@ public class ListItem : MonoBehaviour
         catch (Exception e) { }
     }
 
-    public void SetIsOnWithoutNotify(bool isOn)
+    public virtual void SetIsOnWithoutNotify(bool isOn)
     {
         toggle.onValueChanged.RemoveAllListeners();
         toggle.isOn = isOn;

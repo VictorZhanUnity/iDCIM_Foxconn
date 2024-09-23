@@ -47,8 +47,7 @@ public class UIManager_CCTV : MonoBehaviour
                 listItem.SetupSelectableObjectAndLandmark(selectableObjects[i], landmarks[i]);
                 listItem.toggleGroup = toggleGroup;
 
-                // 小地圖
-                minimap.SetLandMarkWithListItem(listItem, i);
+                listItem.minimapLandmark = minimap.landmarkList[i];
             }
         });
         deviceModelVisualizer.onSelectedEvent.AddListener(CreatePanel);
@@ -64,11 +63,12 @@ public class UIManager_CCTV : MonoBehaviour
             }
         });
 
-        /*minimap.onClickPin.AddListener((index) =>
+        //小地圖點選聯結
+        minimap.onClickPin.AddListener((index) =>
         {
             ListItem_CCTV listItem = scrollViewContainer.GetChild(index).GetComponent<ListItem_CCTV>();
             listItem.isOn = true;
-        });*/
+        });
     }
     /// <summary>
     /// 建立資訊面板

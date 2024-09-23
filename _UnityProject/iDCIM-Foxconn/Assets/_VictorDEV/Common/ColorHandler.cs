@@ -18,7 +18,7 @@ public class ColorHandler : SingletonMonoBehaviour<ColorHandler>
                 float t = elapsedTime / duration;
 
                 // 使用 Lerp 進行顏色過渡
-                target.color = Color.Lerp(start, end, t);
+                target.color = Color.Lerp(start * 100, end, t);
 
                 // 等待下一幀再繼續
                 yield return null;
