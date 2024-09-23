@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,9 +15,15 @@ public class UIManager_CCTV : MonoBehaviour
     [SerializeField] private ListItem_CCTV listitemPrefab;
     [SerializeField] private Panel_CCTV panelPrefab;
 
+    [Space(10)]
+    [SerializeField] private Panel_CCTV panelEntrance;
+
     private Panel_CCTV currentPanel { get; set; } = null;
 
-    private Dictionary<SO_RTSP, Panel_CCTV> openedPanels { get; set; } = new Dictionary<SO_RTSP, Panel_CCTV> { };
+    /// <summary>
+    /// {RTSP URL, 資訊面板}
+    /// </summary>
+    private Dictionary<string, Panel_CCTV> openedPanels { get; set; } = new Dictionary<string, Panel_CCTV> { };
 
     public bool isOn
     {
@@ -41,6 +48,9 @@ public class UIManager_CCTV : MonoBehaviour
         });
         deviceModelVisualizer.onSelectedEvent.AddListener(CreatePanel);
     }
+    /// <summary>
+    /// 建立資訊面板
+    /// </summary>
     private void CreatePanel(SO_RTSP data)
     {
         if (currentPanel != null)
@@ -53,23 +63,33 @@ public class UIManager_CCTV : MonoBehaviour
             currentPanel.Close();
             currentPanel = null;
         }
-        if (openedPanels.TryGetValue(data, out Panel_CCTV panel))
+        if (openedPanels.TryGetValue(data.url, out Panel_CCTV panel))
         {
             panel.ToShining();
             return;
         }
 
+        openedPanels.ToList().ForEach(panel =>
+        {
+            if (panel.Value.isPinOn == false)
+            {
+                panel.Value.Close();
+                openedPanels.Remove(panel.Key);
+            }
+        });
+
+
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, uiObj.transform);
         currentPanel.onClickScale.AddListener(ShowFullScreen);
         currentPanel.onDragged.AddListener(() =>
         {
-            openedPanels.TryAdd(data, currentPanel);
+            openedPanels.TryAdd(data.url, currentPanel);
             currentPanel = null;
         });
-        currentPanel.Show(data);
+        currentPanel.ShowData(data);
         currentPanel.onClose.AddListener((data) =>
         {
-            openedPanels.Remove(data);
+            openedPanels.Remove(data.url);
             currentPanel = null;
         });
     }
@@ -83,5 +103,9 @@ public class UIManager_CCTV : MonoBehaviour
     {
         deviceModelVisualizer ??= GetComponent<DeviceModelVisualizerWithLandmark>();
         uiObj ??= transform.GetChild(0).gameObject;
+        if (panelEntrance != null)
+        {
+            openedPanels.Add(panelEntrance.data.url, panelEntrance);
+        }
     }
 }

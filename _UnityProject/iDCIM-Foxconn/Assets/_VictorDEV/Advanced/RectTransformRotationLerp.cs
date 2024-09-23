@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -55,7 +56,15 @@ namespace VictorDev.Advanced
             this.rotateToTarget = rotateToTarget;
 
             // 啟動新的 Coroutine
-            lerpCoroutine = StartCoroutine(LerpRotation());
+            try
+            {
+                lerpCoroutine = StartCoroutine(LerpRotation());
+            }
+            catch (Exception e)
+            {
+                // 確保最終旋轉設置為目標角度或初始角度
+                rectTransform.localEulerAngles = new Vector3(0, 0, initialRotation);
+            }
         }
 
         private IEnumerator LerpRotation()

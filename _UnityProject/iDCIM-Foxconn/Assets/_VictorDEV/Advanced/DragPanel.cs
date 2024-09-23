@@ -19,7 +19,7 @@ namespace VictorDev.Advanced
         [Header(">>> 點選控制拖曳的標題列")]
         [SerializeField] private RectTransform titleBarRectTransform;
 
-        [Header(">>> 與父物件邊界的距離")]
+        [Header(">>> 與容器邊界的距離")]
         [SerializeField] private float gap = 10f;
 
         [Header(">>> 本身RectTransform")]
@@ -32,13 +32,13 @@ namespace VictorDev.Advanced
 
         public UnityEvent onDragged = new UnityEvent();
 
+        private void Awake() => OnValidate();
+
         private void OnValidate()
         {
             rectTransform ??= GetComponent<RectTransform>();
             parentRectTransform ??= transform.parent.GetComponent<RectTransform>();
         }
-
-        private void Awake() => OnValidate();
 
         public void OnPointerDown(PointerEventData eventData)
         {

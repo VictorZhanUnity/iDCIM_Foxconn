@@ -11,15 +11,20 @@ public class Panel_CCTV : MonoBehaviour
     [SerializeField] private Button btnScale;
     [SerializeField] private Toggle togglePin, toggleContent;
 
+    public bool isPinOn => togglePin.isOn;
+
     [SerializeField] private PointerEventHandler pointerEventHandler;
     [SerializeField] private DoTweenFadeController doTweenFade;
     [SerializeField] private DragPanel dragHandler;
     [SerializeField] private RectTransformResizeLerp resizer;
     [SerializeField] private Image border;
+    [SerializeField] private Canvas canvasBlur;
 
     public UnityEvent<Sprite> onClickScale = new UnityEvent<Sprite>();
     public UnityEvent onDragged = new UnityEvent();
     public UnityEvent<SO_RTSP> onClose = new UnityEvent<SO_RTSP>();
+
+    public SO_RTSP data;
 
     private Vector3 originalPos;
     private Color originalColor;
@@ -28,14 +33,14 @@ public class Panel_CCTV : MonoBehaviour
     {
         originalPos = doTweenFade.transform.position;
         originalColor = border.color;
+        canvasBlur.worldCamera = Camera.main;
     }
 
-    public SO_RTSP data { get; private set; }
 
     private void OnEnable()
     {
         btnScale.onClick.AddListener(() => onClickScale.Invoke(screen.sprite));
-        dragHandler.onDragged.AddListener(onDragged.Invoke);
+        dragHandler.onDragged.AddListener(OnDragHandler);
         doTweenFade.OnFadeOutEvent.AddListener(CloseHandler);
     }
 
@@ -45,27 +50,36 @@ public class Panel_CCTV : MonoBehaviour
         onDragged.RemoveAllListeners();
         onClose.RemoveAllListeners();
         btnScale.onClick.RemoveListener(() => onClickScale.Invoke(screen.sprite));
-        dragHandler.onDragged.RemoveListener(onDragged.Invoke);
+        dragHandler.onDragged.RemoveListener(OnDragHandler);
         doTweenFade.OnFadeOutEvent.RemoveListener(CloseHandler);
+    }
+
+    private void OnDragHandler()
+    {
+        onDragged.Invoke();
+        togglePin.isOn = true;
     }
 
     public void CloseHandler()
     {
         doTweenFade.transform.position = originalPos;
-        print($"originalPos: {originalPos}");
         togglePin.isOn = false;
         toggleContent.isOn = false;
         resizer.Restore();
         ObjectPoolManager.PushToPool<Panel_CCTV>(this);
     }
 
-    public void Show(SO_RTSP data)
+    public void ShowData(SO_RTSP data)
     {
         this.data = data;
         txtTitle.SetText(data.title);
         screen.sprite = data.sprite;
         doTweenFade.FadeIn();
     }
+
+    /// <summary>
+    /// Ãö³¬
+    /// </summary>
     public void Close()
     {
         doTweenFade.FadeOut();
@@ -76,5 +90,10 @@ public class Panel_CCTV : MonoBehaviour
     {
         ColorHandler.LerpColor(border, Color.red, originalColor);
         pointerEventHandler.MoveToFront();
+    }
+
+    private void OnValidate()
+    {
+        if (data != null) ShowData(data);
     }
 }

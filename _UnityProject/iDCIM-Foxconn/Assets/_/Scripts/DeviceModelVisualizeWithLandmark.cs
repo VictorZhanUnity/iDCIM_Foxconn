@@ -60,9 +60,9 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
 
     //ForTest
     private List<string> Config_RTSP = new List<string>() {
+        "rtsp://admin:sks12345@ibms.sks.com.tw:554/2/1",
         "rtsp://admin:TCIT5i2020@192.168.0.181/profile1",
         "rtsp://admin:sks12345@ibms.sks.com.tw:554/1/1",
-        "rtsp://admin:sks12345@ibms.sks.com.tw:554/2/1",
         "rtsp://admin:sks12345@ibms.sks.com.tw:554/3/1",
         "rtsp://admin:sks12345@ibms.sks.com.tw:554/4/1",
         "rtsp://admin:sks12345@ibms.sks.com.tw:554/5/1",
