@@ -60,7 +60,7 @@ public class Panel_CCTV : MonoBehaviour
         togglePin.isOn = true;
     }
 
-    public void CloseHandler()
+    private void CloseHandler()
     {
         doTweenFade.transform.position = originalPos;
         togglePin.isOn = false;
@@ -69,6 +69,11 @@ public class Panel_CCTV : MonoBehaviour
         ObjectPoolManager.PushToPool<Panel_CCTV>(this);
     }
 
+
+    public void ShowData()
+    {
+        if (data != null) ShowData(data);
+    }
     public void ShowData(SO_RTSP data)
     {
         this.data = data;
@@ -84,6 +89,12 @@ public class Panel_CCTV : MonoBehaviour
     {
         doTweenFade.FadeOut();
         onClose.Invoke(data);
+    }
+
+    public void CloseWithoutInvoke()
+    {
+        doTweenFade.OnFadeOutEvent.RemoveListener(CloseHandler);
+        doTweenFade.FadeOut();
     }
 
     public void ToShining()
