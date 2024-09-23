@@ -17,6 +17,8 @@ public class UIManager_CCTV : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private Panel_CCTV panelEntrance;
+    [SerializeField] private Minimap_CCTV minimap;
+    [SerializeField] private Button btnCloseAllWindows;
 
     private Panel_CCTV currentPanel { get; set; } = null;
 
@@ -44,9 +46,29 @@ public class UIManager_CCTV : MonoBehaviour
                 ListItem_CCTV listItem = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_CCTV>(listitemPrefab, scrollViewContainer);
                 listItem.SetupSelectableObjectAndLandmark(selectableObjects[i], landmarks[i]);
                 listItem.toggleGroup = toggleGroup;
+
+                // 小地圖
+                minimap.SetLandMarkWithListItem(listItem, i);
             }
         });
         deviceModelVisualizer.onSelectedEvent.AddListener(CreatePanel);
+
+        //關閉所有釘選視窗(除了機房入口視窗)
+        btnCloseAllWindows.onClick.AddListener(() =>
+        {
+            List<string> keys = openedPanels.Keys.ToList();
+            for (int i = 1; i < keys.Count; i++)
+            {
+                openedPanels[keys[i]].Close();
+                openedPanels.Remove(keys[i]);
+            }
+        });
+
+        /*minimap.onClickPin.AddListener((index) =>
+        {
+            ListItem_CCTV listItem = scrollViewContainer.GetChild(index).GetComponent<ListItem_CCTV>();
+            listItem.isOn = true;
+        });*/
     }
     /// <summary>
     /// 建立資訊面板
@@ -63,12 +85,15 @@ public class UIManager_CCTV : MonoBehaviour
             currentPanel.Close();
             currentPanel = null;
         }
+
+        //如果已有打開過的視窗，則進行提示
         if (openedPanels.TryGetValue(data.url, out Panel_CCTV panel))
         {
             panel.ToShining();
             return;
         }
 
+        //所有非釘選狀態的視窗，則進行關閉
         openedPanels.ToList().ForEach(panel =>
         {
             if (panel.Value.isPinOn == false)
@@ -78,20 +103,30 @@ public class UIManager_CCTV : MonoBehaviour
             }
         });
 
-
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, uiObj.transform);
         currentPanel.onClickScale.AddListener(ShowFullScreen);
         currentPanel.onDragged.AddListener(() =>
         {
             openedPanels.TryAdd(data.url, currentPanel);
             currentPanel = null;
+
+            CheckAmountOfOpenedWindow();
         });
         currentPanel.ShowData(data);
         currentPanel.onClose.AddListener((data) =>
         {
             openedPanels.Remove(data.url);
             currentPanel = null;
+
+            CheckAmountOfOpenedWindow();
         });
+    }
+
+    private void CheckAmountOfOpenedWindow()
+    {
+        btnCloseAllWindows.gameObject.SetActive(
+            openedPanels.Count > 1
+            );
     }
 
     private void ShowFullScreen(Sprite sprite)

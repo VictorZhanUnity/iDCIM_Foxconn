@@ -12,8 +12,8 @@ public class ListItem : MonoBehaviour
     [Header("--- UI")]
     [SerializeField] private Toggle toggle;
     [SerializeField] private TextMeshProUGUI txtLabel;
-
-    protected UnityEvent<bool> onToggled { get; set; } = new UnityEvent<bool>();
+    
+    public UnityEvent<bool> onToggled { get; set; } = new UnityEvent<bool>();
 
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
