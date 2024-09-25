@@ -61,6 +61,7 @@ public class UIManager_CCTV : MonoBehaviour
                 openedPanels[keys[i]].Close();
                 openedPanels.Remove(keys[i]);
             }
+            CloseCurrentPanel();
         });
 
         //小地圖點選聯結
@@ -70,6 +71,16 @@ public class UIManager_CCTV : MonoBehaviour
             listItem.isOn = true;
         });
     }
+
+    /// <summary>
+    /// 關閉目標視窗
+    /// </summary>
+    private void CloseCurrentPanel()
+    {
+        currentPanel?.Close();
+        currentPanel = null;
+    }
+
     /// <summary>
     /// 建立資訊面板
     /// </summary>
@@ -120,13 +131,16 @@ public class UIManager_CCTV : MonoBehaviour
 
             CheckAmountOfOpenedWindow();
         });
+        CheckAmountOfOpenedWindow();
     }
 
+    /// <summary>
+    /// 檢查開啟的視窗數量與目前是否已開啟視窗
+    /// </summary>
     private void CheckAmountOfOpenedWindow()
     {
-        btnCloseAllWindows.gameObject.SetActive(
-            openedPanels.Count > 1
-            );
+        bool isShow = currentPanel != null || openedPanels.Count > 1;
+        btnCloseAllWindows.gameObject.SetActive(isShow);
     }
 
     private void ShowFullScreen(Sprite sprite)
