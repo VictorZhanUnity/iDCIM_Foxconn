@@ -17,6 +17,7 @@ public class UIManager_CCTV : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private Panel_CCTV panelEntrance;
+    [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
     [SerializeField] private Minimap_CCTV minimap;
     [SerializeField] private Button btnCloseAllWindows;
 
@@ -39,6 +40,12 @@ public class UIManager_CCTV : MonoBehaviour
     private void Awake()
     {
         uiObj.SetActive(false);
+
+        if (panelEntrance != null)
+        {
+            //openedPanels.Add(panelEntrance.data.url, panelEntrance);
+        }
+
         deviceModelVisualizer.onInitlializedWithLandMark.AddListener((selectableObjects, landmarks) =>
         {
             for (int i = 0; i < selectableObjects.Count; i++)
@@ -56,7 +63,7 @@ public class UIManager_CCTV : MonoBehaviour
         btnCloseAllWindows.onClick.AddListener(() =>
         {
             List<string> keys = openedPanels.Keys.ToList();
-            for (int i = 1; i < keys.Count; i++)
+            for (int i = 0; i < keys.Count; i++)
             {
                 openedPanels[keys[i]].Close();
                 openedPanels.Remove(keys[i]);
@@ -114,8 +121,8 @@ public class UIManager_CCTV : MonoBehaviour
             }
         });
 
-        currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, uiObj.transform);
-        currentPanel.onClickScale.AddListener(ShowFullScreen);
+        currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, transform);
+        currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
         currentPanel.onDragged.AddListener(() =>
         {
             openedPanels.TryAdd(data.url, currentPanel);
@@ -143,18 +150,10 @@ public class UIManager_CCTV : MonoBehaviour
         btnCloseAllWindows.gameObject.SetActive(isShow);
     }
 
-    private void ShowFullScreen(Sprite sprite)
-    {
-        print($"ShowFullScreen: {sprite.name}");
-    }
-
     private void OnValidate()
     {
         deviceModelVisualizer ??= GetComponent<DeviceModelVisualizerWithLandmark>();
         uiObj ??= transform.GetChild(0).gameObject;
-        if (panelEntrance != null)
-        {
-            openedPanels.Add(panelEntrance.data.url, panelEntrance);
-        }
+
     }
 }
