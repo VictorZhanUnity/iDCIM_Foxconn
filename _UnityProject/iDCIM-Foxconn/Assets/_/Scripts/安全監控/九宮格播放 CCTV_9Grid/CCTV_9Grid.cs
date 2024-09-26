@@ -15,7 +15,7 @@ public class CCTV_9Grid : MonoBehaviour
     [SerializeField] private GridItem_9Grid gridItemPrefab;
     [SerializeField] private FlexibleGridLayoutGroup gridLayoutGroup;
 
-    public UnityEvent<Texture2D> onClickScaleBtn = new UnityEvent<Texture2D>();
+    public UnityEvent<SO_RTSP> onClickScaleBtn = new UnityEvent<SO_RTSP>();
 
     private int numMax = 9;
 
@@ -31,7 +31,7 @@ public class CCTV_9Grid : MonoBehaviour
         }
     }
 
-    public void Play(SO_RTSP data)
+    public void Play(SO_RTSP data, ListItem_CCTV listItem)
     {
         //如果已存在
         if (dictGridItems.TryGetValue(data, out GridItem_9Grid item))
@@ -51,6 +51,7 @@ public class CCTV_9Grid : MonoBehaviour
 
         //建立項目
         item = ObjectPoolManager.GetInstanceFromQueuePool<GridItem_9Grid>(gridItemPrefab, gridLayoutGroup.transform);
+        item.listItem = listItem;
         dictGridItems.Add(data, item);
         item.Show(data);
 

@@ -75,6 +75,8 @@ public class UIManager_CCTV : MonoBehaviour
             ListItem_CCTV listItem = scrollViewContainer.GetChild(index).GetComponent<ListItem_CCTV>();
             listItem.isOn = true;
         });
+
+        cctv9Grid.onClickScaleBtn.AddListener(fullScreenPlayer.Show);
     }
 
     /// <summary>
@@ -82,21 +84,22 @@ public class UIManager_CCTV : MonoBehaviour
     /// </summary>
     private void CloseAllPanel()
     {
+        //關閉目標視窗
+        if (currentPanel != null) currentPanel.Close();
+        currentPanel = null;
+
         List<string> keys = openedPanels.Keys.ToList();
         for (int i = 0; i < keys.Count; i++)
         {
             openedPanels[keys[i]].Close();
             openedPanels.Remove(keys[i]);
         }
-        //關閉目標視窗
-        currentPanel?.Close();
-        currentPanel = null;
     }
 
     /// <summary>
     /// 建立資訊面板
     /// </summary>
-    private void CreatePanel(SO_RTSP data)
+    private void CreatePanel(SO_RTSP data, ListItem_CCTV listItem)
     {
         if (currentPanel != null)
         {
@@ -108,7 +111,6 @@ public class UIManager_CCTV : MonoBehaviour
             currentPanel.Close();
             currentPanel = null;
         }
-
         //如果已有打開過的視窗，則進行提示
         if (openedPanels.TryGetValue(data.url, out Panel_CCTV panel))
         {
@@ -119,7 +121,7 @@ public class UIManager_CCTV : MonoBehaviour
         //若為九宮格模式，則用九宮格播放
         if (cctv9Grid.isON)
         {
-            cctv9Grid.Play(data);
+            cctv9Grid.Play(data, listItem);
             CheckAmountOfOpenedWindow();
             return;
         }
@@ -136,6 +138,7 @@ public class UIManager_CCTV : MonoBehaviour
 
         //當視窗被拖曳時，即設為釘選狀態
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, transform);
+        currentPanel.listItem = listItem;
         currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
         currentPanel.onDragged.AddListener(() =>
         {
@@ -177,17 +180,25 @@ public class UIManager_CCTV : MonoBehaviour
     /// </summary>
     public void Set9GridPlayer()
     {
+        List<Panel_CCTV> list = openedPanels.Values.ToList();
         if (currentPanel != null)
         {
-            cctv9Grid.Play(currentPanel.data);
-            currentPanel.Close();
-            currentPanel = null;
+            SO_RTSP data = currentPanel.data;
+            ListItem_CCTV listItem = currentPanel.listItem;
+            CloseAllPanel();
+            cctv9Grid.Play(data, listItem);
         }
-        openedPanels.Values.ToList().ForEach((panel) =>
+        else
         {
-            cctv9Grid.Play(panel.data);
+            CloseAllPanel();
+        }
+
+        list.ForEach((panel) =>
+        {
+            cctv9Grid.Play(panel.data, panel.listItem);
         });
-        CloseAllPanel();
+
+        CheckAmountOfOpenedWindow();
     }
     private void OnValidate()
     {

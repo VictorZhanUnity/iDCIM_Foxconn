@@ -12,7 +12,7 @@ public class SelectableObject : MonoBehaviour
     public ListItem listItem;
 
     public UnityEvent<bool> onToggleEvent = new UnityEvent<bool>();
-    public UnityEvent<SO_RTSP> onSelectedEvent = new UnityEvent<SO_RTSP>();
+    public UnityEvent<SO_RTSP, ListItem_CCTV> onSelectedEvent = new UnityEvent<SO_RTSP, ListItem_CCTV>();
 
     public bool IsOn
     {
@@ -22,7 +22,7 @@ public class SelectableObject : MonoBehaviour
             listItem?.SetIsOnWithoutNotify(value);
             onToggleEvent?.Invoke(value);
 
-            if (value) onSelectedEvent.Invoke(data);
+            if (value) onSelectedEvent.Invoke(data, listItem as ListItem_CCTV);
         }
     }
 
@@ -37,7 +37,7 @@ public class SelectableObject : MonoBehaviour
     public void SetIsOnWithoutNotify(bool isOn)
     {
         displayObject?.SetActive(isOn);
-        if (isOn) onSelectedEvent.Invoke(data);
+        if (isOn) onSelectedEvent.Invoke(data, listItem as ListItem_CCTV);
     }
 
     protected virtual void Awake()

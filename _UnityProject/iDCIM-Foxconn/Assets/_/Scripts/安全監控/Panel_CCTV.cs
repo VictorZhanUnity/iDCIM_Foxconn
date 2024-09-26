@@ -6,7 +6,7 @@ using VictorDev.Advanced;
 
 public class Panel_CCTV : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI txtTitle;
+    [SerializeField] private TextMeshProUGUI txtTitle, txtDeviceName;
     [SerializeField] private Image screen;
     [SerializeField] private Button btnScale;
     [SerializeField] private Toggle togglePin, toggleContent;
@@ -20,7 +20,7 @@ public class Panel_CCTV : MonoBehaviour
     [SerializeField] private Image border;
     [SerializeField] private Canvas canvasBlur;
 
-    public UnityEvent<Sprite> onClickScale = new UnityEvent<Sprite>();
+    public UnityEvent<SO_RTSP> onClickScale = new UnityEvent<SO_RTSP>();
     public UnityEvent onDragged = new UnityEvent();
     public UnityEvent<SO_RTSP> onClose = new UnityEvent<SO_RTSP>();
 
@@ -28,6 +28,8 @@ public class Panel_CCTV : MonoBehaviour
 
     private Vector3 originalPos;
     private Color originalColor;
+
+    public ListItem_CCTV listItem;
 
     private void Awake()
     {
@@ -39,7 +41,7 @@ public class Panel_CCTV : MonoBehaviour
 
     private void OnEnable()
     {
-        btnScale.onClick.AddListener(() => onClickScale.Invoke(screen.sprite));
+        btnScale.onClick.AddListener(() => onClickScale.Invoke(data));
         dragHandler.onDragged.AddListener(OnDragHandler);
         doTweenFade.OnFadeOutEvent.AddListener(CloseHandler);
     }
@@ -49,7 +51,7 @@ public class Panel_CCTV : MonoBehaviour
         onClickScale.RemoveAllListeners();
         onDragged.RemoveAllListeners();
         onClose.RemoveAllListeners();
-        btnScale.onClick.RemoveListener(() => onClickScale.Invoke(screen.sprite));
+        btnScale.onClick.RemoveListener(() => onClickScale.Invoke(data));
         dragHandler.onDragged.RemoveListener(OnDragHandler);
         doTweenFade.OnFadeOutEvent.RemoveListener(CloseHandler);
     }
@@ -69,17 +71,15 @@ public class Panel_CCTV : MonoBehaviour
         ObjectPoolManager.PushToPool<Panel_CCTV>(this);
     }
 
-
-    public void ShowData()
-    {
-        if (data != null) ShowData(data);
-    }
     public void ShowData(SO_RTSP data)
     {
         this.data = data;
         txtTitle.SetText(data.title);
+        txtDeviceName.SetText(data.title);
         screen.sprite = data.sprite;
         doTweenFade.FadeIn();
+
+        listItem.isDisplay = true;
     }
 
     /// <summary>
@@ -89,6 +89,8 @@ public class Panel_CCTV : MonoBehaviour
     {
         doTweenFade.FadeOut();
         onClose.Invoke(data);
+
+        listItem.isDisplay = false;
     }
 
     public void CloseWithoutInvoke()
@@ -101,10 +103,5 @@ public class Panel_CCTV : MonoBehaviour
     {
         ColorHandler.LerpColor(border, Color.red, originalColor);
         pointerEventHandler.MoveToFront();
-    }
-
-    private void OnValidate()
-    {
-        if (data != null) ShowData(data);
     }
 }

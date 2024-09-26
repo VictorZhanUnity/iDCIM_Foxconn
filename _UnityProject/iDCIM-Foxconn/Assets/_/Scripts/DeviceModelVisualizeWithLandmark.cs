@@ -19,7 +19,7 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
     [SerializeField] private List<Landmark> landmarkList;
 
     public UnityEvent<List<SelectableObject>, List<Landmark>> onInitlializedWithLandMark = new UnityEvent<List<SelectableObject>, List<Landmark>>();
-    public UnityEvent<SO_RTSP> onSelectedEvent = new UnityEvent<SO_RTSP>();
+    public UnityEvent<SO_RTSP, ListItem_CCTV> onSelectedEvent = new UnityEvent<SO_RTSP, ListItem_CCTV>();
 
     override protected void Start()
     {
