@@ -18,6 +18,7 @@ public class UIManager_CCTV : MonoBehaviour
     [Space(10)]
     [SerializeField] private Panel_CCTV panelEntrance;
     [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
+    [SerializeField] private CCTV_9Grid cctv9Grid;
     [SerializeField] private Minimap_CCTV minimap;
     [SerializeField] private Button btnCloseAllWindows;
 
@@ -46,6 +47,7 @@ public class UIManager_CCTV : MonoBehaviour
             //openedPanels.Add(panelEntrance.data.url, panelEntrance);
         }
 
+        //設置監視器列表資料
         deviceModelVisualizer.onInitlializedWithLandMark.AddListener((selectableObjects, landmarks) =>
         {
             for (int i = 0; i < selectableObjects.Count; i++)
@@ -62,13 +64,9 @@ public class UIManager_CCTV : MonoBehaviour
         //關閉所有釘選視窗(除了機房入口視窗)
         btnCloseAllWindows.onClick.AddListener(() =>
         {
-            List<string> keys = openedPanels.Keys.ToList();
-            for (int i = 0; i < keys.Count; i++)
-            {
-                openedPanels[keys[i]].Close();
-                openedPanels.Remove(keys[i]);
-            }
-            CloseCurrentPanel();
+            CloseAllPanel();
+            cctv9Grid.Close();
+            CheckAmountOfOpenedWindow();
         });
 
         //小地圖點選聯結
@@ -80,10 +78,17 @@ public class UIManager_CCTV : MonoBehaviour
     }
 
     /// <summary>
-    /// 關閉目標視窗
+    /// 關閉所有釘選視窗(除了機房入口視窗)
     /// </summary>
-    private void CloseCurrentPanel()
+    private void CloseAllPanel()
     {
+        List<string> keys = openedPanels.Keys.ToList();
+        for (int i = 0; i < keys.Count; i++)
+        {
+            openedPanels[keys[i]].Close();
+            openedPanels.Remove(keys[i]);
+        }
+        //關閉目標視窗
         currentPanel?.Close();
         currentPanel = null;
     }
@@ -111,6 +116,14 @@ public class UIManager_CCTV : MonoBehaviour
             return;
         }
 
+        //若為九宮格模式，則用九宮格播放
+        if (cctv9Grid.isON)
+        {
+            cctv9Grid.Play(data);
+            CheckAmountOfOpenedWindow();
+            return;
+        }
+
         //所有非釘選狀態的視窗，則進行關閉
         openedPanels.ToList().ForEach(panel =>
         {
@@ -121,6 +134,7 @@ public class UIManager_CCTV : MonoBehaviour
             }
         });
 
+        //當視窗被拖曳時，即設為釘選狀態
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, transform);
         currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
         currentPanel.onDragged.AddListener(() =>
@@ -146,10 +160,35 @@ public class UIManager_CCTV : MonoBehaviour
     /// </summary>
     private void CheckAmountOfOpenedWindow()
     {
-        bool isShow = currentPanel != null || openedPanels.Count > 1;
+        bool isShow;
+        if (cctv9Grid.isON)
+        {
+            isShow = cctv9Grid.dictGridItems.Count > 0;
+        }
+        else
+        {
+            isShow = currentPanel != null || openedPanels.Count > 0;
+        }
         btnCloseAllWindows.gameObject.SetActive(isShow);
     }
 
+    /// <summary>
+    /// 設置九宮格播放
+    /// </summary>
+    public void Set9GridPlayer()
+    {
+        if (currentPanel != null)
+        {
+            cctv9Grid.Play(currentPanel.data);
+            currentPanel.Close();
+            currentPanel = null;
+        }
+        openedPanels.Values.ToList().ForEach((panel) =>
+        {
+            cctv9Grid.Play(panel.data);
+        });
+        CloseAllPanel();
+    }
     private void OnValidate()
     {
         deviceModelVisualizer ??= GetComponent<DeviceModelVisualizerWithLandmark>();

@@ -31,7 +31,7 @@ public class ListItem : MonoBehaviour
     public void SetupSelectableObjectAndLandmark(SelectableObject obj, Landmark landmark)
     {
         selectableObject = obj;
-        obj.listItem = this;
+        obj.listItem = this as ListItem_CCTV;
         landmark.listItem = this;
         txtLabel.SetText(selectableObject.title);
     }

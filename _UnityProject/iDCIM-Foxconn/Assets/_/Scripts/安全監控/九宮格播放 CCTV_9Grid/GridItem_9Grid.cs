@@ -1,18 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
+/// <summary>
+/// ¤E®c®æ¸ê®Æ¶µ¥Ø
+/// </summary>
 public class GridItem_9Grid : MonoBehaviour
 {
-    // Start is called before the first frame updateï¼š
-    void Start()
+    [SerializeField] private GameObject canvasObj;
+    [SerializeField] private Image cctvScreen, border;
+    [SerializeField] private TextMeshProUGUI txtDeviceName;
+    [SerializeField] private Button btnScale;
+
+    public SO_RTSP data;
+
+    public UnityEvent<Texture2D> onClickScaleBtn = new UnityEvent<Texture2D>();
+    public UnityEvent<GridItem_9Grid> onClickCloseBtn = new UnityEvent<GridItem_9Grid>();
+
+    private Color originalColor;
+
+    private void Start()
     {
-        
+        originalColor = border.color;
+        btnScale.onClick.AddListener(() => onClickScaleBtn.Invoke(cctvScreen.sprite.texture));
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Show(SO_RTSP data)
     {
-        
+        this.data = data;
+        canvasObj.SetActive(true);
+        cctvScreen.sprite = data.sprite;
     }
+
+    public void Close()
+    {
+        onClickCloseBtn.Invoke(this);
+        ObjectPoolManager.PushToPool<GridItem_9Grid>(this);
+        canvasObj.SetActive(false);
+    }
+    public void ToShining() => ColorHandler.LerpColor(border, Color.red, originalColor);
 }
