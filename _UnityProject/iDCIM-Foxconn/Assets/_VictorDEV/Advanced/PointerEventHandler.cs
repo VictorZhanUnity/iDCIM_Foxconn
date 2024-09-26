@@ -16,7 +16,7 @@ namespace VictorDev.Advanced
         public UnityEvent OnPointerExitEvent;
         [Header(">>> 當鼠標移入/移出時(bool:是否移入)")]
         public UnityEvent<bool> OnPointerEvent;
-        [Header(">>> 本身物件的Canvas(設定SortOrder先後順序用)")]
+        [Header(">>> 本身物件的Canvas(選填：設定SortOrder先後順序用)")]
         [SerializeField] private Canvas canvas;
 
         private bool isPressDown { get; set; } = false;

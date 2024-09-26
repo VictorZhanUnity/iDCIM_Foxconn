@@ -17,9 +17,11 @@ namespace VictorDev.Advanced
         [SerializeField] private bool isForcedResolution = false;
 
         [Space(10)]
-        [SerializeField] private RectTransform rectTransform;
         [SerializeField] private bool isNeedToUpdate = false;
+        private RectTransform rectTransform;
         private Vector2 newSize { get; set; }
+
+        private void Awake() => rectTransform ??= GetComponent<RectTransform>();
 
 #if UNITY_EDITOR
         private void Update()
@@ -44,7 +46,5 @@ namespace VictorDev.Advanced
                 rectTransform.sizeDelta = newSize;
             }
         }
-
-        private void OnValidate() => rectTransform ??= GetComponent<RectTransform>();
     }
 }
