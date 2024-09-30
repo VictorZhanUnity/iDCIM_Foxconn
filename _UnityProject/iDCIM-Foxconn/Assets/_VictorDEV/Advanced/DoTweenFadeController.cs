@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class DoTweenFadeController : MonoBehaviour
 {
+    private bool isHideInAwake = false;
+
     [Tooltip("淡入淡出動畫持續時間")]
     public float fadeDuration = 0.3f;
     public float scaleDuration = 0.3f;  // 縮放動畫持續時間
@@ -20,7 +22,16 @@ public class DoTweenFadeController : MonoBehaviour
     public CanvasGroup canvasGroup;  // 用於處理淡入淡出
     public RectTransform rectTransform;  // 用於處理縮放
 
-    private void Awake() => OnValidate();
+    private void Awake()
+    {
+        OnValidate();
+        if (isHideInAwake)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.interactable = false;
+        }
+    }
 
     private void OnValidate()
     {
@@ -39,6 +50,7 @@ public class DoTweenFadeController : MonoBehaviour
     {
         gameObject.SetActive(true);
         canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = true;
         canvasGroup.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
         {
             OnFadeInEvent.Invoke();
@@ -52,7 +64,11 @@ public class DoTweenFadeController : MonoBehaviour
     public void FadeOut()
     {
         canvasGroup.interactable = false;
-        canvasGroup.DOFade(0, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(OnFadeOutEvent.Invoke);
+        canvasGroup.DOFade(0, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            OnFadeOutEvent.Invoke();
+            canvasGroup.blocksRaycasts = false;
+        });
         rectTransform.DOScale(initialScale, scaleDuration).SetEase(easeFadeIn);
     }
 

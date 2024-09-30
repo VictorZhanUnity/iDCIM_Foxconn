@@ -67,7 +67,7 @@ public class Landmark : MonoBehaviour
         gameObject.SetActive(false);
         toggle.onValueChanged.AddListener((isOn) =>
         {
-            if (isOn) OrbitCamera.MoveTargetTo(targetObject);
+          //  if (isOn) OrbitCamera.MoveTargetTo(targetObject);
         });
     }
 
