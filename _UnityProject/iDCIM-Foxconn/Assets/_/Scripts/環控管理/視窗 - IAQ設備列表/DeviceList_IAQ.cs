@@ -14,19 +14,17 @@ public class DeviceList_IAQ : MonoBehaviour
     [SerializeField] private DeviceListItem_IAQ listItemPrefab;
     [SerializeField] private ScrollRect scrollRect;
 
-    private void Awake()
+    private void Start()
     {
-        void CreateListItems(List<SelectableObject> selectableObjects, List<Landmark> landmarks)
-        {
-            for (int i = 0; i < selectableObjects.Count; i++)
-            {
-                DeviceListItem_IAQ listItem = ObjectPoolManager.GetInstanceFromQueuePool<DeviceListItem_IAQ>(listItemPrefab, scrollRect.content);
-                listItem.label = selectableObjects[i].name;
-                listItem.toggleGroup = toggleGroup;
-                listItem.SetupSelectableObjectAndLandmark(selectableObjects[i], landmarks[i]);
-            }
-        }
+        List<SelectableObject> selectableObjects = deviceModelVisualizer_IAQ.selectableObjects;
+        List<Landmark> landmarks = deviceModelVisualizer_IAQ.landmarkList;
 
-        deviceModelVisualizer_IAQ.onInitlializedWithLandMark.AddListener(CreateListItems);
+        for (int i = 0; i < selectableObjects.Count; i++)
+        {
+            DeviceListItem_IAQ listItem = ObjectPoolManager.GetInstanceFromQueuePool<DeviceListItem_IAQ>(listItemPrefab, scrollRect.content);
+            listItem.label = selectableObjects[i].name;
+            listItem.toggleGroup = toggleGroup;
+            listItem.SetupSelectableObjectAndLandmark(selectableObjects[i], landmarks[i]);
+        }
     }
 }

@@ -16,15 +16,16 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
     [SerializeField] private float offsetHeight;
 
     [Header(">>> 地標列表")]
-    [SerializeField] private List<Landmark> landmarkList;
+    public List<Landmark> landmarkList;
 
     public UnityEvent<List<SelectableObject>, List<Landmark>> onInitlializedWithLandMark = new UnityEvent<List<SelectableObject>, List<Landmark>>();
     public UnityEvent<SO_RTSP, ListItem_CCTV> onSelectedEvent = new UnityEvent<SO_RTSP, ListItem_CCTV>();
 
+    public List<SelectableObject> selectableObjects { get; private set; } = new List<SelectableObject>();
+
+
     override protected void Start()
     {
-        List<SelectableObject> selectableObjects = new List<SelectableObject>();
-
         int counter = 0;
         //依照模型建立Landmark與SelectableObject架構
         modelList.ForEach(model =>
