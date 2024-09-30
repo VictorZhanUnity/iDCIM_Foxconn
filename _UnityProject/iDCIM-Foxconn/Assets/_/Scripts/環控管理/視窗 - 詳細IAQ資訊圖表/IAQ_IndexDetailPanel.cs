@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +11,13 @@ public class IAQ_IndexDetailPanel : MonoBehaviour
     public void ShowData(GridItem_IAQIndex item)
     {
         imgICON.sprite = item.imgICON_Sprite;
-        txtTitle.SetText(item.columnName + " - 詳細資訊圖表");
+        txtTitle.SetText(item.columnName);
 
         doTweenFadeController.FadeIn();
+    }
+
+    public void Close()
+    {
+        doTweenFadeController.FadeOut();
     }
 }

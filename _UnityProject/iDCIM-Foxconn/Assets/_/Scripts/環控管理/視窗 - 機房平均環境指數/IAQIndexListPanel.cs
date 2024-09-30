@@ -4,7 +4,10 @@ using UnityEngine;
 public class IAQIndexListPanel : MonoBehaviour
 {
     [SerializeField] private List<GridItem_IAQIndex> indexBtns;
-    public IAQ_IndexDetailPanel detailPanel;
+    [SerializeField] private IAQ_IndexDetailPanel indexDetailPanelPrefab;
+    [SerializeField] private Transform detialPanelContaitner;
+
+    public IAQ_IndexDetailPanel currentIndexDetailPanel;
 
     private void Start()
     {
@@ -13,6 +16,14 @@ public class IAQIndexListPanel : MonoBehaviour
 
     private void ListenGridItemsEvent()
     {
-        indexBtns.ForEach(item => item.onClick.AddListener(detailPanel.ShowData));
+        void CreateDetailPanel(GridItem_IAQIndex iaqIndex)
+        {
+            if (currentIndexDetailPanel != null) currentIndexDetailPanel.Close();
+            ObjectPoolManager.PushToPool<IAQ_IndexDetailPanel>(detialPanelContaitner);
+            currentIndexDetailPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexDetailPanel>(indexDetailPanelPrefab, detialPanelContaitner);
+            currentIndexDetailPanel.ShowData(iaqIndex);
+        }
+
+        indexBtns.ForEach(item => item.onClick.AddListener(CreateDetailPanel));
     }
 }
