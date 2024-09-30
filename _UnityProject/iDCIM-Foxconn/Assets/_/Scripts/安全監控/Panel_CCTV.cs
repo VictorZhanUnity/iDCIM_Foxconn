@@ -71,6 +71,14 @@ public class Panel_CCTV : MonoBehaviour
         ObjectPoolManager.PushToPool<Panel_CCTV>(this);
     }
 
+    /// <summary>
+    /// [ForInspector]Εγ¥άµψµ΅
+    /// </summary>
+    public void ShowData()
+    {
+        if (data != null) ShowData(data);
+    }
+
     public void ShowData(SO_RTSP data)
     {
         this.data = data;
@@ -79,7 +87,7 @@ public class Panel_CCTV : MonoBehaviour
         screen.sprite = data.sprite;
         doTweenFade.FadeIn();
 
-        listItem.isDisplay = true;
+        if(listItem!= null) listItem.isDisplay = true;
     }
 
     /// <summary>
