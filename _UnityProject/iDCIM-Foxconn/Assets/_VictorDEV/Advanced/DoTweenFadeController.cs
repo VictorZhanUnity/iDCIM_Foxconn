@@ -8,13 +8,13 @@ public class DoTweenFadeController : MonoBehaviour
     private bool isHideInAwake = false;
 
     [Tooltip("淡入淡出動畫持續時間")]
-    public float fadeDuration = 0.3f;
-    public float scaleDuration = 0.3f;  // 縮放動畫持續時間
+    public float fadeDuration = 0.5f;
+    public float scaleDuration = 0.7f;  // 縮放動畫持續時間
     public Vector3 targetScale = new Vector3(1, 1, 1);  // 最終縮放比例
-    public Vector3 initialScale = new Vector3(0, 0, 0);  // 初始縮放比例
+    public Vector3 initialScale = new Vector3(0.3f, 0.3f, 0.3f);  // 初始縮放比例
 
-    public Ease easeFadeIn = Ease.InBack;
-    public Ease easeFadeOut = Ease.OutBack;
+    public Ease easeFadeIn = Ease.OutBack;
+    public Ease easeFadeOut = Ease.OutExpo;
 
     public UnityEvent OnFadeInEvent;
     public UnityEvent OnFadeOutEvent;
@@ -62,12 +62,12 @@ public class DoTweenFadeController : MonoBehaviour
             rectTransform.localScale = Vector3.zero;
         }
 
-        canvasGroup.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        canvasGroup.DOFade(1, fadeDuration);
+        rectTransform.DOScale(targetScale, scaleDuration).SetEase(easeFadeIn).OnComplete(() =>
         {
             OnFadeInEvent.Invoke();
             canvasGroup.interactable = true;
         });
-        rectTransform.DOScale(targetScale, scaleDuration).SetEase(easeFadeOut);
     }
 
     [ContextMenu("FadeOut")]
@@ -75,12 +75,12 @@ public class DoTweenFadeController : MonoBehaviour
     public void FadeOut()
     {
         canvasGroup.interactable = false;
-        canvasGroup.DOFade(0, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        canvasGroup.DOFade(0, fadeDuration);
+        rectTransform.DOScale(initialScale, scaleDuration).SetEase(easeFadeOut).OnComplete(() =>
         {
             OnFadeOutEvent.Invoke();
             canvasGroup.blocksRaycasts = false;
         });
-        rectTransform.DOScale(initialScale, scaleDuration).SetEase(easeFadeIn);
     }
 
     // 淡入並縮放的動畫（指定大小）
