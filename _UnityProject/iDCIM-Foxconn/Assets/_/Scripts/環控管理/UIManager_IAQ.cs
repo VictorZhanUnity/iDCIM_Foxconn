@@ -15,4 +15,8 @@ public class UIManager_IAQ : MonoBehaviour
             canvasObj.SetActive(value);
         }
     }
+
+    private void Awake()
+    {
+    }
 }

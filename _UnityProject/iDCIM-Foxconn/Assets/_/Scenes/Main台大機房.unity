@@ -2409,6 +2409,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Singleton] - LandmarkManager'
       objectReference: {fileID: 0}
+    - target: {fileID: 3491427873806400071, guid: 900550f58b80e3743af817cb49b5bd93, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3110532248086889425, guid: 900550f58b80e3743af817cb49b5bd93, type: 3}
@@ -11016,6 +11020,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 907824179}
     m_Modifications:
+    - target: {fileID: 418061457710389341, guid: 158a139b6387da546ad1f06c34b31abc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 876317111252439480, guid: 158a139b6387da546ad1f06c34b31abc, type: 3}
       propertyPath: m_SizeDelta.y
       value: 35
@@ -17993,7 +18001,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595544489493511493, guid: 2a6f42b2c2f0b334cac9c61bb9cb55c2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -34.999985
+      value: -35
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4296403736835578871, guid: 2a6f42b2c2f0b334cac9c61bb9cb55c2, type: 3}

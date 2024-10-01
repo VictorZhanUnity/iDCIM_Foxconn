@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.CameraUtils;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SelectableObject : MonoBehaviour
 {
@@ -51,7 +50,7 @@ public class SelectableObject : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if(transform.childCount > 0)
+        if (transform.childCount > 0)
         {
             displayObject ??= transform.GetChild(0).gameObject;
         }

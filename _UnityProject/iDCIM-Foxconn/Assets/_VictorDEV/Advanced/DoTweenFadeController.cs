@@ -48,9 +48,20 @@ public class DoTweenFadeController : MonoBehaviour
     // 淡入動畫
     public void FadeIn()
     {
+        FadeIn(false);
+    }
+    public void FadeIn(bool isForce = false)
+    {
         gameObject.SetActive(true);
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = true;
+
+        if (isForce)
+        {
+            canvasGroup.alpha = 0;
+            rectTransform.localScale = Vector3.zero;
+        }
+
         canvasGroup.DOFade(1, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
         {
             OnFadeInEvent.Invoke();

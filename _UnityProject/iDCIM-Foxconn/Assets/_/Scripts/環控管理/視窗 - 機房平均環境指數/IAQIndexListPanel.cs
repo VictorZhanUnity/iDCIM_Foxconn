@@ -16,12 +16,19 @@ public class IAQIndexListPanel : MonoBehaviour
 
     private void ListenGridItemsEvent()
     {
-        void CreateDetailPanel(GridItem_IAQIndex iaqIndex)
+        void CreateDetailPanel(GridItem_IAQIndex iaqIndexItem)
         {
-            if (currentIndexDetailPanel != null) currentIndexDetailPanel.Close();
-            ObjectPoolManager.PushToPool<IAQ_IndexDetailPanel>(detialPanelContaitner);
-            currentIndexDetailPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexDetailPanel>(indexDetailPanelPrefab, detialPanelContaitner);
-            currentIndexDetailPanel.ShowData(iaqIndex);
+            if (currentIndexDetailPanel != null)
+            {
+                if (currentIndexDetailPanel.data == iaqIndexItem) return;
+                currentIndexDetailPanel.Close();
+                currentIndexDetailPanel = null;
+            }
+            //«Ø¥ßPanel
+            IAQ_IndexDetailPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexDetailPanel>(indexDetailPanelPrefab, detialPanelContaitner);
+            newPanel.ShowData(iaqIndexItem);
+            newPanel.onClose.AddListener(()=> currentIndexDetailPanel = null);
+            currentIndexDetailPanel = newPanel;
         }
 
         indexBtns.ForEach(item => item.onClick.AddListener(CreateDetailPanel));
