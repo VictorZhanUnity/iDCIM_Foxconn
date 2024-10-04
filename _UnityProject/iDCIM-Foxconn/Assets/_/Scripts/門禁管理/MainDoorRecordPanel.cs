@@ -37,6 +37,7 @@ public class MainDoorRecordPanel : MonoBehaviour
     public void ShowData(List<Dictionary<string, string>> dataList)
     {
         uiObj.SetActive(true);
+        recordDataList.Clear();
         dataList.ForEach(data => recordDataList.Add(new Data_AccessRecord(data)));
         UpdateUI();
     }

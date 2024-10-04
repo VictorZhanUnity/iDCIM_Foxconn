@@ -51,6 +51,7 @@ public class CCTV_9Grid : MonoBehaviour
 
         //建立項目
         item = ObjectPoolManager.GetInstanceFromQueuePool<GridItem_9Grid>(gridItemPrefab, gridLayoutGroup.transform);
+        item.canvasObj = canvasObj;
         item.listItem = listItem;
         dictGridItems.Add(data, item);
         item.Show(data);

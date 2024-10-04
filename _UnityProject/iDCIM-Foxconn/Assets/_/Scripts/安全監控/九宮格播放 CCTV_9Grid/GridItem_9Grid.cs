@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class GridItem_9Grid : MonoBehaviour
 {
-    [SerializeField] private GameObject canvasObj;
+    public GameObject canvasObj;
     [SerializeField] private Image cctvScreen, border;
     [SerializeField] private TextMeshProUGUI txtDeviceName;
     [SerializeField] private Button btnScale;

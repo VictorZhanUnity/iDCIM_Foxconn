@@ -13,8 +13,8 @@ public class DoTweenFadeController : MonoBehaviour
     public Vector3 targetScale = new Vector3(1, 1, 1);  // 最終縮放比例
     public Vector3 initialScale = new Vector3(0.7f, 0.7f, 0.7f);  // 初始縮放比例
 
-    public Ease easeFadeIn = Ease.OutBack;
-    public Ease easeFadeOut = Ease.OutExpo;
+    public Ease easeFadeIn = Ease.OutExpo;
+    public Ease easeFadeOut = Ease.OutQuart;
 
     public UnityEvent OnFadeInEvent;
     public UnityEvent OnFadeOutEvent;
