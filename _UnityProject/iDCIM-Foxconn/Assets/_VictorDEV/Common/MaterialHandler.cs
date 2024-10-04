@@ -15,7 +15,7 @@ namespace VictorDev.Common
 
         [Space(20)]
         [Header("[僅顯示用] 物件對像下的每個Transform物件")]
-        [SerializeField] private List<DictionaryVisualize<Transform, Material[]>> materialDictionaryVisualize;
+        [SerializeField] private List<DictionaryVisualizer<Transform, Material[]>> materialDictionaryVisualize;
 
         [Header("[僅顯示用] 排除替換之外Transfomr對像")]
         [SerializeField] private List<Transform> excludeList;
@@ -54,7 +54,7 @@ namespace VictorDev.Common
                     if (!originalMaterials.ContainsKey(objTransform))
                     {
                         originalMaterials[objTransform] = renderer.sharedMaterials;
-                        materialDictionaryVisualize.Add(new DictionaryVisualize<Transform, Material[]>(objTransform, renderer.sharedMaterials));
+                        materialDictionaryVisualize.Add(new DictionaryVisualizer<Transform, Material[]>(objTransform, renderer.sharedMaterials));
                     }
 
                     // 判斷是否有多個材質

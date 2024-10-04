@@ -32,10 +32,14 @@ namespace VictorDev.Advanced
 
         public UnityEvent onDragged = new UnityEvent();
 
-        private void Awake() => OnValidate();
+        private void Start()
+        {
+            OnValidate();
+            parentRectTransform = transform.parent.GetComponent<RectTransform>();
+        }
 
         private void OnValidate()
-        {
+        { 
             rectTransform ??= GetComponent<RectTransform>();
             parentRectTransform ??= transform.parent.GetComponent<RectTransform>();
         }

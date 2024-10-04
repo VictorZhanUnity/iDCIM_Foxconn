@@ -11,7 +11,7 @@ public class DoTweenFadeController : MonoBehaviour
     public float fadeDuration = 0.5f;
     public float scaleDuration = 0.7f;  // 縮放動畫持續時間
     public Vector3 targetScale = new Vector3(1, 1, 1);  // 最終縮放比例
-    public Vector3 initialScale = new Vector3(0.3f, 0.3f, 0.3f);  // 初始縮放比例
+    public Vector3 initialScale = new Vector3(0.7f, 0.7f, 0.7f);  // 初始縮放比例
 
     public Ease easeFadeIn = Ease.OutBack;
     public Ease easeFadeOut = Ease.OutExpo;
@@ -59,7 +59,7 @@ public class DoTweenFadeController : MonoBehaviour
         if (isForce)
         {
             canvasGroup.alpha = 0;
-            rectTransform.localScale = Vector3.zero;
+            rectTransform.localScale = initialScale;
         }
 
         canvasGroup.DOFade(1, fadeDuration);
@@ -74,6 +74,9 @@ public class DoTweenFadeController : MonoBehaviour
     // 淡出動畫
     public void FadeOut()
     {
+        DOTween.Kill(canvasGroup);
+        DOTween.Kill(rectTransform);
+
         canvasGroup.interactable = false;
         canvasGroup.DOFade(0, fadeDuration);
         rectTransform.DOScale(initialScale, scaleDuration).SetEase(easeFadeOut).OnComplete(() =>

@@ -48,6 +48,9 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
             selectableObj.onSelectedEvent.AddListener(onSelectedEvent.Invoke);
         });
         onInitlializedWithLandMark.Invoke(selectableObjects, landmarkList);
+
+        //如果只有一個地標的話，直接設定選取中
+        selectableObjects[0].IsOn = (models.Count == 1);
     }
 
     override public bool isOn
