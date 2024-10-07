@@ -1,44 +1,108 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using VictorDev.Common;
 
-public class ColorHandler : SingletonMonoBehaviour<ColorHandler>
+namespace VictorDev.Common
 {
-    public static void LerpColor(Image target, Color start, Color end, float duration = 0.7f)
+    public class ColorHandler : SingletonMonoBehaviour<ColorHandler>
     {
-        IEnumerator action()
+        public static Color green => ConvertRgbToColor(30, 255, 30);
+        public static Color yellow => ConvertRgbToColor(255, 255, 30);
+        public static Color orange => ConvertRgbToColor(255, 180, 30);
+        public static Color red => ConvertRgbToColor(255, 30, 30);
+
+        /// <summary>
+        /// 依百分比取得各等級Color
+        /// <para>+ percentaget為0~1之float值</para>
+        /// <para>+ 設置各等級{Threshold值0~1, Color}</para>
+        /// </summary>
+        public static Color GetColorLevelFromPercentage(float percentage01, List<Tuple<float, Color>> levelColors = null)
         {
-            float elapsedTime = 0.0f;
+            // 确保百分比在0到1之间
+            percentage01 = Mathf.Clamp01(percentage01);
 
-            // 確保在 duration 時間內進行顏色的過渡
-            while (elapsedTime < duration)
+            if (levelColors == null) levelColors = new List<Tuple<float, Color>>()
             {
-                elapsedTime += Time.deltaTime;
-                float t = elapsedTime / duration;
-
-                // 使用 Lerp 進行顏色過渡
-                target.color = Color.Lerp(start * 100, end, t);
-
-                // 等待下一幀再繼續
-                yield return null;
+               new Tuple<float, Color>(0.1f, green),
+               new Tuple<float, Color>(0.3f, yellow),
+               new Tuple<float, Color>(0.5f, orange),
+               new Tuple<float, Color>(1f, red),
+            };
+            for (int i = 0; i < levelColors.Count; i++)
+            {
+                if (percentage01 <= levelColors[i].Item1)
+                {
+                    if (i == 0) return levelColors[0].Item2;
+                    else
+                    {
+                        Tuple<float, Color> before = levelColors[i - 1];
+                        Tuple<float, Color> after = levelColors[i];
+                        return Color.Lerp(before.Item2, after.Item2, (percentage01 - before.Item1) / (after.Item1 - before.Item1));
+                    }
+                }
             }
-            // 確保最後顏色為目標顏色
-            target.color = end;
+            return Color.white;
         }
-        Instance.StartCoroutine(action());
-    }
 
-    /// <summary>
-    /// 將Hex十六進制(0xFFFFFF)轉成Color
-    /// <para>+ int hex = 0xFFFFFF</para>
-    /// </summary>
-    public static Color HexToColor(int hexColor, float alpha = 1f)
-    {
-        // 將十六進制顏色值轉換為 Color（除以255.0f以正確縮放到0到1之間）
-        float r = ((hexColor >> 16) & 0xFF) / 255.0f;
-        float g = ((hexColor >> 8) & 0xFF) / 255.0f;
-        float b = (hexColor & 0xFF) / 255.0f;
-        return new Color(r, g, b, alpha); // Alpha 設為 1.0，表示完全不透明
+
+        /// <summary>
+        /// 依百分比取得Color
+        /// <para>+ percentaget為0~1之float值</para>
+        /// <para>+ 顏色從綠色到紅色</para>
+        /// </summary>
+        public static Color GetColorFromPercentage(float percentage, Color? colorStart = null, Color? colorEnd = null)
+        {
+            /*   if(colorStart == null) colorStart = green;
+               if(colorEnd == null) colorEnd = red;*/
+
+            // 确保百分比在0到1之间
+            percentage = Mathf.Clamp01(percentage);
+            // 使用Color.Lerp进行线性插值
+            return Color.Lerp((Color)colorStart, (Color)colorEnd, percentage);
+        }
+
+        public static Color ConvertRgbToColor(float r, float g, float b)
+        {
+            return new Color(r / 255f, g / 255f, b / 255f);
+        }
+
+        public static void LerpColor(Image target, Color start, Color end, float duration = 0.7f)
+        {
+            IEnumerator action()
+            {
+                float elapsedTime = 0.0f;
+
+                // 確保在 duration 時間內進行顏色的過渡
+                while (elapsedTime < duration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    float t = elapsedTime / duration;
+
+                    // 使用 Lerp 進行顏色過渡
+                    target.color = Color.Lerp(start * 100, end, t);
+
+                    // 等待下一幀再繼續
+                    yield return null;
+                }
+                // 確保最後顏色為目標顏色
+                target.color = end;
+            }
+            Instance.StartCoroutine(action());
+        }
+
+        /// <summary>
+        /// 將Hex十六進制(0xFFFFFF)轉成Color
+        /// <para>+ int hex = 0xFFFFFF</para>
+        /// </summary>
+        public static Color HexToColor(int hexColor, float alpha = 1f)
+        {
+            // 將十六進制顏色值轉換為 Color（除以255.0f以正確縮放到0到1之間）
+            float r = ((hexColor >> 16) & 0xFF) / 255.0f;
+            float g = ((hexColor >> 8) & 0xFF) / 255.0f;
+            float b = (hexColor & 0xFF) / 255.0f;
+            return new Color(r, g, b, alpha); // Alpha 設為 1.0，表示完全不透明
+        }
     }
 }

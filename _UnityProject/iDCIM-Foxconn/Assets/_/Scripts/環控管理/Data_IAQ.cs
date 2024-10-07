@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using VictorDev.Common;
 
 /// <summary>
 /// 資料項 - IAQ

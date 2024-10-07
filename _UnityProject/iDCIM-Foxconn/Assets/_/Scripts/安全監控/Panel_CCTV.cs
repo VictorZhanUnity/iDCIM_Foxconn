@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
+using VictorDev.Common;
 
 public class Panel_CCTV : MonoBehaviour
 {
