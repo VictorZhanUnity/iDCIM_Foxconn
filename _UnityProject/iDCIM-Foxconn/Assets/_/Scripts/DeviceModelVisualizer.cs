@@ -34,7 +34,7 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             models.Add(model);
             SelectableObject selectableObj = model.AddComponent<SelectableObject>();
-            selectableObjects.Add(selectableObj); 
+            selectableObjects.Add(selectableObj);
         });
 
         onInitlialized.Invoke(selectableObjects);
@@ -60,6 +60,29 @@ public class DeviceModelVisualizer : MonoBehaviour
         allObjects.ForEach(transform =>
         {
             if (transform.name.Contains(keyName)) modelList.Add(transform);
+        });
+    }
+
+    [ContextMenu("+ 增加BoxCollider至模型上")]
+    protected void AddCollider()
+    {
+        modelList.ForEach(model =>
+        {
+            if (model.TryGetComponent<BoxCollider>(out BoxCollider collider) == false)
+            {
+                model.AddComponent<BoxCollider>();
+            }
+        });
+    }
+    [ContextMenu("- 移除模型上的BoxCollider")]
+    protected void RemoveCollider()
+    {
+        modelList.ForEach(model =>
+        {
+            if (model.TryGetComponent<BoxCollider>(out BoxCollider collider))
+            {
+                DestroyImmediate(collider);
+            }
         });
     }
 }
