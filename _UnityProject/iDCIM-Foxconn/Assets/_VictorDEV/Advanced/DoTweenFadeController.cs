@@ -52,6 +52,9 @@ public class DoTweenFadeController : MonoBehaviour
     }
     public void FadeIn(bool isForce = false)
     {
+        DOTween.Kill(canvasGroup);
+        DOTween.Kill(rectTransform);
+
         gameObject.SetActive(true);
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = true;
@@ -78,11 +81,11 @@ public class DoTweenFadeController : MonoBehaviour
         DOTween.Kill(rectTransform);
 
         canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
         canvasGroup.DOFade(0, fadeDuration);
         rectTransform.DOScale(initialScale, scaleDuration).SetEase(easeFadeOut).OnComplete(() =>
         {
             OnFadeOutEvent.Invoke();
-            canvasGroup.blocksRaycasts = false;
         });
     }
 
