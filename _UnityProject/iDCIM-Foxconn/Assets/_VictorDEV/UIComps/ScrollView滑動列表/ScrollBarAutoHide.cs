@@ -55,6 +55,7 @@ namespace VictorDev.Advanced
             }
         }
 
+
         private void OnScrollValueChanged(Vector2 value)
         {
             if (isScrolling) return;
@@ -71,6 +72,11 @@ namespace VictorDev.Advanced
         {
             DOTween.Kill(canvasGroup);
             canvasGroup.DOFade(0, fadeDuration);
+        }
+
+        private void OnDisable()
+        {
+            scrollRect.verticalNormalizedPosition = 1;
         }
 
         private void OnValidate()

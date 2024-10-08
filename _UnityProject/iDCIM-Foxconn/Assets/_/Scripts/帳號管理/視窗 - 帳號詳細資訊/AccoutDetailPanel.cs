@@ -11,11 +11,14 @@ public class AccoutDetailPanel : MonoBehaviour
     public UnityEvent<Data_User> onClickCloseBtn = new UnityEvent<Data_User>();
 
     [Header(">>> UI")]
-    [SerializeField] private Image imgPhoto;
+    [SerializeField] private Image imgPhoto, imgStatus;
     [SerializeField] private TextMeshProUGUI txtUserName, txtAccount, txtRole, txtNetType, txtStatus;
     [SerializeField] private TextMeshProUGUI txtLastLoginDateTime, txtEditDateTime, txtCreateDateTime, txtSuspendDate;
     [SerializeField] private Button btnClose;
     [SerializeField] private DoTweenFadeController fadeController;
+    [SerializeField] private Color colorActivate, colorForbbiden;
+
+
 
     public Data_User userData => data;
 
@@ -32,7 +35,8 @@ public class AccoutDetailPanel : MonoBehaviour
         txtAccount.SetText(data.Account);
         txtRole.SetText(data.Role.ToString());
         txtNetType.SetText(data.NetType.ToString());
-        txtNetType.SetText(data.Status.ToString());
+        txtStatus.SetText(data.Status.ToString());
+        imgStatus.color = data.Status == Config_Enum.enumAccountStatus.啟用 ? colorActivate : colorForbbiden;
 
         txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeFormatter.FullFormat));
         txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeFormatter.FullFormat));

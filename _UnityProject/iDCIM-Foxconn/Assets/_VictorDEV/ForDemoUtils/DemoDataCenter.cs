@@ -9,12 +9,12 @@ public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
 {
     [Header(">>> 門禁管理 - 記錄筆數")]
     [SerializeField] private int numOfAccessRecord = 10;
-    public static List<Dictionary<string, string>> accessRecords = new List<Dictionary<string, string>>();
+    public static List<Dictionary<string, string>> accessRecords { get; set; } = new List<Dictionary<string, string>>();
     public List<DictionaryVisualizerListItem<string, string>> accessRecordViz;
 
     [Header(">>> 帳號管理 - 記錄筆數")]
     [SerializeField] private int numOfUsers = 20;
-    public static List<Dictionary<string, string>> usersRecords = new List<Dictionary<string, string>>();
+    public static List<Dictionary<string, string>> usersRecords { get; set; } = new List<Dictionary<string, string>>();
     public List<DictionaryVisualizerListItem<string, string>> usersViz;
 
     [Header(">>> 帳號大頭照")]

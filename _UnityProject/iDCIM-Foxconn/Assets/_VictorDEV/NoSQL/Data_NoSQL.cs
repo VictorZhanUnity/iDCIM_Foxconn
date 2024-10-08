@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using VictorDev.Advanced;
 
@@ -31,4 +32,17 @@ public abstract class Data_NoSQL
     /// 依照欄位名稱取值
     /// </summary>
     public string GetValue(string key) => sourceData.ContainsKey(key) ? sourceData[key] : "";
+
+    /// <summary>
+    /// 判別TextMeshProUGUI組件的Name，來取得特定Key欄位的值
+    /// <para>+ txtUserName => key為UserName</para>
+    /// </summary>
+    public void SetValueByName(ref List<TextMeshProUGUI> txtList, string keyWord = "txt")
+    {
+        txtList.ForEach(txt =>
+        {
+            string key = txt.name.Split(keyWord)[1];
+            txt.SetText(GetValue(key));
+        });
+    }
 }

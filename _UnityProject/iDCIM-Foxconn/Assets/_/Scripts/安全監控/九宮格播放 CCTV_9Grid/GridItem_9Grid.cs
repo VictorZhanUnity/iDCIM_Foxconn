@@ -43,7 +43,6 @@ public class GridItem_9Grid : MonoBehaviour
     {
         onClickCloseBtn.Invoke(this);
         ObjectPoolManager.PushToPool<GridItem_9Grid>(this);
-        canvasObj.SetActive(false);
 
         listItem.isDisplay = false;
     }
