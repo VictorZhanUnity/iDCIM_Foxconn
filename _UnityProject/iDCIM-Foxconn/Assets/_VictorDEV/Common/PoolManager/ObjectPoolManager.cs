@@ -116,7 +116,7 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         public void AddToQueuePool(Component target)
         {
             queuePool.Enqueue(target);
-            target.transform.SetParent(container);
+            target.transform.SetParent(container, true);
             target.name = ClassName;
             target.gameObject.SetActive(false);
             ResetTarget(target);
@@ -130,9 +130,10 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         public T GetInstanceFromQueuePool<T>(T prefab, Transform container, bool isResetPosition) where T : Component
         {
             Component target =
-                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container);
+                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container, false);
 
-            target.transform.parent = container;
+            //target.transform.parent = container;
+            target.transform.SetParent(container, true);
             target.transform.localScale = Vector3.one;
 
             if(isResetPosition) target.transform.localPosition = target.transform.position = Vector3.zero;

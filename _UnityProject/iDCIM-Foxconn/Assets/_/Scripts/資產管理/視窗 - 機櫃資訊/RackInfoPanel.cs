@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using VictorDev.RevitUtils;
@@ -11,6 +10,10 @@ public class RackInfoPanel : MonoBehaviour
     [SerializeField] private DoTweenFadeController doTweenFadeController;
     [SerializeField] private RackRUList rackRUList;
     [SerializeField] private TextMeshProUGUI txtLabel;
+    [SerializeField] private DeviceInfoPanel deviceInfoPanelPrefab;
+    [SerializeField] private Transform container_DeviceInfoPanel;
+
+    private DeviceInfoPanel currentDeviceInfoPanel { get; set; }
 
     public void Close() => doTweenFadeController.FadeOut();
 
@@ -22,6 +25,10 @@ public class RackInfoPanel : MonoBehaviour
     private void ShowCOBieInfo(DeviceRUItem item)
     {
         GameManager.ToSelectTarget(item.DeviceModel);
+
+        if (currentDeviceInfoPanel != null) currentDeviceInfoPanel.Close();
+        currentDeviceInfoPanel = ObjectPoolManager.GetInstanceFromQueuePool<DeviceInfoPanel>(deviceInfoPanelPrefab, container_DeviceInfoPanel);
+        currentDeviceInfoPanel.Show(item);
     }
 
     public void Show(Demo_Rack data)

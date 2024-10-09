@@ -10,7 +10,6 @@ public class UIManager_DeviceAssets : MonoBehaviour
     [SerializeField] private DeviceModelVisualizer deviceModelVisualizer;
     [SerializeField] private RackList rackList;
     [SerializeField] private RackInfoPanel rackInfoPanel;
-
     private RackInfoPanel currentPanel { get; set; }
     public bool isOn
     {
