@@ -238,12 +238,12 @@ namespace VictorDev.CameraUtils
         /// <summary>
         /// 移动到某个目标位置并旋转相机面向目标
         /// </summary>
-        public static void MoveTargetTo(Transform obj) => Instance.MoveTargetToObj(obj);
-        public static void MoveTargetTo(Vector3 pos) => Instance.MoveTargetToPos(pos);
+        public static void MoveTargetTo(Transform obj, Vector3? posOffset = null) => Instance.MoveTargetToObj(obj, posOffset);
+        public static void MoveTargetTo(Vector3 pos, Vector3? possOffset = null) => Instance.MoveTargetToPos(pos);
         /// <summary>
         /// 移动到某个目标位置并旋转相机面向目标
         /// </summary>
-        public void MoveTargetToObj(Transform obj)
+        public void MoveTargetToObj(Transform obj, Vector3? posOffset = null)
         {
             if (target == null || obj == null)
                 return;
@@ -256,8 +256,10 @@ namespace VictorDev.CameraUtils
             // 平滑移动相机位置
             transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref targetVelocity, moveSpeed);
 
-            // 确保相机朝向目标
-            transform.LookAt(obj.position);
+            // 确保相机朝向目标，並加上偏移值
+            Vector3 lookAtPos = obj.position;
+            //if (posOffset != null) lookAtPos += obj.position;
+            transform.LookAt(lookAtPos);
         }
 
         public void MoveTargetToPos(Vector3 pos)
