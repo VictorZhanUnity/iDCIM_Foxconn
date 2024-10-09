@@ -1,4 +1,7 @@
+using System;
+using TMPro;
 using UnityEngine;
+using VictorDev.RevitUtils;
 
 /// <summary>
 /// 視窗 - 機櫃資訊
@@ -6,29 +9,25 @@ using UnityEngine;
 public class RackInfoPanel : MonoBehaviour
 {
     [SerializeField] private DoTweenFadeController doTweenFadeController;
-    [SerializeField] private ListItem_Rack listItem;
+    [SerializeField] private RackRUList rackRUList;
+    [SerializeField] private TextMeshProUGUI txtLabel;
+
+    public void Close() => doTweenFadeController.FadeOut();
 
     private void Start()
     {
-        doTweenFadeController.OnFadeOutEvent.AddListener(() =>
-        {
-            ObjectPoolManager.PushToPool<RackInfoPanel>(this);
-        });
+        rackRUList.OnClickItemEvent.AddListener(ShowCOBieInfo);
     }
 
-    public void SetListItem(ListItem_Rack listItem)
+    private void ShowCOBieInfo(DeviceRUItem item)
     {
-        this.listItem = listItem;
-        UpdateUI();
+        GameManager.ToSelectTarget(item.DeviceModel);
+    }
+
+    public void Show(Demo_Rack data)
+    {
+        txtLabel.SetText(RevitHandler.GetRackModelName(data.rack.name));
+        rackRUList.ShowRULayout(data.Devices);
         doTweenFadeController.FadeIn();
     }
-
-    /// <summary>
-    /// 更新UI
-    /// </summary>
-    private void UpdateUI()
-    {
-    }
-
-    public void Close() => doTweenFadeController.FadeOut();
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace VictorDev.RevitUtils
 {
@@ -102,63 +101,99 @@ namespace VictorDev.RevitUtils
         /// 每RU單位的深度
         /// </summary>
         public static float LengthOfRU => 64.23128247261047f;
-/*
-        /// <summary>
-        /// 比對材質名稱Dictionary，建立DCS/DCN模型
-        /// </summary>
-        /// <param name="soDCS">ScriptableObject</param>
-        /// <param name="textureDictionary">設備材質Dictionary</param>
-        /// <param name="prefab">設備Prefab</param>
-        /// <param name="container">放在哪個容器</param>
-        public static Transform CreateDeviceFromDict(IDeviceSizeInfo soData, Dictionary<string, Texture> textureDictionary, Transform prefab, Transform rackContainer)
-        {
-            Transform result = null;
-            string deviceType = GetDCSModelNumberFromDeviceID(soData.deviceId);
-            // 建立DCR內的設備
-            if (textureDictionary.ContainsKey(deviceType))
-            {
-                result = ObjectPoolManager.GetInstanceFromQueuePool(prefab, rackContainer);
-                MeshRenderer meshRenderer = result.GetComponent<MeshRenderer>();
-                meshRenderer.material.mainTexture = textureDictionary[deviceType];
-
-#if true // 關閉材質反光、陰影
-                meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
-                meshRenderer.receiveShadows = false;
-                // 取得材質
-                Material material = meshRenderer.material;
-                material.color = Color.white;
-                if (material != null)
+        /*
+                /// <summary>
+                /// 比對材質名稱Dictionary，建立DCS/DCN模型
+                /// </summary>
+                /// <param name="soDCS">ScriptableObject</param>
+                /// <param name="textureDictionary">設備材質Dictionary</param>
+                /// <param name="prefab">設備Prefab</param>
+                /// <param name="container">放在哪個容器</param>
+                public static Transform CreateDeviceFromDict(IDeviceSizeInfo soData, Dictionary<string, Texture> textureDictionary, Transform prefab, Transform rackContainer)
                 {
-                    // 如果是標準着色器，設置金屬度和光澤度為0
-                    if (material.shader.name == "Standard")
+                    Transform result = null;
+                    string deviceType = GetDCSModelNumberFromDeviceID(soData.deviceId);
+                    // 建立DCR內的設備
+                    if (textureDictionary.ContainsKey(deviceType))
                     {
-                        material.SetFloat("_Metallic", 0f);
-                        material.SetFloat("_Glossiness", 0f);
+                        result = ObjectPoolManager.GetInstanceFromQueuePool(prefab, rackContainer);
+                        MeshRenderer meshRenderer = result.GetComponent<MeshRenderer>();
+                        meshRenderer.material.mainTexture = textureDictionary[deviceType];
+
+        #if true // 關閉材質反光、陰影
+                        meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
+                        meshRenderer.receiveShadows = false;
+                        // 取得材質
+                        Material material = meshRenderer.material;
+                        material.color = Color.white;
+                        if (material != null)
+                        {
+                            // 如果是標準着色器，設置金屬度和光澤度為0
+                            if (material.shader.name == "Standard")
+                            {
+                                material.SetFloat("_Metallic", 0f);
+                                material.SetFloat("_Glossiness", 0f);
+                            }
+                        }
+        #endif
+
+                        result.name = GetGameObjectNameFormat(soData.deviceId);
+
+                        //依照給的長寬高來設置尺吋
+                        result.localScale = new Vector3(soData.width - 13f, soData.height - 0.5f, soData.length) * 0.01f;      // 高度-0.5f微調，避免重疊； 單位除100
+
+                        //依照給的位置U來設置在機櫃裡的高度位置
+                        Vector3 pos = GetPositionFromRackU(soData.rackLocation);
+                        pos.y += result.localScale.y * 0.5f; //物件Pivot為中心點，所以再加上自身高度*0.5f
+                        pos.z = -0.53f + result.localScale.z * 0.5f;      // 機櫃口座標0.58，減掉物件自身長度*0.5f
+                        result.transform.localPosition = pos;
+                        result.transform.localRotation = Quaternion.Euler(0, 180, 0);  //轉向
                     }
+                    else Debug.Log($"沒有材質圖：{deviceType}");
+                    return result;
                 }
-#endif
-
-                result.name = GetGameObjectNameFormat(soData.deviceId);
-
-                //依照給的長寬高來設置尺吋
-                result.localScale = new Vector3(soData.width - 13f, soData.height - 0.5f, soData.length) * 0.01f;      // 高度-0.5f微調，避免重疊； 單位除100
-
-                //依照給的位置U來設置在機櫃裡的高度位置
-                Vector3 pos = GetPositionFromRackU(soData.rackLocation);
-                pos.y += result.localScale.y * 0.5f; //物件Pivot為中心點，所以再加上自身高度*0.5f
-                pos.z = -0.53f + result.localScale.z * 0.5f;      // 機櫃口座標0.58，減掉物件自身長度*0.5f
-                result.transform.localPosition = pos;
-                result.transform.localRotation = Quaternion.Euler(0, 180, 0);  //轉向
-            }
-            else Debug.Log($"沒有材質圖：{deviceType}");
-            return result;
-        }
-*/
+        */
         /// <summary>
         /// 設定名稱：[類型] 型號 
         /// </summary>
         public static string GetGameObjectNameFormat(string deviceId) => $"[{GetSystemTypeFromDeviceID(deviceId)}] {GetDCSModelNumberFromDeviceID(deviceId)}";
 
+
+        //新版本
+        public static string GetDeviceModelName(string deviceName)
+        {
+            string result = deviceName.Split("[")[0];
+            string[] str = result.Split("_");
+            result = str[2].Substring(0, str[2].Length - 4); //去掉-6U
+            return result;
+        }
+
+        /// <summary>
+        /// 電氣設備_Schneider-RACK_Schneider-RACK_22[NTU+TPE+EE++Schneider-RACK: Schneider-RACK+48]
+        /// 資料裝置_Server_Dell-PowerEdge系列-MX9116n-Server-2U_2[NTU+TPE+EE++Server: Dell-PowerEdge系列-MX9116n-Server-2U+66]
+        /// </summary>
+        /// <param name="deviceName"></param>
+        /// <returns></returns>
+        public static string GetRackModelName(string deviceName)
+        {
+            string result = deviceName.Split("[")[0];
+            string[] str = result.Split("_");
+            return str[2];
+        }
+
+        public static string GetDeviceModelSystem(string deviceName)
+        {
+            string result = deviceName.Split("[")[0];
+            return result.Split("_")[1];
+        }
+
+        public static int GetDeviceModelHeightU(string deviceName)
+        {
+            string result = deviceName.Split("[")[0];
+            string[] str = result.Split("-");
+            result = str[str.Length - 1].Split("_")[0];
+            return int.Parse(result.Split("U")[0]);
+        }
 
         #region [>>> COBie欄位對照表]
 

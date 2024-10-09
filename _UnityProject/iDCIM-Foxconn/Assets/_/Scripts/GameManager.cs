@@ -22,6 +22,26 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
+    public static void ToSelectTarget(Transform target) => Instance.SelectTarget(target);
+    public void SelectTarget(Transform target)
+    {
+        if (currentSelectedObject != null)
+        {
+            currentSelectedObject.IsOn = false;
+            LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerDefault);
+
+            //若點選為同一個物件，則進行顯示/隱藏之切換
+            if (currentSelectedObject == target)
+            {
+                currentSelectedObject = null;
+                return;
+            }
+        }
+        currentSelectedObject = target.GetComponent<SelectableObject>();
+        currentSelectedObject.SetIsOnWithoutNotify(true);
+
+        LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerMouseDown);
+    }
 
 
     void Update()
@@ -48,13 +68,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 // 如果上一次有物體，且已不再指向它，觸發 MouseExit
                 if (lastHoveredObject != null)
                 {
-                    OnMouseExit(lastHoveredObject);
+                    OnMouseExitHandler(lastHoveredObject);
                 }
 
                 // 如果現在指向了新的物體，觸發 MouseOver
                 if (currentHoveredObject != null)
                 {
-                    OnMouseOver(currentHoveredObject);
+                    OnMouseOverHandler(currentHoveredObject);
                 }
 
                 // 更新上一次指向的物體
@@ -66,17 +86,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             // 如果Raycast沒有命中物體且之前有指向的物體，觸發 MouseExit
             if (lastHoveredObject != null)
             {
-                OnMouseExit(lastHoveredObject);
+                OnMouseExitHandler(lastHoveredObject);
                 lastHoveredObject = null;  // 清空上一次指向的物體
             }
         }
     }
 
     // 當滑鼠指向物體時觸發
-    private void OnMouseOver(GameObject hoveredObject)
+    private void OnMouseOverHandler(GameObject hoveredObject)
     {
-        Debug.Log("Mouse Over: " + hoveredObject.name);
-
         if (currentSelectedObject != null)
         {
             if (hoveredObject == currentSelectedObject.gameObject) return;
@@ -86,9 +104,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     // 當滑鼠離開物體時觸發
-    private void OnMouseExit(GameObject exitedObject)
+    private void OnMouseExitHandler(GameObject exitedObject)
     {
-        Debug.Log("Mouse Exit: " + exitedObject.name);
         // 在這裡處理 MouseExit 的邏輯 (例如還原物體顏色)
         if (currentSelectedObject != null)
         {
@@ -124,7 +141,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                     LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerMouseDown);
 
                     Vector3 postOffset = Vector3.zero;
-                  //  if (currentSelectedObject.name.Contains("RACK")) postOffset.y = 10;
+                    if (currentSelectedObject.name.Contains("RACK")) postOffset.y = 10;
 
                     OrbitCamera.MoveTargetTo(currentSelectedObject.transform, postOffset);
                 }

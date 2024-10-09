@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VictorDev._FakeData;
 using VictorDev.Advanced;
 using VictorDev.Common;
 using static Config_Enum;
+using Random = UnityEngine.Random;
 
 public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
 {
@@ -24,6 +27,15 @@ public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
     /// 用戶大頭照
     /// </summary>
     public static Sprite RandomPhoto => Instance.userPhotoList[Random.Range(0, Instance.userPhotoList.Count)];
+
+
+    [Header(">>> 資產管理 - 示範機櫃模型")]
+    [SerializeField] private List<Demo_Rack> demoRackList = new List<Demo_Rack>();
+
+    /// <summary>
+    /// 資產管理 - 示範機櫃模型
+    /// </summary>
+    public static List<Demo_Rack> DemoRackList => Instance.demoRackList;
 
     private void Start()
     {
@@ -74,4 +86,12 @@ public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
         usersViz = DictionaryVisualizerListItem<string, string>.Parse(usersRecords);
         return usersRecords;
     }
+}
+
+[Serializable]
+public class Demo_Rack
+{
+    public Transform rack;
+    [SerializeField] private List<Transform> devices;
+    public List<Transform> Devices=> devices.OrderBy(x => x.position.y).ToList();
 }

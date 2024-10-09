@@ -21,7 +21,7 @@ namespace VictorDev.Advanced
 
         [Space(10)]
         public RectTransform rectTransform; // 需要調整大小的 RectTransform
-        public bool increaseSize = false; // 控制大小變化的布林變數
+        private bool increaseSize = false; // 控制大小變化的布林變數
 
         private float initialHeight; // 起始高度
         private float initialWidth; // 起始寬度

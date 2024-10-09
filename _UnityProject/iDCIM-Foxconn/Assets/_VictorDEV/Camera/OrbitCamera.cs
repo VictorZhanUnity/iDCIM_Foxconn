@@ -258,7 +258,7 @@ namespace VictorDev.CameraUtils
 
             // 确保相机朝向目标，並加上偏移值
             Vector3 lookAtPos = obj.position;
-            //if (posOffset != null) lookAtPos += obj.position;
+            lookAtPos = lookAtPos + (posOffset.HasValue ? posOffset.Value : Vector3.zero);
             transform.LookAt(lookAtPos);
         }
 

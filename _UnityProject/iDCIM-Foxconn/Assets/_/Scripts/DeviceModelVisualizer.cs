@@ -17,6 +17,7 @@ public class DeviceModelVisualizer : MonoBehaviour
     [SerializeField] protected MaterialHandler materialHandler;
 
     public UnityEvent<List<SelectableObject>> onInitlialized = new UnityEvent<List<SelectableObject>>();
+    public UnityEvent<Transform> onClickEvent = new UnityEvent<Transform>();
 
     public List<Transform> ModelList => modelList;
 
@@ -34,6 +35,7 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             models.Add(model);
             SelectableObject selectableObj = model.AddComponent<SelectableObject>();
+            selectableObj.onSelectedEvent.AddListener((data, item)=> onClickEvent.Invoke(selectableObj.transform));
             selectableObjects.Add(selectableObj);
         });
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,7 @@ public class ProgressBarController : MonoBehaviour
     [Header(">>> UI組件")]
     [SerializeField] private Slider slider;
     [SerializeField] private Image imgSliderBar, icon;
+    [SerializeField] private List<Image> imgList;
     [SerializeField] private TextMeshProUGUI txtPercent, txtValue;
 
     /// <summary>
@@ -40,8 +42,12 @@ public class ProgressBarController : MonoBehaviour
         {
             slider.value = Mathf.Max(value, 0);
             currentValue = slider.value;
-            imgSliderBar.color = ColorHandler.GetColorLevelFromPercentage(percentage);
-            if (icon != null) icon.color = ColorHandler.GetColorLevelFromPercentage(percentage);
+
+            Color color = ColorHandler.GetColorLevelFromPercentage(percentage);
+
+            imgSliderBar.color = color;
+            if (icon != null) icon.color = color;
+            imgList.ForEach(img => img.color = color);
 
             txtValue.SetText($"{slider.value.ToString((isWholeNumber) ? "" : "F2")}");
             if (isShowMaxValue) txtValue.SetText($"{txtValue.text} / {slider.maxValue}");
