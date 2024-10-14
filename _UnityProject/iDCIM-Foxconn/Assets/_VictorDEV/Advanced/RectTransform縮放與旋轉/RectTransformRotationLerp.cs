@@ -38,7 +38,7 @@ namespace VictorDev.Advanced
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             // 初始化起始旋轉角度
             initialRotation = rectTransform.localEulerAngles.z;
@@ -47,6 +47,8 @@ namespace VictorDev.Advanced
         // 呼叫這個方法來開始 Lerp 過程
         private void StartLerp(bool rotateToTarget)
         {
+            if (gameObject.activeSelf == false) return;
+
             if (lerpCoroutine != null)
             {
                 StopCoroutine(lerpCoroutine); // 停止正在運行的 Coroutine

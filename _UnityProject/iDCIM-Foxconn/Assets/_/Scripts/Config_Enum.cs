@@ -6,7 +6,7 @@ public static class Config_Enum
 {
     public enum enumAccountRole
     {
-        最大權限管理者, 巡檢員, 機保人員, BA管理者, 機房管理者, 機房一般使用者, 一般訪客
+        全部, 最大權限管理者, 巡檢員, 機保人員, BA管理者, 機房管理者, 機房一般使用者, 一般訪客
     }
     public enum enumLanguage
     {
@@ -14,7 +14,7 @@ public static class Config_Enum
     }
     public enum enumAccountStatus
     {
-        啟用, 停用
+        全部, 啟用, 停用
     }
     public enum enumNetType
     {

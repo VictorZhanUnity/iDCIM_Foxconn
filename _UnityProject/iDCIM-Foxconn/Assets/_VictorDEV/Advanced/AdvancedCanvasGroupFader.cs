@@ -18,6 +18,8 @@ namespace VictorDev.Advanced
 
         private Coroutine coroutine { get; set; } = null;
 
+        public bool isOn { set => ToFade(value ? 1 : 0); }
+
         /// <summary>
         /// 開始 Lerp
         /// </summary>

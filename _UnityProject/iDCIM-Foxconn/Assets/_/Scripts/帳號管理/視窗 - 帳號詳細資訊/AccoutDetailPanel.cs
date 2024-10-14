@@ -18,8 +18,6 @@ public class AccoutDetailPanel : MonoBehaviour
     [SerializeField] private DoTweenFadeController fadeController;
     [SerializeField] private Color colorActivate, colorForbbiden;
 
-
-
     public Data_User userData => data;
 
     public void ShowData(Data_User userData)
