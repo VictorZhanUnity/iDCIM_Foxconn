@@ -45,13 +45,7 @@ namespace VictorDev.Calendar
         private DateTime? endDate = null;   // 儲存結束日期
         private DateTime result; //用來startDate與endData的轉型
 
-        void Start()
-        {
-            ShowToday();
-            txtTodayMonth.SetText(currentDate.ToString("M ", lang));
-            txtTodayDay.SetText(currentDate.ToString("d ", lang));
-            txtTodayWeek.SetText(currentDate.ToString("dddd", lang));
-        }
+        void Start() => ShowToday();
 
         /// <summary>
         /// 顯示當前月份與日期
@@ -60,6 +54,14 @@ namespace VictorDev.Calendar
         {
             currentDate = DateTime.Now;
             GenerateCalendar();
+            UpdateTodayInfo();
+        }
+
+        private void UpdateTodayInfo()
+        {
+            txtTodayMonth.SetText(currentDate.ToString("M ", lang));
+            txtTodayDay.SetText(currentDate.ToString("d ", lang));
+            txtTodayWeek.SetText(currentDate.ToString("dddd", lang));
         }
 
         /// <summary>
@@ -270,7 +272,15 @@ namespace VictorDev.Calendar
         /// </summary>
         public void ChangeLanguage(EnumLanguage lang)
         {
-            this.enumLang = lang;
+            enumLang = lang;
+            UpdateTodayInfo();
+            GenerateCalendar();
+        }
+
+        [ContextMenu("- 清除選取日期")]
+        public void ClearSelectDate()
+        {
+            startDate = null; endDate = null;
             GenerateCalendar();
         }
     }
