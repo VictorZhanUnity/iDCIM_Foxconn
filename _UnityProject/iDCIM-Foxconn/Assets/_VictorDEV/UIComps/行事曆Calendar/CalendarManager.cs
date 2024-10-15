@@ -1,31 +1,43 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Globalization;
 using TMPro;
+using UnityEngine;
+using static VictorDev.CONFIG;
 
 public class CalendarManager : MonoBehaviour
 {
-    public TextMeshProUGUI monthYearText; // 顯示月份與年份的 Text
-    public DayItem dayPrefab; // 每一天的 UI 預置
-    public Transform calendarGrid; // GridLayoutGroup 的容器
+    public EnumLanguage lang = EnumLanguage.en_US; // 用於選擇語言 (中文或英文)
+
+
+    public TextMeshProUGUI txtMonth; // 顯示月份的 TextMeshProUGUI
+    public TextMeshProUGUI txtYear;  // 顯示年份的 TextMeshProUGUI
+    public DayItem dayPrefab;     // 每一天的 DayItem 預置
+    public Transform calendarGrid;   // GridLayoutGroup 的容器
+    private CultureInfo selectedCulture => new CultureInfo(lang.ToString().Replace("_", "-"));
 
     private DateTime currentDate;
-
     private DateTime? startDate = null; // 儲存起始日期
     private DateTime? endDate = null;   // 儲存結束日期
 
-    void Start()
+    void Start() => ShowToday();
+
+    /// <summary>
+    /// 顯示當前月份與日期
+    /// </summary>
+    public void ShowToday()
     {
-        currentDate = DateTime.Now; // 取得當前日期
+        currentDate = DateTime.Now;
         GenerateCalendar();
     }
 
-    // 生成行事曆
+    /// <summary>
+    /// 生成行事曆
+    /// </summary>
     void GenerateCalendar()
     {
-        CultureInfo englishCulture = new CultureInfo("en-US");
-        monthYearText.text = currentDate.ToString("MMMM yyyy", englishCulture); // 使用英文格式顯示月份與年份
+        // 根據當前語言設置月份與年份顯示
+        txtMonth.text = currentDate.ToString("MMMM", selectedCulture);
+        txtYear.text = currentDate.Year.ToString();
 
         // 清空先前生成的天數
         foreach (Transform child in calendarGrid)
@@ -40,34 +52,59 @@ public class CalendarManager : MonoBehaviour
         // 計算本月第一天是星期幾
         int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
 
-        // 生成空白格來對齊星期
+        // 計算上個月的天數
+        DateTime previousMonth = firstDayOfMonth.AddMonths(-1);
+        int daysInPreviousMonth = DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month);
+
+        // 生成空白格來對齊星期 - 改為生成上個月的日期
         for (int i = 0; i < startDayOfWeek; i++)
         {
-            Instantiate(dayPrefab, calendarGrid); // 空白格
+            DateTime prevMonthDate = new DateTime(previousMonth.Year, previousMonth.Month, daysInPreviousMonth - (startDayOfWeek - 1) + i);
+            CreateDayItem(prevMonthDate); // 生成上個月日期，並標記為非本月
         }
 
-        // 生成每一天
+        // 生成當前月份的每一天
         for (int day = 1; day <= daysInMonth; day++)
         {
-            DayItem dayItem = Instantiate(dayPrefab, calendarGrid);
-            TextMeshProUGUI dayText = dayItem.GetComponentInChildren<TextMeshProUGUI>();
-            dayText.text = day.ToString();
-
             DateTime dayDate = new DateTime(currentDate.Year, currentDate.Month, day);
+            CreateDayItem(dayDate); // 生成本月日期，並標記為本月
+        }
 
-            // 設定顯示選擇範圍內的日期高亮
-            if (IsDateInRange(dayDate))
-            {
-                dayText.color = Color.green; // 這裡你可以改變顏色或其他高亮效果
-            }
+        // 生成下個月的日期，填滿剩餘的格子
+        int totalGridSlots = 42; // 假設一個日曆的總格子數是 42（6 行 7 列）
+        int generatedDays = startDayOfWeek + daysInMonth;
+        int remainingDays = totalGridSlots - generatedDays;
 
-            // 添加按鈕點擊事件
-            int dayCopy = day; // 避免閉包問題
-            dayItem.GetComponent<Button>().onClick.AddListener(() => OnDayClicked(dayDate));
+        DateTime nextMonth = firstDayOfMonth.AddMonths(1);
+        for (int day = 1; day <= remainingDays; day++)
+        {
+            DateTime nextMonthDate = new DateTime(nextMonth.Year, nextMonth.Month, day);
+            CreateDayItem(nextMonthDate); // 生成下個月日期，並標記為非本月
         }
     }
 
-    // 處理日期被點擊事件
+    /// <summary>
+    /// 創建並初始化一個 DayItem
+    /// </summary>
+    void CreateDayItem(DateTime date)
+    {
+        DayItem dayItem = Instantiate(dayPrefab, calendarGrid);
+        dayItem.date = date; // 設置日期
+        dayItem.isSelectedMonth = date.Month == currentDate.Month;
+
+        // 設定顯示選擇範圍內的日期高亮
+        if (IsDateInRange(date))
+        {
+            dayItem.GetComponentInChildren<TextMeshProUGUI>().color = Color.green; // 這裡你可以改變顏色或其他高亮效果
+        }
+
+        // 添加點擊事件
+        dayItem.onClickEvent.AddListener(() => OnDayClicked(date));
+    }
+
+    /// <summary>
+    /// 處理日期被點擊事件
+    /// </summary>
     void OnDayClicked(DateTime clickedDate)
     {
         if (startDate == null) // 如果尚未選擇起始日期
@@ -83,7 +120,6 @@ public class CalendarManager : MonoBehaviour
             // 確保結束日期大於起始日期
             if (endDate < startDate)
             {
-                // 如果結束日期早於起始日期，則交換兩者
                 DateTime temp = startDate.Value;
                 startDate = endDate;
                 endDate = temp;
@@ -103,7 +139,9 @@ public class CalendarManager : MonoBehaviour
         GenerateCalendar();
     }
 
-    // 判斷日期是否在選擇的範圍內
+    /// <summary>
+    /// 判斷日期是否在選擇的範圍內
+    /// </summary>
     bool IsDateInRange(DateTime date)
     {
         if (startDate != null && endDate != null)
@@ -140,4 +178,12 @@ public class CalendarManager : MonoBehaviour
         currentDate = currentDate.AddYears(1); // 日期加一年
         GenerateCalendar();
     }
+
+    // 語言變更時的處理
+    public void ChangeLanguage(EnumLanguage lang)
+    {
+        this.lang = lang;
+        GenerateCalendar();
+    }
+
 }

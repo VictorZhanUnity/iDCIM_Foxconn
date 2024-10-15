@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,20 +12,33 @@ public class DayItem : MonoBehaviour
 
     [SerializeField] private DateTime _dateTime;
 
-    public UnityEvent<DateTime> onMouseOver = new UnityEvent<DateTime>();
-    public UnityEvent onMouseExit = new UnityEvent();
+    public UnityEvent<DateTime> onMouseOverEvent = new UnityEvent<DateTime>();
+    public UnityEvent onMouseExitEvent = new UnityEvent();
+    public UnityEvent onClickEvent = new UnityEvent();
 
+    /// <summary>
+    /// 日期
+    /// </summary>
     public DateTime date
     {
         set
         {
             _dateTime = value;
-            txtDay.SetText(value.ToString("dd"));
-
+            txtDay.SetText(value.ToString("d "));
             imgToday.gameObject.SetActive(value == DateTime.Today);
         }
     }
 
-    private void OnMouseOver() => onMouseOver.Invoke(_dateTime);
-    private void OnMouseExit() => onMouseExit.Invoke();
+    /// <summary>
+    /// 是否目前所選擇的月份
+    /// </summary>
+    public bool isSelectedMonth { set => txtDay.alpha = (value) ? 1 : 0.2f; }
+
+    private void Start()
+    {
+        btn.onClick.AddListener(onClickEvent.Invoke);
+    }
+
+    private void OnMouseOver() => onMouseOverEvent.Invoke(_dateTime);
+    private void OnMouseExit() => onMouseExitEvent.Invoke();
 }
