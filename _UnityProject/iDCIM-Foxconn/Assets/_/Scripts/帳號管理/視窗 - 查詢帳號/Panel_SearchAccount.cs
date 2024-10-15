@@ -1,3 +1,4 @@
+
 using System;
 using System.Linq;
 using TMPro;
@@ -16,12 +17,6 @@ public class Panel_SearchAccount : MonoBehaviour
 
     private void Start()
     {
-        dropDown_Role.ClearOptions();
-        dropDown_Status.ClearOptions();
-
-        dropDown_Role.AddOptions(Enum.GetNames(typeof(Config_Enum.enumAccountRole)).ToList());
-        dropDown_Status.AddOptions(Enum.GetNames(typeof(Config_Enum.enumAccountStatus)).ToList());
-
         btnShowAll.onClick.AddListener(()=>
         {
             inputKeyAccount.text = "";
@@ -34,7 +29,7 @@ public class Panel_SearchAccount : MonoBehaviour
     public void InvokeSearchAccount()
     {
         onSearchAccount.Invoke(inputKeyAccount.text
-            , (Config_Enum.enumAccountRole)dropDown_Role.value
-            , (Config_Enum.enumAccountStatus)dropDown_Status.value);
+            , (Config_Enum.enumAccountRole)(dropDown_Role.value)
+            , (Config_Enum.enumAccountStatus)(dropDown_Status.value));
     }
 }

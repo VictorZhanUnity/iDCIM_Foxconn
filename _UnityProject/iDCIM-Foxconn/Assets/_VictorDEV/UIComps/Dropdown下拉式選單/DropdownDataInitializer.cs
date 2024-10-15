@@ -19,7 +19,7 @@ namespace VictorDev.Advanced
         protected void SetOptions()
         {
             T[] enumValues = (T[])Enum.GetValues(typeof(T));
-            List<string> options = new List<string>() { "全部" };
+            List<string> options = new List<string>();
 
             foreach (var value in enumValues)
             {
