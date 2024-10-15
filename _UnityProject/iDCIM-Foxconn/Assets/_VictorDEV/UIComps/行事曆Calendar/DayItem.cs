@@ -76,6 +76,7 @@ public class DayItem : MonoBehaviour
         imgInclude_Left.gameObject.SetActive(false);
         imgInclude_Right.gameObject.SetActive(false);
         imgSelected.gameObject.SetActive(false);
-        imgToday.gameObject.SetActive(false);
+
+        imgToday.gameObject.SetActive(_dateTime != null && _dateTime == DateTime.Today);
     }
 }

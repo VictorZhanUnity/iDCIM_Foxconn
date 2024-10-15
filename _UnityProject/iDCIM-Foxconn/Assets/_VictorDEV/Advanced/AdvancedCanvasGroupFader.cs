@@ -19,6 +19,11 @@ namespace VictorDev.Advanced
         private Coroutine coroutine { get; set; } = null;
 
         public bool isOn { set => ToFade(value ? 1 : 0); }
+        private void Start()
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+        }
 
         /// <summary>
         /// 開始 Lerp

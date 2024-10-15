@@ -39,7 +39,9 @@ public class MainDoorRecordPanel : MonoBehaviour
         uiObj.SetActive(true);
         recordDataList.Clear();
         dataList.ForEach(data => recordDataList.Add(new Data_AccessRecord(data)));
-        UpdateUI();
+
+        //依進出時間排序
+        TableSortKeyHandler("AccessTimeStamp", true);
     }
 
     /// <summary>
@@ -68,10 +70,16 @@ public class MainDoorRecordPanel : MonoBehaviour
         defaultToggle.isOn = true;
     }
 
-    public void Hide()
+    /// <summary>
+    /// 表格欄位排序
+    /// </summary>
+    public void TableSortKeyHandler(string keyName, bool isDesc)
     {
-        uiObj.SetActive(false);
+        recordDataList = (isDesc) ? recordDataList.OrderByDescending(record => record.GetValue(keyName)).ToList()
+            : recordDataList.OrderBy(record => record.GetValue(keyName)).ToList();
+        UpdateUI();
     }
+
 
     public void ToggleOff(Data_User userData) => defaultToggle.isOn = true;
 }

@@ -5,9 +5,9 @@ using UnityEngine.UI;
 public class Table_TitleBar : MonoBehaviour
 {
     [SerializeField] private Toggle toggleDESC, toggleVisible;
-    public ToggleGroup toggleGroup {set=> toggleVisible.group = value; }
+    public ToggleGroup toggleGroup { set => toggleVisible.group = value; }
 
-    public UnityEvent<string, bool> onSortKeyEvent = new UnityEvent<string, bool>();
+    public UnityEvent<string, bool> onSortKeyEvent { get; set; } = new UnityEvent<string, bool>();
 
     private void Start()
     {

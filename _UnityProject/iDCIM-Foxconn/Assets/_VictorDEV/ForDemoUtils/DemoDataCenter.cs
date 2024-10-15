@@ -70,7 +70,7 @@ public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
         usersRecords = _FakeData_Users.GetRandomeUsers(count);
         usersRecords.ForEach(data =>
         {
-            data["Role"] = EnumHandler.GetRandomFromEnum<enumAccountRole>().ToString();
+            data["Role"] = EnumHandler.GetRandomFromEnum<enumAccountRole>(1).ToString();
             data["NetType"] = enumNetType.local.ToString();
             data["Language"] = enumLanguage.繁體中文.ToString();
             bool isActivate = Random.Range(0, 11) > 2;
