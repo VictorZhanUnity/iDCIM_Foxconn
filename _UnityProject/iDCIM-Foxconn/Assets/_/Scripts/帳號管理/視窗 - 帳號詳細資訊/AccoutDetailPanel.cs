@@ -36,9 +36,9 @@ public class AccoutDetailPanel : MonoBehaviour
         txtStatus.SetText(data.Status.ToString());
         imgStatus.color = data.Status == Config_Enum.enumAccountStatus.啟用 ? colorActivate : colorForbbiden;
 
-        txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeFormatter.FullFormat));
-        txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeFormatter.FullFormat));
-        txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeFormatter.FullFormat));
+        txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+        txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+        txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
         txtSuspendDate.SetText(data.SuspendDateTime);
 
         imgPhoto.sprite = data.UserPhoto;

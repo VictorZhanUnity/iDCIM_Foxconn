@@ -1,7 +1,20 @@
 /// <summary>
 /// DateTime日期格式
 /// </summary>
-public static class DateTimeFormatter 
+public static class DateTimeFormatter
 {
-    public static string FullFormat => "yyyy.MM.dd HH:mm:ss";
+    /// <summary>
+    /// 2024.11.24 13:33:22
+    /// </summary>
+    public static string FullDateTimeFormat => $"{FullDateFormat} {FullTimeFormat}";
+
+    /// <summary>
+    /// 2024.11.24
+    /// </summary>
+    public static string FullDateFormat => "yyyy.MM.dd";
+    /// <summary>
+    /// 13:33:22
+    /// </summary>
+    public static string FullTimeFormat => "HH:mm:ss";
+
 }

@@ -57,7 +57,7 @@ public class DemoDataCenter : SingletonMonoBehaviour<DemoDataCenter>
         accessRecords = Generate_UserRecord(count);
         accessRecords.ForEach(data =>
         {
-            data["AccessTimeStamp"] = _FakeData_DateTime.GenerateRandomDateTime().ToString(DateTimeFormatter.FullFormat);
+            data["AccessTimeStamp"] = _FakeData_DateTime.GenerateRandomDateTime().ToString(DateTimeFormatter.FullDateTimeFormat);
         });
         accessRecordViz = DictionaryVisualizerListItem<string, string>.Parse(accessRecords);
     }

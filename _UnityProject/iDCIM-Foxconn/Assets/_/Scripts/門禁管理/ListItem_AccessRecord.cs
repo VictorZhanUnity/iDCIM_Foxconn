@@ -36,7 +36,7 @@ public class ListItem_AccessRecord : MonoBehaviour
     private void UpdateUI()
     {
         imgPhoto.sprite = data.UserPhoto;
-        txtTimeStamp.SetText(data.AccessTimeStamp.ToString(DateTimeFormatter.FullFormat));
+        txtTimeStamp.SetText(data.AccessTimeStamp.ToString(DateTimeFormatter.FullDateTimeFormat));
         txtUserName.SetText(data.UserName);
         txtRole.SetText(data.Role.ToString());
     }

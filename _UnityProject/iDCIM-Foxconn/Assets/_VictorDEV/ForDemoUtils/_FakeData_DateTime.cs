@@ -58,9 +58,9 @@ namespace VictorDev._FakeData
             } while (editDateTime <= endDateTime);
 
             // 將生成的時間點加入列表
-            resultTime.Add("StartDateTime", startDateTime.ToString(DateTimeFormatter.FullFormat));
-            resultTime.Add("EndDateTime", endDateTime.ToString(DateTimeFormatter.FullFormat));
-            resultTime.Add("EditDateTime", editDateTime.ToString(DateTimeFormatter.FullFormat));
+            resultTime.Add("StartDateTime", startDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+            resultTime.Add("EndDateTime", endDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+            resultTime.Add("EditDateTime", editDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
             return resultTime;
         }
 
