@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using VictorDev.Common;
 
 namespace VictorDev.Advanced
 {
@@ -38,7 +39,10 @@ namespace VictorDev.Advanced
         public void OnPointerExit(PointerEventData eventData)
         {
             if (isPressDown) return;
+
+            // 檢查鼠標是否進入子物件
             isEntering = false;
+            print($"OnPointerExitEvent");
             OnPointerExitEvent.Invoke();
             OnPointerEvent.Invoke(false);
         }

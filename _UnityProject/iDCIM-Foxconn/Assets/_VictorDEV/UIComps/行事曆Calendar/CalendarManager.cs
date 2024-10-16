@@ -129,7 +129,7 @@ namespace VictorDev.Calendar
             dayItem.isInclude = IsDateInRange(date);
             dayItem.isSelectedDate = (date == startDate || date == endDate);
 
-            if (startDate.HasValue && endDate.HasValue && !isAllowSelectSameDay)
+            if (startDate.HasValue && endDate.HasValue && startDate != endDate)
             {
                 if (date == startDate) dayItem.isStartDate = true;
                 else dayItem.isEndDate = date == endDate;
@@ -281,7 +281,7 @@ namespace VictorDev.Calendar
         public void ClearSelectDate()
         {
             startDate = null; endDate = null;
-            GenerateCalendar();
+            if (currentDate != default) GenerateCalendar();
         }
     }
 }
