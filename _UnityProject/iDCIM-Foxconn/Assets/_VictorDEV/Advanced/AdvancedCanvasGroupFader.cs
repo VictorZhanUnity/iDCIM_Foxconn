@@ -36,6 +36,7 @@ namespace VictorDev.Advanced
             {
                 canvasGroup.alpha = lerpValue;
                 canvasGroup.interactable = lerpValue == 1;
+                canvasGroup.blocksRaycasts = lerpValue == 1;
             }, duration));
         }
 

@@ -48,7 +48,7 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             GameManager.RestoreSelectedObject();
 
-            if (value) materialHandler.ReplaceMaterial(models);
+            if (value) materialHandler.ReplaceMaterialWithExclude(models);
             else materialHandler.RestoreOriginalMaterials();
         }
     }

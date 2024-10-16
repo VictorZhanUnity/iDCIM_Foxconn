@@ -52,7 +52,6 @@ public class DayItem : MonoBehaviour
         {
             imgSelected.gameObject.SetActive(value);
             if (value) txtDay.alpha = 1;
-
         }
     }
 

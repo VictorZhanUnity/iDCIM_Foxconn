@@ -47,6 +47,17 @@ namespace VictorDev.Calendar
 
         void Start() => ShowToday();
 
+        public void SetDateTimeRange(DateTime startDate, DateTime endDate)
+        {
+            this.startDate = startDate;
+            this.endDate = endDate;
+            currentDate = startDate;
+            GenerateCalendar();
+            onSelectedStartDateStrEvent.Invoke(startDate.ToString(DateTimeFormatter.FullDateFormat));
+            onSelectedEndDateStrEvent.Invoke(endDate.ToString(DateTimeFormatter.FullDateFormat));
+            onSelectedDateRangeEvent.Invoke(startDate, endDate);
+        }
+
         /// <summary>
         /// 顯示當前月份與日期
         /// </summary>

@@ -27,11 +27,55 @@ namespace VictorDev.Common
 
         /// <summary>
         ///  替換當前物件及所有子物件的材質
+        ///  <para>+ 用HashSet以便材質的比對</para>
         /// </summary>
-        public void ReplaceMaterial(HashSet<Transform> exlcudeTargets = null, Material material = null)
+        public void ReplaceMaterialWithExclude(HashSet<Transform> exlcudeTargets = null, Material material = null)
         {
             RestoreOriginalMaterials();
             ReplaceMaterialRecursively(targetTransform, material ?? replaceMaterial, exlcudeTargets);
+        }
+        public void ReplaceMaterial(HashSet<Transform> targets = null)
+        {
+            RestoreOriginalMaterials();
+            targets.ToList().ForEach(target =>
+            {
+                if (target.TryGetComponent<Renderer>(out Renderer renderer))
+                {
+                    // 如果尚未保存原始材質，將它存儲到字典中
+                    if (!originalMaterials.ContainsKey(target))
+                    {
+                        originalMaterials[target] = renderer.sharedMaterials;
+                        materialDictionaryVisualize.Add(new DictionaryVisualizer<Transform, Material[]>(target, renderer.sharedMaterials));
+                    }
+
+                    // 判斷是否有多個材質
+                    if (renderer.sharedMaterials.Length > 1)
+                    {
+                        // 如果有多個材質，建立新的材質陣列
+                        Material[] newMaterials = new Material[renderer.sharedMaterials.Length];
+
+                        for (int i = 0; i < newMaterials.Length; i++)
+                        {
+                            // 替換為指定的材質
+                            newMaterials[i] = replaceMaterial;
+                        }
+
+                        // 設定新的材質陣列
+                        renderer.materials = newMaterials;
+                    }
+                    else
+                    {
+                        // 如果只有一個材質，直接替換
+                        renderer.material = replaceMaterial;
+                    }
+
+                    //關閉Collider
+                    if (target.TryGetComponent<Collider>(out Collider collider))
+                    {
+                        collider.enabled = false;
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -40,8 +84,11 @@ namespace VictorDev.Common
         /// </summary>
         private void ReplaceMaterialRecursively(Transform objTransform, Material material, HashSet<Transform> exlcudeTargets = null)
         {
-            excludeList.Clear();
-            exlcudeTargets.ToList().ForEach(target => excludeList.Add(target));
+            if (exlcudeTargets != null)
+            {
+                excludeList.Clear();
+                exlcudeTargets.ToList().ForEach(target => excludeList.Add(target));
+            }
 
             // 取得該物件的 Renderer 組件
             // 如果物件有 Renderer 組件，替換材質

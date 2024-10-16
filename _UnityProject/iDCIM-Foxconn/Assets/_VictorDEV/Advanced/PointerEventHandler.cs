@@ -42,7 +42,6 @@ namespace VictorDev.Advanced
 
             // 檢查鼠標是否進入子物件
             isEntering = false;
-            print($"OnPointerExitEvent");
             OnPointerExitEvent.Invoke();
             OnPointerEvent.Invoke(false);
         }
