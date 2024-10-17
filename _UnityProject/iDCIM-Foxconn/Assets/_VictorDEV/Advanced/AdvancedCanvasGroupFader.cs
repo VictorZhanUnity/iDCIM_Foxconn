@@ -10,6 +10,9 @@ namespace VictorDev.Advanced
     [RequireComponent(typeof(CanvasGroup))]
     public class AdvancedCanvasGroupFader : MonoBehaviour
     {
+        [Header(">>> 初始Alpha值")]
+        [SerializeField] private float initAlpha = 0f;
+
         [Header(">>> 動畫持續時間(建議0.15f)")]
         [SerializeField] private float duration = 0.15f;
 
@@ -18,10 +21,10 @@ namespace VictorDev.Advanced
 
         private Coroutine coroutine { get; set; } = null;
 
-        public bool isOn { set => ToFade(value ? 1 : 0); }
+        public bool isOn { set => ToFade(value ? 1 : initAlpha); }
         private void Start()
         {
-            canvasGroup.alpha = 0;
+            canvasGroup.alpha = initAlpha;
             canvasGroup.interactable = false;
         }
 

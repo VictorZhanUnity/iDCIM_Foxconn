@@ -11,7 +11,7 @@ public class DoTweenFadeController : MonoBehaviour
     public float fadeDuration = 0.5f;
     public float scaleDuration = 0.7f;  // 縮放動畫持續時間
     public Vector3 targetScale = new Vector3(1, 1, 1);  // 最終縮放比例
-    public Vector3 initialScale = new Vector3(0.7f, 0.7f, 0.7f);  // 初始縮放比例
+    public Vector3 initialScale = new Vector3(0.9f, 0.9f, 0.9f);  // 初始縮放比例
 
     public Ease easeFadeIn = Ease.OutExpo;
     public Ease easeFadeOut = Ease.OutQuart;
@@ -21,6 +21,15 @@ public class DoTweenFadeController : MonoBehaviour
 
     public CanvasGroup canvasGroup;  // 用於處理淡入淡出
     public RectTransform rectTransform;  // 用於處理縮放
+
+    public bool isOn
+    {
+        set
+        {
+            if (value) FadeIn();
+            else FadeOut();
+        }
+    }
 
     private void Awake()
     {
