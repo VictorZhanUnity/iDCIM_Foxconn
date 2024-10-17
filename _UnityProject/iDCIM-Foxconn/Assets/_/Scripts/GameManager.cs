@@ -11,6 +11,23 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     [SerializeField] private Material mouseOverMaterial;
 
+
+    private void Start()
+    {
+        Login("TCIT", "TCIT"); 
+    }
+
+    /// <summary>
+    /// 管理者登入 (登入後隨即抓取全部設備，先寫在一起)
+    /// </summary>
+    public void Login(string account, string password)
+    {
+        //void onGetAllDevice(long responseCode, string jsonString) => dcrManager.Parse_AllDCRInfo(jsonString);
+        void onGetAllDevice(long responseCode, string jsonString) => print(jsonString);
+        void onFailed(long responseCode, string msg) => Debug.LogWarning($"\t\tonFailed [{responseCode}] - msg: {msg}");
+        WebAPIManager.Login(account, password, onGetAllDevice, onFailed);
+    }
+
     /// <summary>
     ///復原選擇物件的狀態
     /// </summary>
