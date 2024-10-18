@@ -71,5 +71,45 @@ namespace VictorDev.Parser
             return resultJsonItem;
         }
         #endregion
+
+
+        /// <summary>
+        /// [待整合，整合或取代原有的Dictionary]
+        /// 依據欄位路徑向JObject取值，並轉型為指定型態out
+        /// <para>+ return：JObect是否具有目標路徑path</para>
+        /// </summary>
+        public static bool TryGetValueByPath<T>(JObject jObj, string path, out T result)
+        {
+            JToken token = jObj.SelectToken(path);
+            bool isHaveValue = token != null;
+            result = isHaveValue ? token.Value<T>() : default(T);
+            return isHaveValue;
+        }
     }
 }
+
+
+
+/**測試範例
+    可以直接針對JObject進行SelectToken依據路徑取值Value，並且可以直接轉換指定的資料型態，例如：DateTime
+
+  print("測試DateTime格式");
+
+        var payload = new
+        {
+            timestamp = "2024-10-17T08:32:00Z",
+            A = new
+            {
+                B = "2024-10-17T08:32:00"
+            }
+        };
+
+        var jObj = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(payload));
+
+        var t = jObj.SelectToken("timestamp").Value<DateTime>();
+        var n = jObj.SelectToken("A.B").Value<DateTime>();
+
+        print(t);
+        print(t.ToLocalTime());
+        print(n);
+*/

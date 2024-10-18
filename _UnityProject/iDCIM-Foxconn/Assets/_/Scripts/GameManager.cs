@@ -1,7 +1,11 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.CameraUtils;
 using VictorDev.Common;
+using VictorDev.Parser;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -25,7 +29,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         //void onGetAllDevice(long responseCode, string jsonString) => dcrManager.Parse_AllDCRInfo(jsonString);
         void onGetAllDevice(long responseCode, string jsonString) => print(jsonString);
         void onFailed(long responseCode, string msg) => Debug.LogWarning($"\t\tonFailed [{responseCode}] - msg: {msg}");
-        WebAPIManager.Login(account, password, onGetAllDevice, onFailed);
+        WebAPIManager.SignIn(account, password, onGetAllDevice, onFailed);
     }
 
     /// <summary>

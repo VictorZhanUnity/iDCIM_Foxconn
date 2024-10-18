@@ -172,6 +172,7 @@ namespace VictorDev.Net.WebAPI
             [Header(">>>供form-data型態使用")]
             [SerializeField] private List<KeyValueItem> fieldList;
             [Header(">>>供raw型態: JSON、TEXT使用")]
+            [TextArea(1, 100)]
             [SerializeField] private string _rawJSON;
 
             public bool IsActivated => isActivated;
