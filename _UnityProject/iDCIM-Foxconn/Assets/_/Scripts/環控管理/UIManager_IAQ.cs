@@ -35,6 +35,7 @@ public class UIManager_IAQ : MonoBehaviour
         {
           
         });
+        iaqRealtimeIndexPanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);
         iaqRealtimeIndexPanel.WebAPI_GetRealtimeIAQIndex();
     }
 
