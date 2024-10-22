@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Parser;
@@ -41,8 +40,9 @@ namespace VictorDev.IAQ
 
         /// <summary>
         /// 取得IAQ即時各項指數
+        /// <para>+ 群組化各台IAQ指數資訊，與平均值</para>
         /// </summary>
-        public void GetRealtimeIAQIndex(List<string> modelID, Action<long, Data_IAQ> onSuccess, Action<long, string> onFailed)
+        public void GetRealtimeIAQIndex(List<string> modelID, Action<long, Dictionary<string, Data_IAQ>, Data_IAQ> onSuccess, Action<long, string> onFailed)
         {
             //設定IAQ指數
             List<string> topicList = new List<string>();
@@ -50,7 +50,8 @@ namespace VictorDev.IAQ
 
             WebAPIManager.GetIAQRealTimeIndex(topicList, (responseCode, jsonData) =>
             {
-                modelRealtimeData =ParseData(jsonData);
+                //解析JSON資料
+                modelRealtimeData = ParseData(jsonData);
                 // 使用 LINQ 來加總與計算平均值，並存入新的字典
                 Dictionary<string, string> averagedDict = modelRealtimeData
                     .SelectMany(d => d.Value) // 展開內部字典
@@ -59,7 +60,20 @@ namespace VictorDev.IAQ
                         g => g.Key, // 使用 key 分組
                         g => g.Average(kvp => float.Parse(kvp.Value)).ToString("0.#") // 計算該 key 的所有值的平均
                     );
-                onSuccess(responseCode, new Data_IAQ(averagedDict));
+
+                // 儲存IAQ資訊平均值為Data_IAQ
+                Data_IAQ iaqAvg = new Data_IAQ(averagedDict);
+
+                // 儲存每一台設備的IAQ資訊為Data_IAQ
+                Dictionary<string, Data_IAQ> eachIAQData = new Dictionary<string, Data_IAQ>();
+                modelRealtimeData.ToList().ForEach(keyPair =>
+                {
+                    Data_IAQ iaqData = new Data_IAQ(keyPair.Value);
+                    iaqData.ModelID = keyPair.Key;
+                    eachIAQData[keyPair.Key] = iaqData;
+                });
+
+                onSuccess(responseCode, eachIAQData, iaqAvg);
             }, onFailed);
         }
         private List<string> ToAllIndexTopic(string modelID) => indexType.Select(index => ToIndexTopic(modelID, index)).ToList();
@@ -71,7 +85,7 @@ namespace VictorDev.IAQ
         public Dictionary<string, Dictionary<string, string>> ParseData(string jsonString)
         {
             List<Dictionary<string, string>> jsonDataList = JsonUtils.ParseJsonArray(jsonString);
-            
+
             return jsonDataList
             .GroupBy(dictData => dictData["tagName"].Split('/')[0])
             .ToDictionary(group => group.Key, group => group.GroupBy(dictData => dictData["tagName"].Split('/')[1])

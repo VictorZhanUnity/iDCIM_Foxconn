@@ -35,19 +35,19 @@ namespace VictorDev.Advanced
             if (slider != null)
             {
                 targetValue = slider.value;
-                enumerator = CoroutineHandler.LerpValue(0, targetValue, (returnValue) => slider.value = returnValue, duration + Random.Range(0, duration));
+                enumerator = CoroutineHandler_Old.LerpValue(0, targetValue, (returnValue) => slider.value = returnValue, duration + Random.Range(0, duration));
             }
             if (textMeshPro != null)
             {
                 targetValue = float.Parse(textMeshPro.text);
-                enumerator = CoroutineHandler.LerpValue(0, targetValue, (returnValue) => textMeshPro.SetText(returnValue.ToString()), duration + Random.Range(0, duration));
+                enumerator = CoroutineHandler_Old.LerpValue(0, targetValue, (returnValue) => textMeshPro.SetText(returnValue.ToString()), duration + Random.Range(0, duration));
             }
         }
         private void OnDisable()
         {
             if (slider != null) slider.value = targetValue;
             if (textMeshPro != null) textMeshPro.SetText(targetValue.ToString());
-            CoroutineHandler.CancellCoroutine(enumerator);
+            CoroutineHandler_Old.CancellCoroutine(enumerator);
         }
 
         private void OnValidate()

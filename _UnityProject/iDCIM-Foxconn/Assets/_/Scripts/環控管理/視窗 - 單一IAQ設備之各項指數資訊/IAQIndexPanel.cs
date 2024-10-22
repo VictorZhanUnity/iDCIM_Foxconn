@@ -1,36 +1,43 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
+/// <summary>
+/// 視窗 - 單一IAQ設備之各項指數資訊
+/// </summary>
 public class IAQIndexPanel : MonoBehaviour
 {
-    [SerializeField] private List<GridItem_IAQIndex> indexBtns;
-    [SerializeField] private IAQ_IndexDetailPanel indexDetailPanelPrefab;
-    [SerializeField] private Transform detialPanelContaitner;
+    [Header(">>> IAQ資料項")]
+    [SerializeField] private Data_IAQ iaqData;
 
-    public IAQ_IndexDetailPanel currentIndexDetailPanel;
+    [Header(">>> 點擊單一IAQ指數項目時Invoke")]
+    public UnityEvent<IAQIndexDisplayer> onClickIAQIndex = new UnityEvent<IAQIndexDisplayer>();
+
+    [Header(">>> UI組件")]
+    [SerializeField] private List<IAQIndexDisplayer> indexDisplayer;
+
+    public Data_IAQ data
+    {
+        get => iaqData;
+        set
+        {
+            iaqData = value;
+            UpdateUI();
+        }
+    }
+
+    private void UpdateUI()
+    {
+        indexDisplayer.ForEach(item => item.data = iaqData);
+    }
 
     private void Start()
     {
-        ListenGridItemsEvent();
+        indexDisplayer.ForEach(displayer
+           => displayer.onClickIAQIndex.AddListener(onClickIAQIndex.Invoke));
     }
 
     private void ListenGridItemsEvent()
     {
-        void CreateDetailPanel(GridItem_IAQIndex iaqIndexItem)
-        {
-            if (currentIndexDetailPanel != null)
-            {
-                if (currentIndexDetailPanel.data == iaqIndexItem) return;
-                currentIndexDetailPanel.Close();
-                currentIndexDetailPanel = null;
-            }
-            //建立Panel
-            IAQ_IndexDetailPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexDetailPanel>(indexDetailPanelPrefab, detialPanelContaitner);
-            newPanel.ShowData(iaqIndexItem);
-            newPanel.onClose.AddListener(()=> currentIndexDetailPanel = null);
-            currentIndexDetailPanel = newPanel;
-        }
-
-        indexBtns.ForEach(item => item.onClick.AddListener(CreateDetailPanel));
     }
 }

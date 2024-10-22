@@ -46,7 +46,7 @@ namespace VictorDev.Async.CoroutineUtils
         {
             if (slider != null) slider.value = targetValue;
             if (textMeshPro != null) textMeshPro.SetText(targetValue.ToString());
-            CoroutineHandler.CancellCoroutine(enumerator);
+            CoroutineHandler.CancellCoroutine_Old(enumerator);
         }
 
         private void OnValidate()

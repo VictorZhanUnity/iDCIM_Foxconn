@@ -10,7 +10,7 @@ using VictorDev.Common;
 [Serializable]
 public class Data_IAQ : Data_NoSQL
 {
-    public string ModelID => base.GetValue("ModelID");
+    public string ModelID;
     public float IAQ => float.Parse(GetValue("IAQ"));
     public float RT => float.Parse(GetValue("RT"));
     public float RH => float.Parse(GetValue("RH"));

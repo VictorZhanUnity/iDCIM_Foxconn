@@ -31,7 +31,7 @@ namespace VictorDev.Net.WebAPI
                 Debug.Log($"[{responseCode}] onFailed: {msg} / {request.name}");
             };
 
-            if (request != null) CoroutineHandler.RunCoroutine(SendWebRequestCoroutine(request, onSuccess, onFailed));
+            if (request != null) CoroutineHandler.RunCoroutine_Old(SendWebRequestCoroutine(request, onSuccess, onFailed));
             else Debug.LogWarning($"Type of WebAPI Request is Error!");
         }
         /// <summary>
@@ -175,7 +175,7 @@ namespace VictorDev.Net.WebAPI
         /// <param name="onSuccess">成功，回傳Dictionary<欄位名，值></param>
         /// <param name="onFailed">失敗，回傳錯誤訊息</param>
         public static IEnumerator CallWebAPI(WebAPI_Request requestPackage, Action<long, Dictionary<string, string>> onSuccess, Action<long, string> onFailed = null)
-             => CoroutineHandler.RunCoroutine(SendRequestCoroutine(requestPackage, onSuccess, onFailed));
+             => CoroutineHandler.RunCoroutine_Old(SendRequestCoroutine(requestPackage, onSuccess, onFailed));
 
         /// <summary>
         /// 呼叫WebAPI(用URL，預設RequestPacakge) (陣列JSON資料)
@@ -193,7 +193,7 @@ namespace VictorDev.Net.WebAPI
         /// <param name="onSuccess">成功，回傳Dictionary<欄位名，值></param>
         /// <param name="onFailed">失敗，回傳錯誤訊息</param>
         public static IEnumerator CallWebAPI(WebAPI_Request requestPackage, Action<long, List<Dictionary<string, string>>> onSuccess, Action<long, string> onFailed = null)
-             => CoroutineHandler.RunCoroutine(SendRequestCoroutine(requestPackage, onSuccess, onFailed));
+             => CoroutineHandler.RunCoroutine_Old(SendRequestCoroutine(requestPackage, onSuccess, onFailed));
 
         /// <summary>
         /// ★ 發送請求 (回傳：單一JSON值)

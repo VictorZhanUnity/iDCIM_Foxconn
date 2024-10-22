@@ -35,7 +35,7 @@ namespace VictorDev.Async.CoroutineUtils
             currentColor = colorSelected;
 
             iEnumerator = LoopEmission();
-            CoroutineHandler.RunCoroutine(iEnumerator);
+            CoroutineHandler.RunCoroutine_Old(iEnumerator);
         }
         private IEnumerator LoopEmission()
         {
@@ -69,7 +69,7 @@ namespace VictorDev.Async.CoroutineUtils
         public void Stop()
         {
             material.DisableKeyword("_EMISSION");
-            if (iEnumerator != null) CoroutineHandler.CancellCoroutine(iEnumerator);
+            if (iEnumerator != null) CoroutineHandler.CancellCoroutine_Old(iEnumerator);
         }
 
         private void SetColor(float indensity)

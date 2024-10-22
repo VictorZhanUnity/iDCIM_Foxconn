@@ -15,7 +15,7 @@ public class CoroutineHandler_Test : MonoBehaviour
         {
             IEnumerator counter = CounterCoroutine($"Counter-{i}");
             coroutines.Add(counter);
-            CoroutineHandler.RunCoroutine(counter);
+            CoroutineHandler.RunCoroutine_Old(counter);
         }
     }
 
@@ -31,7 +31,7 @@ public class CoroutineHandler_Test : MonoBehaviour
     public void CancellCoroutine()
     {
         Debug.Log(">>> Stop Coroutine");
-        coroutines.ForEach(coroutine => CoroutineHandler.CancellCoroutine(coroutine));
+        coroutines.ForEach(coroutine => CoroutineHandler.CancellCoroutine_Old(coroutine));
     }
 
 #if UNITY_EDITOR

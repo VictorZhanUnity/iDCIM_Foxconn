@@ -1,73 +1,76 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using VictorDev.IAQ;
-using VictorDev.RevitUtils;
 
 public class UIManager_IAQ : MonoBehaviour
 {
-    [Header(">>> 間隔幾秒訪問WebAPI")]
-    [Range(0, 60)]
-    [SerializeField] private int intervalSendRequest = 5;
-
-    [Header(">>> 更新目前平均溫度")]
-    public UnityEvent<string> onUpdateCurrentAvgRT = new UnityEvent<string>();
-
-    [Header(">>> UI組件")]
-    [SerializeField] private List<GridItem_IAQIndex> iaqRealtimeIndexList;
+    [Header(">>> IAQ平均指數即時面板")]
+    [SerializeField] private IAQRealtimeIndexPanel iaqRealtimeIndexPanel;
+    [Header(">>> 單一IAQ設備之各項指數面板")]
+    [SerializeField] private IAQIndexPanel iaqIndexPanelPrefab;
+    [Header(">>> IAQ單一指數歷史資訊面板")]
+    [SerializeField] private IAQ_IndexHistoryPanel iaqIndexDetailPanelPrefab;
+    [SerializeField] private Transform panelContaitner;
 
     [Header(">>> UI組件")]
-    [SerializeField] private DeviceModelVisualizerWithLandmark deviceModelVisualizer;
-    [SerializeField] private GameObject canvasObj;
-    [SerializeField] private IAQ_DataManager iaqDataManager;
+    [SerializeField] private DeviceModelVisualizerWithLandmark _deviceModelVisualizer;
+    [SerializeField] private GameObject uiObj;
+    public DeviceModelVisualizerWithLandmark deviceModelVisualizer => _deviceModelVisualizer;
 
-   
-
-    private Coroutine coroutineGetRealtimeIAQIndex;
+    private IAQIndexPanel currentIAQIndexPanel;
+    private IAQ_IndexHistoryPanel currentIndexHistoryPanel;
 
     public bool isOn
     {
         set
         {
-            deviceModelVisualizer.isOn = value;
-            canvasObj.SetActive(value);
+            _deviceModelVisualizer.isOn = value;
+            uiObj.SetActive(value);
+
+            if (value) iaqRealtimeIndexPanel.WebAPI_GetRealtimeIAQIndex();
         }
     }
 
     private void Start()
     {
-        GetRealtimeIAQIndex();
+        deviceModelVisualizer.onSelectedEvent.AddListener((data, data1)=>
+        {
+          
+        });
+        iaqRealtimeIndexPanel.WebAPI_GetRealtimeIAQIndex();
     }
 
     /// <summary>
-    /// [WebAPI] 擷取即時IAQ資料，計算平均值
+    ///單一IAQ設備之各項指數面板
     /// </summary>
-    public void GetRealtimeIAQIndex()
+    public void ShowIAQIndexPanel(Transform targetModel)
     {
-        if (coroutineGetRealtimeIAQIndex != null) StopCoroutine(coroutineGetRealtimeIAQIndex);
-
-        IEnumerator enumerator()
+        if (currentIAQIndexPanel != null)
         {
-            while (true)
-            {
-                List<string> modelID = deviceModelVisualizer.ModelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
-                iaqDataManager.GetRealtimeIAQIndex(modelID, (responseCode, iaqData) =>
-                {
-                    if (responseCode != 200) return;
-                    iaqRealtimeIndexList.ForEach(item => item.data = iaqData);
-                    onUpdateCurrentAvgRT.Invoke($"{iaqData.RT.ToString("0.#")}°c");
-                }, null);
-                yield return new WaitForSeconds(intervalSendRequest);
-            }
+            /*   if (currentIAQIndexPanel.data == iaqIndexDisplayer) return;
+               currentIAQIndexPanel.Close();
+               currentIAQIndexPanel = null;*/
         }
-        coroutineGetRealtimeIAQIndex = StartCoroutine(enumerator());
+        //建立Panel
+        IAQIndexPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQIndexPanel>(iaqIndexPanelPrefab, panelContaitner);
+        /*   newPanel.ShowData(iaqIndexDisplayer);
+           newPanel.onClose.AddListener(() => currentIAQIndexPanel = null);*/
+        currentIAQIndexPanel = newPanel;
     }
 
-    private void StopCoroutine()
+    /// <summary>
+    /// 顯示IAQ單一指數歷史資訊面板
+    /// </summary>
+    public void ShowIAQIndexHistoryPanel(IAQIndexDisplayer iaqIndexDisplayer)
     {
-       
+        if (currentIndexHistoryPanel != null)
+        {
+            if (currentIndexHistoryPanel.data == iaqIndexDisplayer) return;
+            currentIndexHistoryPanel.Close();
+            currentIndexHistoryPanel = null;
+        }
+        //建立Panel
+        IAQ_IndexHistoryPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexHistoryPanel>(iaqIndexDetailPanelPrefab, panelContaitner);
+        newPanel.ShowData(iaqIndexDisplayer);
+        newPanel.onClose.AddListener(() => currentIndexHistoryPanel = null);
+        currentIndexHistoryPanel = newPanel;
     }
 }
