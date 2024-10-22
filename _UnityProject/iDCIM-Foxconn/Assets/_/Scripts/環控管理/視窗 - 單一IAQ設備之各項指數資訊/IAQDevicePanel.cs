@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using VictorDev.Advanced;
 
 /// <summary>
 /// 視窗 - 單一IAQ設備之各項指數資訊
@@ -15,29 +18,20 @@ public class IAQDevicePanel : MonoBehaviour
 
     [Header(">>> UI組件")]
     [SerializeField] private List<IAQIndexDisplayer> indexDisplayer;
+    [SerializeField] private TextMeshProUGUI txtTitle;
+    [SerializeField] private AdvancedCanvasGroupFader fader;
 
-    public Data_IAQ data
+    public void ShowData(Data_IAQ data)
     {
-        get => iaqData;
-        set
-        {
-            iaqData = value;
-            UpdateUI();
-        }
-    }
-
-    private void UpdateUI()
-    {
+        iaqData = data;
+        txtTitle.SetText($"[{data.ModelID}]");
         indexDisplayer.ForEach(item => item.data = iaqData);
+        fader.isOn = true;
     }
 
     private void Start()
     {
         indexDisplayer.ForEach(displayer
            => displayer.onClickIAQIndex.AddListener(onClickIAQIndex.Invoke));
-    }
-
-    private void ListenGridItemsEvent()
-    {
     }
 }

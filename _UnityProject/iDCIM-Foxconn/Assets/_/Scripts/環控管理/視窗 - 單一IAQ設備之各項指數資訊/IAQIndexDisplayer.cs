@@ -19,9 +19,16 @@ public class IAQIndexDisplayer : MonoBehaviour
     public UnityEvent<IAQIndexDisplayer> onClickIAQIndex = new UnityEvent<IAQIndexDisplayer>();
 
     public string columnName;
+
+    [Header(">>> Color等級顏色")]
+    [SerializeField] private Color coldColor = Color.blue;    // 當值為 0 時的顏色
+    [SerializeField] private Color midColor = Color.green;    // 當值為中間（約 50）時的顏色
+    [SerializeField] private Color warmColor = Color.red;     // 當值為 100 時的顏色
+
+    [Header(">>> UI組件")]
     [SerializeField] private Button btn;
     [SerializeField] protected Image imgICON;
-    [SerializeField] private TextMeshProUGUI txtValue;
+    [SerializeField] protected TextMeshProUGUI txtValue;
 
     public List<string> key
     {
@@ -48,6 +55,12 @@ public class IAQIndexDisplayer : MonoBehaviour
                 if (columnName != "RT" && columnName != "RH") txtValue.text = x.ToString("F0");
                 else txtValue.text = x.ToString("0.#");
             }, iaqIndexValue, 0.2f).SetEase(Ease.OutQuart);
+
+            if (columnName == "RT")
+            {
+                Color targetColor = ChangeTextColor(iaqIndexValue, txtValue);
+                imgICON.DOColor(targetColor, 1f);
+            }
         }
     }
     public Sprite imgICON_Sprite => imgICON.sprite;
@@ -55,6 +68,28 @@ public class IAQIndexDisplayer : MonoBehaviour
     private void Start()
     {
         btn?.onClick.AddListener(() => onClickIAQIndex.Invoke(this));
+    }
+
+    private Color ChangeTextColor(float value, TextMeshProUGUI target)
+    {
+        // 根據 value 的範圍來決定顏色
+        Color targetColor;
+
+        if (value <= 50)
+        {
+            // 0 到 50 之間，從冷色到中間色
+            float t = Mathf.InverseLerp(0, 50, value);
+            targetColor = Color.Lerp(coldColor, midColor, t);
+        }
+        else
+        {
+            // 50 到 100 之間，從中間色到暖色
+            float t = Mathf.InverseLerp(50, 100, value);
+            targetColor = Color.Lerp(midColor, warmColor, t);
+        }
+        // 使用 DoTween 來插值改變顏色
+        target.DOColor(targetColor, 2f);
+        return targetColor;
     }
 
     private void OnEnable()

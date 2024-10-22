@@ -58,8 +58,8 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
 
         IEnumerator enumerator()
         {
-          /*  while (true)
-            {*/
+            do
+            {
                 List<string> modelID = uiManager_IAQ.deviceModelVisualizer.ModelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
                 iaqDataManager.GetRealtimeIAQIndex(modelID, (responseCode, eachIAQData, iaqDataAvg) =>
                 {
@@ -73,7 +73,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
                     DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeFormatter.FullDateTimeFormat));
                 }, OnFailed);
                 yield return new WaitForSeconds(intervalSendRequest);
-            //}
+            } while (true);
         }
         coroutineGetRealtimeIAQIndex = CoroutineHandler.ToStartCoroutine(enumerator());
     }

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class UIManager_IAQ : MonoBehaviour
@@ -29,8 +30,11 @@ public class UIManager_IAQ : MonoBehaviour
     {
         deviceModelVisualizer.onSelectedEvent.AddListener((data, data1)=>
         {
-          
+            ShowIAQIndexPanel(iaqRealtimeIndexPanel.eachIAQData.Values.First());
         });
+
+        iaqDevicePanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);
+
         iaqRealtimeIndexPanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);
         iaqRealtimeIndexPanel.WebAPI_GetRealtimeIAQIndex();
     }
@@ -38,20 +42,8 @@ public class UIManager_IAQ : MonoBehaviour
     /// <summary>
     ///單一IAQ設備之各項指數面板
     /// </summary>
-    public void ShowIAQIndexPanel(Transform targetModel)
-    {/*
-        if (currentIAQIndexPanel != null)
-        {
-            *//*   if (currentIAQIndexPanel.data == iaqIndexDisplayer) return;
-               currentIAQIndexPanel.Close();
-               currentIAQIndexPanel = null;*//*
-        }
-        //建立Panel
-        IAQIndexPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQIndexPanel>(iaqIndexPanel, panelContaitner);
-        *//*   newPanel.ShowData(iaqIndexDisplayer);
-           newPanel.onClose.AddListener(() => currentIAQIndexPanel = null);*//*
-        currentIAQIndexPanel = newPanel;*/
-    }
+    public void ShowIAQIndexPanel(Data_IAQ iaqData)
+     => iaqDevicePanel.ShowData(iaqData);
 
     /// <summary>
     /// 顯示IAQ單一指數歷史資訊面板

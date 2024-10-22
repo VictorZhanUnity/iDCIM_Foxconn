@@ -19,9 +19,10 @@ public class HUD_IAQStatus : IAQIndexDisplayer
         {
             base.data = value;
             imgICON.DOColor(value.levelColor, 1f);
-            imgList.ForEach(img=>img.DOColor(value.levelColor, 2f));
+            imgList.ForEach(img => img.DOColor(value.levelColor, 2f));
             txtStatus.SetText(value.levelStatus);
             txtStatus.DOColor(value.levelColor, 1.5f);
+            txtValue.DOColor(value.levelColor, 0.5f);
         }
     }
 }

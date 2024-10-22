@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VictorDev.Advanced;
 using VictorDev.Calendar;
+using VictorDev.Common;
 using XCharts.Runtime;
 
 /// <summary>
@@ -40,14 +41,14 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     /// </summary>
     public void ShowData(IAQIndexDisplayer item)
     {
-
         indexDisplayer = item;
         imgICON.sprite = indexDisplayer.imgICON_Sprite;
         string title = indexDisplayer.data.ModelID.Contains(",") ? "機房平均數據 - " : $"[{indexDisplayer.data.ModelID}] ";
         txtTitle.SetText(title + indexDisplayer.columnName);
 
-        dropdownCalendar.SetDate_PastWeeks();
+        DotweenHandler.ToBlink(txtTitle);
 
+        dropdownCalendar.SetDate_PastWeeks();
         fader.isOn = true;
     }
 
