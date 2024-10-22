@@ -63,6 +63,7 @@ namespace VictorDev.IAQ
 
                 // 儲存IAQ資訊平均值為Data_IAQ
                 Data_IAQ iaqAvg = new Data_IAQ(averagedDict);
+                iaqAvg.ModelID = string.Join(",", modelRealtimeData.Keys.ToList());
 
                 // 儲存每一台設備的IAQ資訊為Data_IAQ
                 Dictionary<string, Data_IAQ> eachIAQData = new Dictionary<string, Data_IAQ>();

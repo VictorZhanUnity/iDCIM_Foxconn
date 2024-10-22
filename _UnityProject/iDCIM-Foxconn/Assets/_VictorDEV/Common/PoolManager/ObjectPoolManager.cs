@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using VictorDev.Common;
@@ -80,7 +81,11 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
     {
         string className = typeof(T).Name;
         if (Instance.poolDict.ContainsKey(className) == false)
-            Instance.poolDict[className] = new PoolContainer(className);
+        {
+
+            PoolContainer poolContainer = new PoolContainer(className);
+            Instance.poolDict[className] = poolContainer;
+        }
 
         return Instance.poolDict[className].GetInstanceFromQueuePool<T>(prefab, container, isResetPosition);
     }
@@ -130,13 +135,13 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         public T GetInstanceFromQueuePool<T>(T prefab, Transform container, bool isResetPosition) where T : Component
         {
             Component target =
-                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container, false);
+                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container, true);
 
             //target.transform.parent = container;
             target.transform.SetParent(container, true);
             target.transform.localScale = Vector3.one;
 
-            if(isResetPosition) target.transform.localPosition = target.transform.position = Vector3.zero;
+          //  if(isResetPosition) target.transform.localPosition = target.transform.position = Vector3.zero;
 
             target.gameObject.SetActive(true);
             RefreshContainerName();

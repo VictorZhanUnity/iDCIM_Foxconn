@@ -2,7 +2,6 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace VictorDev.Calendar
 {
@@ -12,18 +11,20 @@ namespace VictorDev.Calendar
     public class DropDownCalendar : MonoBehaviour
     {
         [Header(">>> 選取區間日期時Invoke")]
-        public UnityEvent<DateTime, DateTime> onSelectDateRange = new UnityEvent<DateTime, DateTime>();
+        public UnityEvent<DateTime, DateTime> onSelectedDateRangeEvent = new UnityEvent<DateTime, DateTime>();
 
         [SerializeField] private CalendarManager calendarManager;
         [SerializeField] private TextMeshProUGUI label;
 
-        private DateTime startDateTime, endDateTime;
+        public DateTime StartDateTime => calendarManager.StartDateTime;
+        public DateTime EndDateTime => calendarManager.EndDateTime;
+
         private string startDateTimeStr;
 
         public string StartDateTimeStr
         {
             set
-            {
+            { 
                 startDateTimeStr = value;
                 label.SetText($"{startDateTimeStr}");
             }
@@ -31,16 +32,13 @@ namespace VictorDev.Calendar
 
         private void Start()
         {
-            calendarManager.SetDateTimeRange(DateTime.Today.AddDays(-7), DateTime.Today);
+           // SetDateTimeRange(DateTime.Today.AddDays(-7), DateTime.Today);
+            calendarManager.onSelectedDateRangeEvent.AddListener(onSelectedDateRangeEvent.Invoke);
         }
 
         public string EndDateTimeStr { set => label.SetText($"{startDateTimeStr} ~ {value}"); }
 
-        public void SetDateTimeRange(DateTime startDate, DateTime endDate)
-        {
-            startDateTime = startDate;
-            endDateTime = endDate;
-            onSelectDateRange.Invoke(startDate, endDate);
-        }
+        public void SetDateTimeRange(DateTime startDate, DateTime endDate) 
+            => calendarManager.SetDateTimeRange(startDate, endDate);
     }
 }

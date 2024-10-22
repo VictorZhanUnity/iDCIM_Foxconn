@@ -15,6 +15,9 @@ using VictorDev.RevitUtils;
 /// </summary>
 public class IAQRealtimeIndexPanel : MonoBehaviour
 {
+    [Header(">>> [資料項] IAQ平均數據")]
+    [SerializeField] private Data_IAQ iaqDataAvg;
+
     [Header(">>> 間隔幾秒訪問WebAPI")]
     [Range(0, 60)]
     [SerializeField] private int intervalSendRequest = 5;
@@ -30,6 +33,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
     [SerializeField] private UIManager_IAQ uiManager_IAQ;
     [SerializeField] private IAQ_DataManager iaqDataManager;
     [SerializeField] private TextMeshProUGUI txtLastTimestamp;
+
     private Coroutine coroutineGetRealtimeIAQIndex { get; set; }
 
     /// <summary>
@@ -54,23 +58,22 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
 
         IEnumerator enumerator()
         {
-            while (true)
-            {
+          /*  while (true)
+            {*/
                 List<string> modelID = uiManager_IAQ.deviceModelVisualizer.ModelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
                 iaqDataManager.GetRealtimeIAQIndex(modelID, (responseCode, eachIAQData, iaqDataAvg) =>
                 {
                     if (responseCode != 200) return;
+                    this.iaqDataAvg = iaqDataAvg;
                     iaqRealtimeIndexAvgList.ForEach(item => item.data = iaqDataAvg);
                     this.eachIAQData = eachIAQData;
 
                     onUpdateIAQInfo.Invoke(eachIAQData);
-
                     //最後更新時間
                     DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeFormatter.FullDateTimeFormat));
-
                 }, OnFailed);
                 yield return new WaitForSeconds(intervalSendRequest);
-            }
+            //}
         }
         coroutineGetRealtimeIAQIndex = CoroutineHandler.ToStartCoroutine(enumerator());
     }

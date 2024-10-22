@@ -24,7 +24,7 @@ namespace VictorDev.Calendar
         [Header(">>> [起迄日期] 結束日期時發送")]
         public UnityEvent<DateTime> onSelectedEndDateEvent = new UnityEvent<DateTime>();
         public UnityEvent<string> onSelectedEndDateStrEvent = new UnityEvent<string>();
-        [Header(">>> [起迄日期] 選擇起迄日期時發送")]
+        [Header(">>> [起迄日期] 選擇起迄日期時發送 {起, 迄}")]
         public UnityEvent<DateTime, DateTime> onSelectedDateRangeEvent = new UnityEvent<DateTime, DateTime>();
         [Header(">>> [起迄日期] 是否允許選擇同一天")]
         public bool isAllowSelectSameDay = false;
@@ -44,6 +44,9 @@ namespace VictorDev.Calendar
         private DateTime? startDate = null; // 儲存起始日期
         private DateTime? endDate = null;   // 儲存結束日期
         private DateTime result; //用來startDate與endData的轉型
+
+        public DateTime StartDateTime => (DateTime)startDate;
+        public DateTime EndDateTime => (DateTime)endDate;
 
         void Start() => ShowToday();
 

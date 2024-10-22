@@ -64,14 +64,14 @@ public class UIManager_IAQ : MonoBehaviour
     {
         if (currentIndexHistoryPanel != null)
         {
-            if (currentIndexHistoryPanel.data == iaqIndexDisplayer) return;
+            if (currentIndexHistoryPanel.dataDisplayer == iaqIndexDisplayer) return;
             currentIndexHistoryPanel.Close();
             currentIndexHistoryPanel = null;
         }
         //«Ø¥ßPanel
-        IAQ_IndexHistoryPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexHistoryPanel>(iaqIndexDetailPanelPrefab, panelContaitner);
+        IAQ_IndexHistoryPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexHistoryPanel>(iaqIndexDetailPanelPrefab, panelContaitner, true);
         newPanel.ShowData(iaqIndexDisplayer);
-        newPanel.onClose.AddListener(() => currentIndexHistoryPanel = null);
+        newPanel.onCloseEvent.AddListener(() => currentIndexHistoryPanel = null);
         currentIndexHistoryPanel = newPanel;
     }
 }

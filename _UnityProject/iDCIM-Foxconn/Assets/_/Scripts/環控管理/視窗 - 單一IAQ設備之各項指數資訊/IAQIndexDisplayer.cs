@@ -1,4 +1,6 @@
 ﻿using DG.Tweening;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,6 +13,9 @@ using VictorDev.Common;
 public class IAQIndexDisplayer : MonoBehaviour
 {
     [Header(">>> 點擊時Invoke")]
+    [SerializeField] private Data_IAQ iaqData;
+
+    [Header(">>> 點擊時Invoke")]
     public UnityEvent<IAQIndexDisplayer> onClickIAQIndex = new UnityEvent<IAQIndexDisplayer>();
 
     public string columnName;
@@ -18,20 +23,31 @@ public class IAQIndexDisplayer : MonoBehaviour
     [SerializeField] protected Image imgICON;
     [SerializeField] private TextMeshProUGUI txtValue;
 
+    public List<string> key
+    {
+        get
+        {
+            List<string> result = new List<string>();
+            string[] id = iaqData.ModelID.Split(",");
+            Array.ForEach(id, modelID => result.Add($"{modelID}/{columnName}"));
+            return result;
+        }
+    }
+
     public virtual Data_IAQ data
     {
+        get => iaqData;
         set
         {
-            float iaqIndex = float.Parse(value.GetValue(columnName));
-
+            iaqData = value;
+            float iaqIndexValue = float.Parse(iaqData.GetValue(columnName));
             DotweenHandler.ToBlink(txtValue, null, 0.1f, 0.1f);
-
             DOTween.To(() => float.Parse(txtValue.text), x =>
             {
                 // 更新文字
                 if (columnName != "RT" && columnName != "RH") txtValue.text = x.ToString("F0");
                 else txtValue.text = x.ToString("0.#");
-            }, iaqIndex, 0.2f).SetEase(Ease.OutQuart);
+            }, iaqIndexValue, 0.2f).SetEase(Ease.OutQuart);
         }
     }
     public Sprite imgICON_Sprite => imgICON.sprite;
