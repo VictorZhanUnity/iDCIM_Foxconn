@@ -50,6 +50,36 @@ namespace VictorDev.Calendar
 
         void Start() => ShowToday();
 
+        /// <summary>
+        /// 設定日期{過去N週}
+        /// </summary>
+        public void SetDate_PastWeeks(int pastWeek = 1)
+        {
+            DateTime dateTime = DateTime.Today;
+            SetDateTimeRange(dateTime.AddDays(pastWeek * -7), dateTime);
+        }
+
+        /// <summary>
+        /// 設定日期{過去N月}
+        /// </summary>
+        public void SetDate_PastMonths(int pastMonth = 1)
+        {
+            DateTime dateTime = DateTime.Today;
+            SetDateTimeRange(dateTime.AddMonths(-pastMonth), dateTime);
+        }
+
+        /// <summary>
+        /// 設定日期{過去N年}
+        /// </summary>
+        public void SetDate_PastYears(int pastYears = 1)
+        {
+            DateTime dateTime = DateTime.Today;
+            SetDateTimeRange(dateTime.AddYears(-pastYears), dateTime);
+        }
+
+        /// <summary>
+        /// 設定日期{起、迄}
+        /// </summary>
         public void SetDateTimeRange(DateTime startDate, DateTime endDate)
         {
             this.startDate = startDate;

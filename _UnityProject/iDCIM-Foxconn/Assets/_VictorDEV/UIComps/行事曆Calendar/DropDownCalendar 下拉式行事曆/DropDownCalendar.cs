@@ -16,9 +16,6 @@ namespace VictorDev.Calendar
         [SerializeField] private CalendarManager calendarManager;
         [SerializeField] private TextMeshProUGUI label;
 
-        public DateTime StartDateTime => calendarManager.StartDateTime;
-        public DateTime EndDateTime => calendarManager.EndDateTime;
-
         private string startDateTimeStr;
 
         public string StartDateTimeStr
@@ -31,14 +28,12 @@ namespace VictorDev.Calendar
         }
 
         private void Start()
-        {
-           // SetDateTimeRange(DateTime.Today.AddDays(-7), DateTime.Today);
+        { 
             calendarManager.onSelectedDateRangeEvent.AddListener(onSelectedDateRangeEvent.Invoke);
         }
 
         public string EndDateTimeStr { set => label.SetText($"{startDateTimeStr} ~ {value}"); }
 
-        public void SetDateTimeRange(DateTime startDate, DateTime endDate) 
-            => calendarManager.SetDateTimeRange(startDate, endDate);
+        public void SetDate_PastWeeks() => calendarManager.SetDate_PastWeeks();
     }
 }

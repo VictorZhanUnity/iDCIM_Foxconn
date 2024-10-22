@@ -5,18 +5,14 @@ public class UIManager_IAQ : MonoBehaviour
     [Header(">>> IAQ平均指數即時面板")]
     [SerializeField] private IAQRealtimeIndexPanel iaqRealtimeIndexPanel;
     [Header(">>> 單一IAQ設備之各項指數面板")]
-    [SerializeField] private IAQIndexPanel iaqIndexPanelPrefab;
+    [SerializeField] private IAQDevicePanel iaqDevicePanel;
     [Header(">>> IAQ單一指數歷史資訊面板")]
-    [SerializeField] private IAQ_IndexHistoryPanel iaqIndexDetailPanelPrefab;
-    [SerializeField] private Transform panelContaitner;
+    [SerializeField] private IAQ_IndexHistoryPanel iaqIndexHistoryPanel;
 
     [Header(">>> UI組件")]
     [SerializeField] private DeviceModelVisualizerWithLandmark _deviceModelVisualizer;
     [SerializeField] private GameObject uiObj;
     public DeviceModelVisualizerWithLandmark deviceModelVisualizer => _deviceModelVisualizer;
-
-    private IAQIndexPanel currentIAQIndexPanel;
-    private IAQ_IndexHistoryPanel currentIndexHistoryPanel;
 
     public bool isOn
     {
@@ -43,35 +39,23 @@ public class UIManager_IAQ : MonoBehaviour
     ///單一IAQ設備之各項指數面板
     /// </summary>
     public void ShowIAQIndexPanel(Transform targetModel)
-    {
+    {/*
         if (currentIAQIndexPanel != null)
         {
-            /*   if (currentIAQIndexPanel.data == iaqIndexDisplayer) return;
+            *//*   if (currentIAQIndexPanel.data == iaqIndexDisplayer) return;
                currentIAQIndexPanel.Close();
-               currentIAQIndexPanel = null;*/
+               currentIAQIndexPanel = null;*//*
         }
         //建立Panel
-        IAQIndexPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQIndexPanel>(iaqIndexPanelPrefab, panelContaitner);
-        /*   newPanel.ShowData(iaqIndexDisplayer);
-           newPanel.onClose.AddListener(() => currentIAQIndexPanel = null);*/
-        currentIAQIndexPanel = newPanel;
+        IAQIndexPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQIndexPanel>(iaqIndexPanel, panelContaitner);
+        *//*   newPanel.ShowData(iaqIndexDisplayer);
+           newPanel.onClose.AddListener(() => currentIAQIndexPanel = null);*//*
+        currentIAQIndexPanel = newPanel;*/
     }
 
     /// <summary>
     /// 顯示IAQ單一指數歷史資訊面板
     /// </summary>
     public void ShowIAQIndexHistoryPanel(IAQIndexDisplayer iaqIndexDisplayer)
-    {
-        if (currentIndexHistoryPanel != null)
-        {
-            if (currentIndexHistoryPanel.dataDisplayer == iaqIndexDisplayer) return;
-            currentIndexHistoryPanel.Close();
-            currentIndexHistoryPanel = null;
-        }
-        //建立Panel
-        IAQ_IndexHistoryPanel newPanel = ObjectPoolManager.GetInstanceFromQueuePool<IAQ_IndexHistoryPanel>(iaqIndexDetailPanelPrefab, panelContaitner, true);
-        newPanel.ShowData(iaqIndexDisplayer);
-        newPanel.onCloseEvent.AddListener(() => currentIndexHistoryPanel = null);
-        currentIndexHistoryPanel = newPanel;
-    }
+        => iaqIndexHistoryPanel.ShowData(iaqIndexDisplayer);
 }

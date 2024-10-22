@@ -5,7 +5,7 @@ using UnityEngine.Events;
 /// <summary>
 /// 視窗 - 單一IAQ設備之各項指數資訊
 /// </summary>
-public class IAQIndexPanel : MonoBehaviour
+public class IAQDevicePanel : MonoBehaviour
 {
     [Header(">>> IAQ資料項")]
     [SerializeField] private Data_IAQ iaqData;
