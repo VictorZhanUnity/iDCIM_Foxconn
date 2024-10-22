@@ -3,7 +3,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IAQStatusDisplayer : GridItem_IAQIndex
+/// <summary>
+/// IAQ指數資訊顯示器
+/// <para>+ 除了顯示資訊，還要改變圖示顏色</para>
+/// </summary>
+public class HUD_IAQStatus : GridItem_IAQIndex
 {
     [SerializeField] private Image imgGradient;
     [SerializeField] private TextMeshProUGUI txtStatus;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IAQIndexListPanel : MonoBehaviour
+public class IAQIndexPanel : MonoBehaviour
 {
     [SerializeField] private List<GridItem_IAQIndex> indexBtns;
     [SerializeField] private IAQ_IndexDetailPanel indexDetailPanelPrefab;

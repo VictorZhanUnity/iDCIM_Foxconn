@@ -9,14 +9,22 @@ using VictorDev.RevitUtils;
 
 public class UIManager_IAQ : MonoBehaviour
 {
+    [Header(">>> 間隔幾秒訪問WebAPI")]
+    [Range(0, 60)]
+    [SerializeField] private int intervalSendRequest = 5;
+
+    [Header(">>> 更新目前平均溫度")]
+    public UnityEvent<string> onUpdateCurrentAvgRT = new UnityEvent<string>();
+
+    [Header(">>> UI組件")]
+    [SerializeField] private List<GridItem_IAQIndex> iaqRealtimeIndexList;
+
+    [Header(">>> UI組件")]
     [SerializeField] private DeviceModelVisualizerWithLandmark deviceModelVisualizer;
     [SerializeField] private GameObject canvasObj;
     [SerializeField] private IAQ_DataManager iaqDataManager;
 
-    [SerializeField] private List<GridItem_IAQIndex> iaqRealtimeIndexList;
-
-    [Header(">>> 更新目前平均溫度")]
-    public UnityEvent<string> onUpdateCurrentAvgRT = new UnityEvent<string>();
+   
 
     private Coroutine coroutineGetRealtimeIAQIndex;
 
@@ -34,9 +42,12 @@ public class UIManager_IAQ : MonoBehaviour
         GetRealtimeIAQIndex();
     }
 
-    private void GetRealtimeIAQIndex()
+    /// <summary>
+    /// [WebAPI] 擷取即時IAQ資料，計算平均值
+    /// </summary>
+    public void GetRealtimeIAQIndex()
     {
-        StopCoroutine();
+        if (coroutineGetRealtimeIAQIndex != null) StopCoroutine(coroutineGetRealtimeIAQIndex);
 
         IEnumerator enumerator()
         {
@@ -49,7 +60,7 @@ public class UIManager_IAQ : MonoBehaviour
                     iaqRealtimeIndexList.ForEach(item => item.data = iaqData);
                     onUpdateCurrentAvgRT.Invoke($"{iaqData.RT.ToString("0.#")}°c");
                 }, null);
-                yield return new WaitForSeconds(5);
+                yield return new WaitForSeconds(intervalSendRequest);
             }
         }
         coroutineGetRealtimeIAQIndex = StartCoroutine(enumerator());
@@ -57,6 +68,6 @@ public class UIManager_IAQ : MonoBehaviour
 
     private void StopCoroutine()
     {
-        if (coroutineGetRealtimeIAQIndex != null) StopCoroutine(coroutineGetRealtimeIAQIndex);
+       
     }
 }
