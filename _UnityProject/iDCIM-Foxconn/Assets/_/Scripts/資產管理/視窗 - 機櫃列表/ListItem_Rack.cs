@@ -20,7 +20,7 @@ public class ListItem_Rack : MonoBehaviour
             string label = strings[1] + strings[2];
 
             txtLabel.SetText(label);
-            deviceId = RevitHandler.GetRevit_elementId(model.name);
+            deviceId = RevitHandler.GetDeviceID(model.name);
         }
     }
 

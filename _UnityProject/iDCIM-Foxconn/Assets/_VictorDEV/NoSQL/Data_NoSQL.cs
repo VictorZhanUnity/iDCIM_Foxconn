@@ -15,7 +15,7 @@ public abstract class Data_NoSQL
     [SerializeField] protected List<DictionaryVisualizer<string, string>> jsonDictForDisplay = new List<DictionaryVisualizer<string, string>>();
 
     /// <summary>
-    /// 原始JSON資料
+    /// 原始JSON資料(單一項)
     /// </summary>
     protected Dictionary<string, string> sourceData { get; set; } = new Dictionary<string, string>();
 
@@ -25,7 +25,7 @@ public abstract class Data_NoSQL
     protected Data_NoSQL(Dictionary<string, string> sourceData)
     {
         this.sourceData = sourceData;
-        jsonDictForDisplay = DictionaryVisualizer<string, string>.Parse(sourceData);
+        if (this.sourceData != null) jsonDictForDisplay = DictionaryVisualizer<string, string>.Parse(this.sourceData);
     }
 
     /// <summary>

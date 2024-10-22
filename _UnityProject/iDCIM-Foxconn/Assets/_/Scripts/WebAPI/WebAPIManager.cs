@@ -33,7 +33,6 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [Header(">>> 取得COBie時觸發")]
     public UnityEvent<string> onGetDeviceCOBie;
 
-
     public static void SignIn(string account, string password, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
         Debug.Log($">>> [帳密登入] WebAPI Call: {Instance.request_SignIn.url}");
@@ -105,7 +104,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     /// <summary>
     /// 按照JSON格式列印出JSON資料
     /// </summary>
-    public static string PrintJSONFormatting(string jsonString)
+    private static string PrintJSONFormatting(string jsonString)
     {
         string result = null;
         try

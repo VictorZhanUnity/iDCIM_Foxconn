@@ -10,19 +10,18 @@ using VictorDev.Common;
 [Serializable]
 public class Data_IAQ : Data_NoSQL
 {
-    public string TopicCode;
-    public int IAQ => int.Parse(GetValue("IAQ"));
+    public string ModelID => base.GetValue("ModelID");
+    public float IAQ => float.Parse(GetValue("IAQ"));
     public float RT => float.Parse(GetValue("RT"));
     public float RH => float.Parse(GetValue("RH"));
     public float CO2 => float.Parse(GetValue("CO2"));
     public float CO => float.Parse(GetValue("CO"));
     public float PM2_5 => float.Parse(GetValue("PM2.5"));
     public float PM10 => float.Parse(GetValue("PM10"));
-    public float TVOC => float.Parse(GetValue("VOCs"));
+    public float VOCs => float.Parse(GetValue("VOCs"));
     public float HCHO => float.Parse(GetValue("Formaldehyde"));
     public float O3 => float.Parse(GetValue("Ozone"));
     public float Lux => float.Parse(GetValue("Lit"));
-
 
     /// <summary>
     /// IAQ指數等級顏色
@@ -34,7 +33,6 @@ public class Data_IAQ : Data_NoSQL
     /// </summary>
     public string levelStatus => currentLevel.status;
     private IAQLevel currentLevel => iaqLevels.Where(iaqLevel => iaqLevel.CheckLevel(IAQ)).FirstOrDefault();
-
     public Data_IAQ(Dictionary<string, string> sourceData) : base(sourceData) { }
 
     #region
@@ -72,7 +70,7 @@ public class Data_IAQ : Data_NoSQL
         /// <summary>
         /// 是否屬於此等級
         /// </summary>
-        public bool CheckLevel(int iaqValue)
+        public bool CheckLevel(float iaqValue)
             => iaqValue >= minThreshold && iaqValue <= maxThreshold;
     }
     #endregion
