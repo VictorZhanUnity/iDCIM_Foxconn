@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
+using XCharts.Runtime;
 
 /// <summary>
 /// 資料項 - IAQ
@@ -50,6 +51,45 @@ public class Data_IAQ : Data_NoSQL
         {"Lit", new IAQ_DateFormat("Lit", "環境光", "lux", 0, 100)},
         {"IAQ", new IAQ_DateFormat("IAQ", "IAQ指數", "", 0, 400)},
     };
+
+    /// <summary>
+    /// 設置IAQ LineChart內容
+    /// </summary>
+    public static void SetChart(LineChart lineChart, Dictionary<DateTime, float> data, string columnName, bool isShowFullTimestamp = true)
+    {
+        IAQ_DateFormat dataFormat = UnitName[columnName];
+
+        //清除圖表與設置
+        lineChart.series[0].data.Clear();
+        XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
+        xAxis.data.Clear();
+        YAxis yAxis = lineChart.EnsureChartComponent<YAxis>();
+        yAxis.minMaxType = Axis.AxisMinMaxType.Custom;
+        yAxis.min = dataFormat.minValue;
+        yAxis.max = dataFormat.maxValue;
+        yAxis.axisLabel.formatter = "{value}";
+        Tooltip toolTip = lineChart.EnsureChartComponent<Tooltip>();
+        toolTip.numericFormatter = "0.## " + dataFormat.unitName;
+
+        if (xAxis != null) xAxis.refreshComponent();
+        toolTip.refreshComponent();
+        lineChart.series[0].label.show = data.Count > 0;
+        lineChart.series[0].label.formatter = "{c} " + dataFormat.unitName;
+        lineChart.series[0].label.numericFormatter = "0.# ";
+
+        data.ToList().ForEach(keyPair =>
+        {
+            //設定圖表
+            if (lineChart.series[0].data.Count < 5)
+            {
+                lineChart.AddData("", keyPair.Value);
+                string dateFormat = isShowFullTimestamp ? DateTimeHandler.FullDateTimeMinuteFormat : DateTimeHandler.HourMinuteFormat;
+                string xKey = keyPair.Key.ToString(dateFormat);
+                lineChart.AddXAxisData(xKey);
+            }
+        });
+    }
+
 
     public string ModelID;
     public float IAQ => float.Parse(GetValue("IAQ"));

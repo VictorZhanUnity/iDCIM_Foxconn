@@ -67,8 +67,6 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     /// </summary>
     private void WebAPI_GetIAQHistoryData(DateTime startTime, DateTime endTime)
     {
-        print($"startTime: {startTime} / endTime: {endTime}");
-
         void onSuccess(long responseCode, string jsonString)
         {
             print("解析JSON資料");
@@ -86,36 +84,14 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
                     group => group.Average(dp => dp.value) // 將同一 timestamp 的值取平均作為值
                 );
 
-            //清除圖表與設置
-            lineChart.series[0].data.Clear();
-            XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
-            xAxis.data.Clear();
-            YAxis yAxis = lineChart.EnsureChartComponent<YAxis>();
-            yAxis.minMaxType = Axis.AxisMinMaxType.Custom;
-            yAxis.min = iaqDataFormat.minValue;
-            yAxis.max = iaqDataFormat.maxValue;
-            yAxis.axisLabel.formatter = "{value}";
-            lineChart.series[0].label.formatter = "{c} " + iaqDataFormat.unitName;
-            Tooltip toolTip = lineChart.EnsureChartComponent<Tooltip>();
-            toolTip.numericFormatter = "0.### " + iaqDataFormat.unitName;
-
-            xAxis.refreshComponent();
-            toolTip.refreshComponent();
-            lineChart.series[0].label.show = avgValues.Count > 0;
+            //設置LineChart圖表
+            Data_IAQ.SetChart(lineChart, avgValues, indexDisplayer.columnName);
 
             //清除表格
             ObjectPoolManager.PushToPool<ListItem_IAQHistory>(scrollRect.content);
 
             avgValues.ToList().ForEach(keyPair =>
             {
-                //設定圖表
-                if (lineChart.series[0].data.Count < 5)
-                {
-                    lineChart.AddData("", keyPair.Value);
-                    string xKey = keyPair.Key.ToString(DateTimeFormatter.FullDateTimeMinuteFormat);
-                    lineChart.AddXAxisData(xKey);
-                }
-
                 // 生成列表
                 ListItem_IAQHistory item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
                 item.iaqColumnName = indexDisplayer.columnName;

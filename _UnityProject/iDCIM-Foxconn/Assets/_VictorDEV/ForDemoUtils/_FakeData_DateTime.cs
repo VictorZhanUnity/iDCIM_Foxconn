@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using VictorDev.Common;
 using Random = UnityEngine.Random;
 
 namespace VictorDev._FakeData
@@ -58,9 +59,9 @@ namespace VictorDev._FakeData
             } while (editDateTime <= endDateTime);
 
             // 將生成的時間點加入列表
-            resultTime.Add("StartDateTime", startDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
-            resultTime.Add("EndDateTime", endDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
-            resultTime.Add("EditDateTime", editDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+            resultTime.Add("StartDateTime", startDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+            resultTime.Add("EndDateTime", endDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+            resultTime.Add("EditDateTime", editDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
             return resultTime;
         }
 

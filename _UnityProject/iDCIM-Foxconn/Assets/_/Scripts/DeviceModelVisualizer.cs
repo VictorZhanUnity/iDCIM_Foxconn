@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
+using VictorDev.RevitUtils;
 
 public class DeviceModelVisualizer : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class DeviceModelVisualizer : MonoBehaviour
     public UnityEvent<Transform> onClickEvent = new UnityEvent<Transform>();
 
     public List<Transform> ModelList => modelList;
+    public List<string> ModelNameList => modelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
 
     /// <summary>
     /// 暫存模型, 供材質替換進行哈希表比對

@@ -70,12 +70,12 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     public static void GetIAQIndexHistory(List<string> tags, DateTime from, DateTime to, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
         Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
-        Debug.Log($">>> from: {from.ToString(DateTimeFormatter.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeFormatter.FullDateTimeFormatWithT)}");
+        Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },
-            { "from", from.ToString(DateTimeFormatter.FullDateTimeFormatWithT)},
-            { "to", to.ToString(DateTimeFormatter.FullDateTimeFormatWithT)},
+            { "from", from.ToString(DateTimeHandler.FullDateTimeFormatWithT)},
+            { "to", to.ToString(DateTimeHandler.FullDateTimeFormatWithT)},
             { "option", new {
                 isNumeric = true,
                  isArray= false,

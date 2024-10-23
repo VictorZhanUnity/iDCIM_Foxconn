@@ -1,14 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Async.CoroutineUtils;
 using VictorDev.Common;
 using VictorDev.IAQ;
-using VictorDev.RevitUtils;
 
 /// <summary>
 /// HUD - 機房即時平均IAQ各項指數
@@ -18,9 +16,12 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
     [Header(">>> [資料項] IAQ平均數據")]
     [SerializeField] private Data_IAQ iaqDataAvg;
 
+    [Header(">>> 是否持續更新資料")]
+    [SerializeField] private bool isKeepUpdate = true;
+
     [Header(">>> 間隔幾秒訪問WebAPI")]
     [Range(0, 60)]
-    [SerializeField] private int intervalSendRequest = 5;
+    [SerializeField] private int intervalSendRequest = 10;
 
     [Header(">>> 所有IAQ指數即時資訊更新時Invoke")]
     public UnityEvent<Dictionary<string, Data_IAQ>> onUpdateIAQInfo = new UnityEvent<Dictionary<string, Data_IAQ>>();
@@ -60,8 +61,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
         {
             do
             {
-                List<string> modelID = uiManager_IAQ.deviceModelVisualizer.ModelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
-                iaqDataManager.GetRealtimeIAQIndex(modelID, (responseCode, eachIAQData, iaqDataAvg) =>
+                iaqDataManager.GetRealtimeIAQIndex(uiManager_IAQ.deviceModelVisualizer.ModelNameList, (responseCode, eachIAQData, iaqDataAvg) =>
                 {
                     if (responseCode != 200) return;
                     this.iaqDataAvg = iaqDataAvg;
@@ -70,10 +70,10 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
 
                     onUpdateIAQInfo.Invoke(eachIAQData);
                     //最後更新時間
-                    DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeFormatter.FullDateTimeFormat));
+                    DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeHandler.FullDateTimeFormat));
                 }, OnFailed);
                 yield return new WaitForSeconds(intervalSendRequest);
-            } while (false);
+            } while (isKeepUpdate);
         }
         coroutineGetRealtimeIAQIndex = CoroutineHandler.ToStartCoroutine(enumerator());
     }

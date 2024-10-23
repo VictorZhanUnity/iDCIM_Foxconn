@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.Common;
 
 public class ListItem_AccessRecord : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class ListItem_AccessRecord : MonoBehaviour
     private void UpdateUI()
     {
         imgPhoto.sprite = data.UserPhoto;
-        txtTimeStamp.SetText(data.AccessTimeStamp.ToString(DateTimeFormatter.FullDateTimeFormat));
+        txtTimeStamp.SetText(data.AccessTimeStamp.ToString(DateTimeHandler.FullDateTimeFormat));
         txtUserName.SetText(data.UserName);
         txtRole.SetText(data.Role.ToString());
     }

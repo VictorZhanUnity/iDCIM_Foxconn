@@ -3,6 +3,7 @@ using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using VictorDev.Common;
 using static VictorDev.CONFIG;
 
 namespace VictorDev.Calendar
@@ -86,8 +87,8 @@ namespace VictorDev.Calendar
             this.endDate = endDate;
             currentDate = startDate;
             GenerateCalendar();
-            onSelectedStartDateStrEvent.Invoke(startDate.ToString(DateTimeFormatter.FullDateFormat));
-            onSelectedEndDateStrEvent.Invoke(endDate.ToString(DateTimeFormatter.FullDateFormat));
+            onSelectedStartDateStrEvent.Invoke(startDate.ToString(DateTimeHandler.FullDateFormat));
+            onSelectedEndDateStrEvent.Invoke(endDate.ToString(DateTimeHandler.FullDateFormat));
             onSelectedDateRangeEvent.Invoke(startDate, endDate);
         }
 
@@ -206,7 +207,7 @@ namespace VictorDev.Calendar
             startDate = dayItem.date;
             result = (DateTime)startDate;
             onSelectedDateEvent.Invoke(result);
-            onSelectedDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+            onSelectedDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
             onSelectedEndDateStrEvent.Invoke("");
         }
 
@@ -221,7 +222,7 @@ namespace VictorDev.Calendar
                 Debug.Log($"選擇起始日期: {startDate}");
                 result = (DateTime)startDate;
                 onSelectedStartDateEvent.Invoke(result);
-                onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+                onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
             }
             else if (endDate == null && (isAllowSelectSameDay || dayItem.date != startDate)) // 已選擇起始日期但尚未選擇結束日期
             {
@@ -229,7 +230,7 @@ namespace VictorDev.Calendar
                 Debug.Log($"選擇結束日期: {endDate}");
                 result = (DateTime)endDate;
                 onSelectedEndDateEvent.Invoke(result);
-                onSelectedEndDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+                onSelectedEndDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
 
                 // 確保結束日期大於起始日期
                 if (endDate < startDate)
@@ -240,11 +241,11 @@ namespace VictorDev.Calendar
 
                     result = (DateTime)startDate;
                     onSelectedStartDateEvent.Invoke(result);
-                    onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+                    onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
 
                     result = (DateTime)endDate;
                     onSelectedEndDateEvent.Invoke(result);
-                    onSelectedEndDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+                    onSelectedEndDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
                 }
 
                 Debug.Log($"範圍：{startDate} 到 {endDate}");
@@ -257,7 +258,7 @@ namespace VictorDev.Calendar
                 endDate = null;
                 result = (DateTime)startDate;
                 onSelectedStartDateEvent.Invoke(result);
-                onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeFormatter.FullDateFormat));
+                onSelectedStartDateStrEvent.Invoke(result.ToString(DateTimeHandler.FullDateFormat));
                 onSelectedEndDateStrEvent.Invoke("");
                 Debug.Log($"重新選擇起始日期: {startDate}");
             }

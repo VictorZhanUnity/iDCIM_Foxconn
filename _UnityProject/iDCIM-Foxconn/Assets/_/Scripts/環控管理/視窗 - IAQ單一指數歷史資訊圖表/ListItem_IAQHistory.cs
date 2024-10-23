@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using VictorDev.Common;
 
 public class ListItem_IAQHistory : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class ListItem_IAQHistory : MonoBehaviour
         this.timeStamp = timeStamp;
         this.value = value;
 
-        txtTimestamp.SetText(timeStamp.ToString(DateTimeFormatter.FullDateTimeMinuteFormat));
+        txtTimestamp.SetText(timeStamp.ToString(DateTimeHandler.FullDateTimeMinuteFormat));
         txtValue.SetText(value.ToString("0.#"));
 
         name = $"DataItem - {txtValue.text} {txtUnit}";

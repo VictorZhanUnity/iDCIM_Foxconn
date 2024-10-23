@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.Common;
 
 public class AccoutDetailPanel : MonoBehaviour
 {
@@ -36,9 +37,9 @@ public class AccoutDetailPanel : MonoBehaviour
         txtStatus.SetText(data.Status.ToString());
         imgStatus.color = data.Status == Config_Enum.enumAccountStatus.啟用 ? colorActivate : colorForbbiden;
 
-        txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
-        txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
-        txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeFormatter.FullDateTimeFormat));
+        txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+        txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+        txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
         txtSuspendDate.SetText(data.SuspendDateTime);
 
         imgPhoto.sprite = data.UserPhoto;
