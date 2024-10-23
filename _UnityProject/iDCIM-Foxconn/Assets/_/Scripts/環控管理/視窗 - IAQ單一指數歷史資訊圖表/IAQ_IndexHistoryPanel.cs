@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,9 +29,10 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     [SerializeField] private LineChart lineChart;
 
     [Header(">>> UI組件")]
+    [SerializeField] private ListItem_IAQHistory listItemPrefab;
+    [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private Image imgICON;
     [SerializeField] private TextMeshProUGUI txtTitle;
-    [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private AdvancedCanvasGroupFader fader;
     [SerializeField] private RectTransformResizeLerp resizer;
     [SerializeField] private Toggle toggleContent;
@@ -69,10 +71,29 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
         void onSuccess(long responseCode, string jsonString)
         {
             print("解析JSON資料");
-
             // 解析 JSON 字串
             historyData = JsonConvert.DeserializeObject<List<KeyValueData>>(jsonString);
 
+            // 計算平均值
+            // 使用 LINQ 建立 Dictionary<string, float>，鍵為 timestamp，值為平均值
+            Dictionary<DateTime, float> avgValues = historyData
+                .SelectMany(item => item.value) // 將所有 DataPoint 展開為單一序列
+                .GroupBy(dp => dp.Timestamp)// 依照 timestamp 分組
+                .OrderByDescending(group => group.Key)
+                .ToDictionary(
+                    group => group.Key,             // 使用 timestamp 作為鍵
+                    group => group.Average(dp => dp.value) // 將同一 timestamp 的值取平均作為值
+                );
+
+
+            // 生成列表
+            ObjectPoolManager.PushToPool<ListItem_IAQHistory>(scrollRect.content);
+            avgValues.ToList().ForEach(keyPair =>
+            {
+                ListItem_IAQHistory item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
+                item.iaqColumnName = indexDisplayer.columnName;
+                item.ShowData(keyPair.Key, keyPair.Value);
+            });
         }
         WebAPIManager.GetIAQIndexHistory(indexDisplayer.key, startTime, endTime, onSuccess, onFailed);
     }
@@ -89,6 +110,8 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
         public bool isNumeric;
         public bool isArray;
         public float value;
+
+        public DateTime Timestamp => DateTime.Parse(timestamp);
     }
 
     [Serializable]

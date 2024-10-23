@@ -73,7 +73,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
                     DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeFormatter.FullDateTimeFormat));
                 }, OnFailed);
                 yield return new WaitForSeconds(intervalSendRequest);
-            } while (true);
+            } while (false);
         }
         coroutineGetRealtimeIAQIndex = CoroutineHandler.ToStartCoroutine(enumerator());
     }
