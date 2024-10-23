@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 資料項 - IAQ
@@ -10,6 +11,26 @@ using VictorDev.Common;
 [Serializable]
 public class Data_IAQ : Data_NoSQL
 {
+    /// <summary>
+    /// [單位] IAQ代號比對
+    /// </summary>
+    public static readonly Dictionary<string, string> ColumnUnit = new Dictionary<string, string>()
+    {
+        {"RT", "°c"}, {"RH", "%"},{"CO2", "ppm"},{"CO", "ppm"},
+        {"PM2.5", "ug/m3"}, {"PM10", "ug/m3"},{"VOCs", "ppb"},{"Formaldehyde", "ppb"},
+        {"Ozone", "ppb"}, {"Lit", "lux"},
+    };
+
+    /// <summary>
+    /// [名稱] IAQ代號比對
+    /// </summary>
+    public static readonly Dictionary<string, string> ColumnName = new Dictionary<string, string>()
+    {
+        {"RT", "溫度"}, {"RH", "濕度"},{"CO2", "二氧化碳濃度"},{"CO", "一氧化碳濃度"},
+        {"PM2.5", "懸浮微粒PM2.5濃度"}, {"PM10", "懸浮微粒PM10濃度"},{"VOCs", "揮發性有機物濃度"},{"Formaldehyde", "甲醛濃度"},
+        {"Ozone", "臭氧濃度"}, {"Lit", "環境光"},
+    };
+
     public string ModelID;
     public float IAQ => float.Parse(GetValue("IAQ"));
     public float RT => float.Parse(GetValue("RT"));

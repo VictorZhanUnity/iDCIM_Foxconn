@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,10 +9,48 @@ namespace VictorDev.Common
 {
     public class ColorHandler : SingletonMonoBehaviour<ColorHandler>
     {
+        public static Color blue => ConvertRgbToColor(128, 255, 255);
         public static Color green => ConvertRgbToColor(30, 255, 30);
         public static Color yellow => ConvertRgbToColor(255, 255, 30);
         public static Color orange => ConvertRgbToColor(255, 180, 30);
         public static Color red => ConvertRgbToColor(255, 30, 30);
+
+        /// <summary>
+        /// 設定溫度顏色等級 {機房理想溫度 20~27°c}
+        /// <para>+ T: 可使用TextMeshProUGUI、Image</para>
+        /// </summary>
+        public static Tween ChangeColorLevel_Temperature<T>(float value, T target, float duration = 2f) where T : Graphic
+        {
+            // 根據 value 的範圍來決定顏色
+            Color targetColor = red;
+
+            List<Tuple<float, Color>> levelColors = new List<Tuple<float, Color>>()
+            {
+               new Tuple<float, Color>(20f, blue),
+               new Tuple<float, Color>(27f, yellow),
+               new Tuple<float, Color>(30f, orange),
+               new Tuple<float, Color>(40f, red),
+            };
+            for (int i = 0; i < levelColors.Count; i++)
+            {
+                //每組顏色Threshold比對
+                if (value <= levelColors[i].Item1)
+                {
+                    // 小於最低門檻值
+                    if (i == 0) targetColor = levelColors[0].Item2;
+                    else
+                    {
+                        Tuple<float, Color> before = levelColors[i - 1];
+                        Tuple<float, Color> after = levelColors[i];
+
+                        float t = Mathf.InverseLerp(before.Item1, before.Item1, value);
+                        targetColor = Color.Lerp(before.Item2, after.Item2, t);
+                    }
+                    break;
+                }
+            }
+            return target.DOColor(targetColor, duration);
+        }
 
         /// <summary>
         /// 依百分比取得各等級Color

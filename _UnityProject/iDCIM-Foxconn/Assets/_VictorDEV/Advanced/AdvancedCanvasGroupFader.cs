@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using VictorDev.Common;
 
@@ -22,11 +23,8 @@ namespace VictorDev.Advanced
         private Coroutine coroutine { get; set; } = null;
 
         public bool isOn { set => ToFade(value ? 1 : initAlpha); }
-        private void Start()
-        {
-            canvasGroup.alpha = initAlpha;
-            canvasGroup.interactable = false;
-        }
+
+        private void Start() => SetAlpha(initAlpha);
 
         /// <summary>
         /// 開始 Lerp
@@ -34,13 +32,19 @@ namespace VictorDev.Advanced
         public void ToFade(float toAlpha)
         {
             if (coroutine != null) StopCoroutine(coroutine);
-            float startAlpha = canvasGroup.alpha;
-            coroutine = StartCoroutine(LerpHandler.ToLerpAlpha(startAlpha, toAlpha, (lerpValue) =>
+            IEnumerator enumerator()
             {
-                canvasGroup.alpha = lerpValue;
-                canvasGroup.interactable = lerpValue == 1;
-                canvasGroup.blocksRaycasts = lerpValue == 1;
-            }, duration));
+                DotweenHandler.ToLerpValue(canvasGroup.alpha, toAlpha, SetAlpha, duration);
+                yield return null;
+            }
+            coroutine = StartCoroutine(enumerator());
+        }
+
+        private void SetAlpha(float alpha)
+        {
+            canvasGroup.alpha = alpha;
+            canvasGroup.interactable = alpha == 1;
+            canvasGroup.blocksRaycasts = alpha == 1;
         }
 
         private void OnValidate() => canvasGroup ??= GetComponent<CanvasGroup>();

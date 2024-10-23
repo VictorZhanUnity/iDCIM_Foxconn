@@ -10,16 +10,16 @@ using VictorDev.Parser;
 
 public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
 {
-    [Header(">>>帳密登入")]
+    [Header(">>> 帳密登入")]
     [SerializeField] private WebAPI_Request request_SignIn;
-    [Header(">>>取得IAQ即時各項指數")]
+    [Header(">>> [IAQ] 取得IAQ即時各項指數")]
     [SerializeField] private WebAPI_Request request_GetIAQRealTimeIndex;
-    [Header(">>>取得IAQ指數歷史資料")]
+    [Header(">>> [IAQ] 取得IAQ指數歷史資料")]
     [SerializeField] private WebAPI_Request request_GetIAQIndexHistory;
 
-    [Header(">>>取得所有DCR機櫃及內含設備")]
+    [Header(">>> 取得所有DCR機櫃及內含設備")]
     [SerializeField] private WebAPI_Request request_GetAllDCRInfo;
-    [Header(">>>取得設備的COBie資訊")]
+    [Header(">>> 取得設備的COBie資訊")]
     [SerializeField] private WebAPI_Request request_GetDeviceCOBie;
 
     [Space(20)]
@@ -104,7 +104,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     /// <summary>
     /// 按照JSON格式列印出JSON資料
     /// </summary>
-    private static string PrintJSONFormatting(string jsonString)
+    public static string PrintJSONFormatting(string jsonString)
     {
         string result = null;
         try

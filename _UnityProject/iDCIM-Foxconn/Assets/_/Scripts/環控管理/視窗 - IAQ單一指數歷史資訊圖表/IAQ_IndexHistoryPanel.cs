@@ -1,4 +1,6 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +18,8 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     [SerializeField] private IAQIndexDisplayer indexDisplayer;
     public IAQIndexDisplayer dataDisplayer => indexDisplayer;
 
+    [Header(">>> [資料項] 歷史資料結果")]
+    [SerializeField] private List<KeyValueData> historyData;
 
     [Header(">>> 行事曆組件")]
     [SerializeField] private DropDownCalendar dropdownCalendar;
@@ -33,6 +37,7 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
 
     private void Start()
     {
+        dropdownCalendar.SetDate_PastWeeks();
         dropdownCalendar.onSelectedDateRangeEvent.AddListener(WebAPI_GetIAQHistoryData);
     }
 
@@ -43,14 +48,16 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     {
         indexDisplayer = item;
         imgICON.sprite = indexDisplayer.imgICON_Sprite;
+
         string title = indexDisplayer.data.ModelID.Contains(",") ? "機房平均數據 - " : $"[{indexDisplayer.data.ModelID}] ";
-        txtTitle.SetText(title + indexDisplayer.columnName);
+        txtTitle.SetText(title + Data_IAQ.ColumnName[indexDisplayer.columnName]);
 
         DotweenHandler.ToBlink(txtTitle);
-
-        dropdownCalendar.SetDate_PastWeeks();
         fader.isOn = true;
+
+        WebAPI_GetIAQHistoryData(dropdownCalendar.StartDateTime, dropdownCalendar.EndDateTime);
     }
+
 
     /// <summary>
     /// [WebAPI] 取得IAQ指數歷史資訊
@@ -61,7 +68,11 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
 
         void onSuccess(long responseCode, string jsonString)
         {
-            print("WebAPI_GetIAQHistoryData: " + jsonString);
+            print("解析JSON資料");
+
+            // 解析 JSON 字串
+            historyData = JsonConvert.DeserializeObject<List<KeyValueData>>(jsonString);
+
         }
         WebAPIManager.GetIAQIndexHistory(indexDisplayer.key, startTime, endTime, onSuccess, onFailed);
     }
@@ -69,5 +80,21 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     private void onFailed(long responseCode, string msg)
     {
         throw new NotImplementedException();
+    }
+
+    [Serializable]
+    public class DataPoint
+    {
+        public string timestamp;
+        public bool isNumeric;
+        public bool isArray;
+        public float value;
+    }
+
+    [Serializable]
+    public class KeyValueData
+    {
+        public string key;
+        public List<DataPoint> value;
     }
 }

@@ -9,6 +9,10 @@ public static class DateTimeFormatter
     /// 2024-11-24 13:33:22
     /// </summary>
     public static string FullDateTimeFormat => $"{FullDateFormat} {FullTimeFormat}";
+    /// <summary>
+    /// 2024-11-24 13:33
+    /// </summary>
+    public static string FullDateTimeMinuteFormat => $"{FullDateFormat} {HourMinuteFormat}";
 
     /// <summary>
     /// 2024-11-24T13:33:22
@@ -23,4 +27,8 @@ public static class DateTimeFormatter
     /// 13:33:22
     /// </summary>
     public static string FullTimeFormat => "HH:mm:ss";
+    /// <summary>
+    /// 13:33
+    /// </summary>
+    public static string HourMinuteFormat => "HH:mm";
 }

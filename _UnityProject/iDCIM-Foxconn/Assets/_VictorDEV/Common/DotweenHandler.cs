@@ -1,6 +1,9 @@
 using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 namespace VictorDev.Common
 {
     public static class DotweenHandler
@@ -18,6 +21,14 @@ namespace VictorDev.Common
                 // 然后将Text的透明度从0渐变为1（完全不透明）
                 target.DOFade(1f, duration);
             }).SetDelay(Random.Range(0, randomDelay)) ;
+        }
+
+        public static Tween ToLerpValue(float startValue, float endValue, Action<float> onUpdate, float duration = 0.15f, float randomDelay = 0)
+        {
+            return DOTween.To(() => startValue, x => {
+                startValue = x;
+                onUpdate.Invoke(startValue);
+            }, endValue, duration);
         }
     }
 }
