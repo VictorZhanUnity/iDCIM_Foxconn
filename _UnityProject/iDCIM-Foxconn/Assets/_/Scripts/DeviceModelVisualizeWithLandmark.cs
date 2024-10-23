@@ -19,7 +19,7 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
     public List<Landmark> landmarkList;
 
     public UnityEvent<List<SelectableObject>, List<Landmark>> onInitlializedWithLandMark = new UnityEvent<List<SelectableObject>, List<Landmark>>();
-    public UnityEvent<SO_RTSP, ListItem_CCTV> onSelectedEvent = new UnityEvent<SO_RTSP, ListItem_CCTV>();
+    public UnityEvent<SO_RTSP, ListItem_CCTV, string> onSelectedEvent = new UnityEvent<SO_RTSP, ListItem_CCTV, string>();
 
     public List<SelectableObject> selectableObjects { get; private set; } = new List<SelectableObject>();
 
@@ -45,7 +45,8 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
             LandmarkManager.AddLandMark(landMark);
 
             selectableObj.onToggleEvent.AddListener((isOn) => landMark.SetToggleIsOnWithNotify(isOn));
-            selectableObj.onSelectedEvent.AddListener(onSelectedEvent.Invoke);
+            //selectableObj.onSelectedEvent.AddListener(onSelectedEvent.Invoke);
+            selectableObj.onSelectedEvent.AddListener((soData, listItem)=>onSelectedEvent.Invoke(soData, listItem, selectableObj.name));
         });
         onInitlializedWithLandMark.Invoke(selectableObjects, landmarkList);
 

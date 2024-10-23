@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using VictorDev.RevitUtils;
 
 public class UIManager_IAQ : MonoBehaviour
 {
@@ -28,22 +29,17 @@ public class UIManager_IAQ : MonoBehaviour
 
     private void Start()
     {
-        deviceModelVisualizer.onSelectedEvent.AddListener((data, data1)=>
+        //點選IAQ設備時，顯示其資訊面板
+        deviceModelVisualizer.onSelectedEvent.AddListener((soData, listItem, modelName)=>
         {
-            ShowIAQIndexPanel(iaqRealtimeIndexPanel.eachIAQData.Values.First());
+            iaqDevicePanel.ModelID = RevitHandler.GetDeviceID(modelName);
         });
 
         iaqDevicePanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);
-
         iaqRealtimeIndexPanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);
+        iaqRealtimeIndexPanel.onUpdateIAQInfo.AddListener(iaqDevicePanel.ShowData);
         iaqRealtimeIndexPanel.WebAPI_GetRealtimeIAQIndex();
     }
-
-    /// <summary>
-    ///單一IAQ設備之各項指數面板
-    /// </summary>
-    public void ShowIAQIndexPanel(Data_IAQ iaqData)
-     => iaqDevicePanel.ShowData(iaqData);
 
     /// <summary>
     /// 顯示IAQ單一指數歷史資訊面板

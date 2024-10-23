@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,7 +9,10 @@ using VictorDev.Advanced;
 /// </summary>
 public class IAQDevicePanel : MonoBehaviour
 {
-    [Header(">>> IAQ資料項")]
+    [Header(">>> [資料項] IAQ設備型號")]
+    [SerializeField] private string modelID = "";
+
+    [Header(">>> [資料項] IAQ資料")]
     [SerializeField] private Data_IAQ iaqData;
 
     [Header(">>> 點擊單一IAQ指數項目時Invoke")]
@@ -21,7 +23,25 @@ public class IAQDevicePanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtTitle;
     [SerializeField] private AdvancedCanvasGroupFader fader;
 
-    public void ShowData(Data_IAQ data)
+    private Dictionary<string, Data_IAQ> iaqDataSet { get; set; }
+
+    public string ModelID
+    {
+        set
+        {
+            modelID = value;
+            if (iaqDataSet != null) ShowData(iaqDataSet);
+        }
+    }
+
+    public void ShowData(Dictionary<string, Data_IAQ> iaqDataSet)
+    {
+        this.iaqDataSet = iaqDataSet;
+        if (string.IsNullOrEmpty(modelID)) return;
+        ShowData(iaqDataSet[modelID]);
+    }
+
+    private void ShowData(Data_IAQ data)
     {
         iaqData = data;
         txtTitle.SetText($"[{data.ModelID}]");

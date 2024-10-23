@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
-using VictorDev.CameraUtils;
-using static UnityEngine.Rendering.DebugUI;
 
 public class Landmark : MonoBehaviour
 {
@@ -12,6 +10,7 @@ public class Landmark : MonoBehaviour
     public float offsetHeight;
     [Header(">>> 目標對像")]
     public Transform targetObject;
+    public string modelName => targetObject.name;
 
     [Header(">>> 地標分類")]
     public LandmarkCategory category;
@@ -32,7 +31,7 @@ public class Landmark : MonoBehaviour
 
     private void Awake()
     {
-        toggle.onValueChanged.AddListener((isOn)=> listItem?.SetIsOnWithoutNotify(isOn));
+        toggle.onValueChanged.AddListener((isOn) => listItem?.SetIsOnWithoutNotify(isOn));
     }
 
     public void SetToggleIsOnWithNotify(bool isOn)
@@ -67,7 +66,7 @@ public class Landmark : MonoBehaviour
         gameObject.SetActive(false);
         toggle.onValueChanged.AddListener((isOn) =>
         {
-          //  if (isOn) OrbitCamera.MoveTargetTo(targetObject);
+            //  if (isOn) OrbitCamera.MoveTargetTo(targetObject);
         });
     }
 

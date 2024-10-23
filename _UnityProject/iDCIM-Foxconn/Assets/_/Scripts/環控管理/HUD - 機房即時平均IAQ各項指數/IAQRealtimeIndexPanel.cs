@@ -61,7 +61,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
         {
             do
             {
-                iaqDataManager.GetRealtimeIAQIndex(uiManager_IAQ.deviceModelVisualizer.ModelNameList, (responseCode, eachIAQData, iaqDataAvg) =>
+                void onSuccess(long responseCode, Dictionary<string, Data_IAQ> eachIAQData, Data_IAQ iaqDataAvg)
                 {
                     if (responseCode != 200) return;
                     this.iaqDataAvg = iaqDataAvg;
@@ -71,7 +71,8 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
                     onUpdateIAQInfo.Invoke(eachIAQData);
                     //最後更新時間
                     DotweenHandler.ToBlink(txtLastTimestamp, DateTime.Now.ToString(DateTimeHandler.FullDateTimeFormat));
-                }, OnFailed);
+                }
+                iaqDataManager.GetRealtimeIAQIndex(uiManager_IAQ.deviceModelVisualizer.ModelNameList, onSuccess, OnFailed);
                 yield return new WaitForSeconds(intervalSendRequest);
             } while (isKeepUpdate);
         }

@@ -59,7 +59,7 @@ public class UIManager_CCTV : MonoBehaviour
                 listItem.minimapLandmark = minimap.landmarkList[i];
             }
         });
-        deviceModelVisualizer.onSelectedEvent.AddListener(CreatePanel);
+        deviceModelVisualizer.onSelectedEvent.AddListener((soData, listItem, modelName)=>CreatePanel(soData, listItem));
 
         //關閉所有釘選視窗(除了機房入口視窗)
         btnCloseAllWindows.onClick.AddListener(() =>
