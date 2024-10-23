@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
-using Random = UnityEngine.Random;
 
 /// <summary>
 /// 資料項 - IAQ
@@ -11,24 +10,45 @@ using Random = UnityEngine.Random;
 [Serializable]
 public class Data_IAQ : Data_NoSQL
 {
-    /// <summary>
-    /// [單位] IAQ代號比對
-    /// </summary>
-    public static readonly Dictionary<string, string> ColumnUnit = new Dictionary<string, string>()
+    public struct IAQ_DateFormat
     {
-        {"RT", "°c"}, {"RH", "%"},{"CO2", "ppm"},{"CO", "ppm"},
-        {"PM2.5", "ug/m3"}, {"PM10", "ug/m3"},{"VOCs", "ppb"},{"Formaldehyde", "ppb"},
-        {"Ozone", "ppb"}, {"Lit", "lux"},
-    };
+        public string columnName { get; set; }
+        /// <summary>
+        /// 欄位中文名稱
+        /// </summary>
+        public string columnName_ZH { get; set; }
+        /// <summary>
+        /// 單位名稱
+        /// </summary>
+        public string unitName { get; set; }
+
+        public float minValue, maxValue;
+        public IAQ_DateFormat(string columnName, string columnName_ZH, string unitName, float minValue, float maxValue)
+        {
+            this.columnName = columnName;
+            this.columnName_ZH = columnName_ZH;
+            this.unitName = unitName;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
+    }
 
     /// <summary>
-    /// [名稱] IAQ代號比對
+    /// [格式] 各項IAQ指數之格式，用於圖表、文字
     /// </summary>
-    public static readonly Dictionary<string, string> ColumnName = new Dictionary<string, string>()
+    public static readonly Dictionary<string, IAQ_DateFormat> UnitName = new Dictionary<string, IAQ_DateFormat>()
     {
-        {"RT", "溫度"}, {"RH", "濕度"},{"CO2", "二氧化碳濃度"},{"CO", "一氧化碳濃度"},
-        {"PM2.5", "懸浮微粒PM2.5濃度"}, {"PM10", "懸浮微粒PM10濃度"},{"VOCs", "揮發性有機物濃度"},{"Formaldehyde", "甲醛濃度"},
-        {"Ozone", "臭氧濃度"}, {"Lit", "環境光"},
+        {"RT", new IAQ_DateFormat("RT", "溫度", "°c", 0, 60)},
+        {"RH", new IAQ_DateFormat("RH", "濕度", "%", 0, 100)},
+        {"CO2", new IAQ_DateFormat("CO2", "二氧化碳濃度", "ppm", 0, 5000)},
+        {"CO", new IAQ_DateFormat("CO", "一氧化碳濃度", "ppm", 0, 5000)},
+        {"PM2.5", new IAQ_DateFormat("PM2.5", "懸浮微粒PM2.5濃度", "ug/m3", 0, 500)},
+        {"PM10", new IAQ_DateFormat("PM10", "懸浮微粒PM10濃度", "ug/m3", 0, 500)},
+        {"VOCs", new IAQ_DateFormat("VOCs", "揮發性有機物濃度", "ppb", 0, 700)},
+        {"Formaldehyde", new IAQ_DateFormat("Formaldehyde", "甲醛濃度", "ppb", 0, 700)},
+        {"Ozone", new IAQ_DateFormat("Ozone", "臭氧濃度", "ppb", 0, 700)},
+        {"Lit", new IAQ_DateFormat("Lit", "環境光", "lux", 0, 100)},
+        {"IAQ", new IAQ_DateFormat("IAQ", "IAQ指數", "", 0, 400)},
     };
 
     public string ModelID;

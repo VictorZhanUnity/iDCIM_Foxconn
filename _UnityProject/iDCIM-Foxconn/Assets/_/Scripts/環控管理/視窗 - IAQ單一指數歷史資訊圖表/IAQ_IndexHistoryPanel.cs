@@ -18,6 +18,7 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     [Header(">>> [資料項] IAQ單一指數")]
     [SerializeField] private IAQIndexDisplayer indexDisplayer;
     public IAQIndexDisplayer dataDisplayer => indexDisplayer;
+    private Data_IAQ.IAQ_DateFormat iaqDataFormat => Data_IAQ.UnitName[indexDisplayer.columnName];
 
     [Header(">>> [資料項] 歷史資料結果")]
     [SerializeField] private List<KeyValueData> historyData;
@@ -52,7 +53,7 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
         imgICON.sprite = indexDisplayer.imgICON_Sprite;
 
         string title = indexDisplayer.data.ModelID.Contains(",") ? "機房平均數據 - " : $"[{indexDisplayer.data.ModelID}] ";
-        txtTitle.SetText(title + Data_IAQ.ColumnName[indexDisplayer.columnName]);
+        txtTitle.SetText(title + iaqDataFormat.columnName_ZH);
 
         DotweenHandler.ToBlink(txtTitle);
         fader.isOn = true;
@@ -79,21 +80,48 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
             Dictionary<DateTime, float> avgValues = historyData
                 .SelectMany(item => item.value) // 將所有 DataPoint 展開為單一序列
                 .GroupBy(dp => dp.Timestamp)// 依照 timestamp 分組
-                .OrderByDescending(group => group.Key)
+                .OrderBy(group => group.Key) //排序
                 .ToDictionary(
                     group => group.Key,             // 使用 timestamp 作為鍵
                     group => group.Average(dp => dp.value) // 將同一 timestamp 的值取平均作為值
                 );
 
+            //清除圖表與設置
+            lineChart.series[0].data.Clear();
+            XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
+            xAxis.data.Clear();
+            YAxis yAxis = lineChart.EnsureChartComponent<YAxis>();
+            yAxis.minMaxType = Axis.AxisMinMaxType.Custom;
+            yAxis.min = iaqDataFormat.minValue;
+            yAxis.max = iaqDataFormat.maxValue;
+            yAxis.axisLabel.formatter = "{value}";
+            lineChart.series[0].label.formatter = "{c} " + iaqDataFormat.unitName;
+            Tooltip toolTip = lineChart.EnsureChartComponent<Tooltip>();
+            toolTip.numericFormatter = "0.### " + iaqDataFormat.unitName;
 
-            // 生成列表
+            xAxis.refreshComponent();
+            toolTip.refreshComponent();
+            lineChart.series[0].label.show = avgValues.Count > 0;
+
+            //清除表格
             ObjectPoolManager.PushToPool<ListItem_IAQHistory>(scrollRect.content);
+
             avgValues.ToList().ForEach(keyPair =>
             {
+                //設定圖表
+                if (lineChart.series[0].data.Count < 5)
+                {
+                    lineChart.AddData("", keyPair.Value);
+                    string xKey = keyPair.Key.ToString(DateTimeFormatter.FullDateTimeMinuteFormat);
+                    lineChart.AddXAxisData(xKey);
+                }
+
+                // 生成列表
                 ListItem_IAQHistory item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
                 item.iaqColumnName = indexDisplayer.columnName;
                 item.ShowData(keyPair.Key, keyPair.Value);
             });
+            scrollRect.verticalNormalizedPosition = 1;
         }
         WebAPIManager.GetIAQIndexHistory(indexDisplayer.key, startTime, endTime, onSuccess, onFailed);
     }

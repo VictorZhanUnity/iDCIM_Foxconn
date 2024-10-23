@@ -25,7 +25,8 @@ public class ListItem_IAQHistory : MonoBehaviour
 
             txtUnit = isPMUnit ? txtUnit_ugm3.text : txtUnit_Others.text;
 
-            if (!isPMUnit) txtUnit_Others.SetText(Data_IAQ.ColumnUnit[value]);
+            //設定單位文字
+            if (!isPMUnit) txtUnit_Others.SetText(Data_IAQ.UnitName[value].unitName);
         }
     }
 
