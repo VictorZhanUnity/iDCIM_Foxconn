@@ -124,7 +124,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
                 JObject jsonObject = (JObject)token;
                 result = jsonObject.ToString(Formatting.Indented);
             }
-            Debug.Log($">>> JSON資料:\n{result}");
+            Debug.Log($"---> JSON資料:\n{result}");
         }
         catch (System.Exception e)
         {

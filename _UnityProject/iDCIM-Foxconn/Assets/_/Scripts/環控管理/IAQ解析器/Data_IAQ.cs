@@ -62,9 +62,7 @@ public class Data_IAQ : Data_NoSQL
         //清除圖表與設置
         ClearChart(lineChart);
 
-     //   lineChart.series[0].data.Clear();
-     //   XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
-       // xAxis.data.Clear();
+        //設定格式
         YAxis yAxis = lineChart.EnsureChartComponent<YAxis>();
         yAxis.minMaxType = Axis.AxisMinMaxType.Custom;
         yAxis.min = dataFormat.minValue;
@@ -73,16 +71,32 @@ public class Data_IAQ : Data_NoSQL
         Tooltip toolTip = lineChart.EnsureChartComponent<Tooltip>();
         toolTip.numericFormatter = "0.## " + dataFormat.unitName;
 
-      //  if (xAxis != null) xAxis.refreshComponent();
         toolTip.refreshComponent();
         lineChart.series[0].label.show = data.Count > 0;
-        lineChart.series[0].label.formatter = "{c} " + dataFormat.unitName;
+        lineChart.series[0].label.formatter = "{c}" + dataFormat.unitName;
         lineChart.series[0].label.numericFormatter = "0.# ";
+
+        //設定DataZoom，控制圖表拖曳顯示資料項
+        int maxShowAmount = 5; //畫面上只顯示五筆資料
+        DataZoom dataZoom = lineChart.EnsureChartComponent<DataZoom>();
+        if (dataZoom != null)
+        {
+            dataZoom.zoomLock = true; //禁止手動拖曳更動start與end範圍
+            dataZoom.end = 100;
+            dataZoom.start = dataZoom.end - ((float)maxShowAmount / data.Count) * 100f;
+
+            dataZoom.borderColor = new Color32(1, 1, 1, 0);
+            dataZoom.fillerColor = new Color(241f / 255, 195f / 255, 81f / 255, 100f / 255);
+            dataZoom.left = 100f;
+            dataZoom.right = 70f;
+            dataZoom.top = 0.87f;
+            dataZoom.refreshComponent();
+        }
 
         data.ToList().ForEach(keyPair =>
         {
             //設定圖表
-            if (lineChart.series[0].data.Count < 5)
+            if (lineChart.series[0].data.Count < 5 || true)
             {
                 lineChart.AddData("", keyPair.Value);
                 string dateFormat = isShowFullTimestamp ? DateTimeHandler.FullDateTimeMinuteFormat : DateTimeHandler.HourMinuteFormat;
@@ -105,7 +119,6 @@ public class Data_IAQ : Data_NoSQL
             xAxis.refreshComponent();
         }
     }
-
 
     public string ModelID;
     public float IAQ => float.Parse(GetValue("IAQ"));

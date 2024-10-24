@@ -14,7 +14,7 @@ namespace VictorDev.Common
         /// <summary>
         /// 2024-11-24 13:33
         /// </summary>
-        public static string FullDateTimeMinuteFormat => $"{FullDateFormat} {HourMinuteFormat}";
+        public static string FullDateTimeMinuteFormat => $"{FullDateFormat}\n{HourMinuteFormat}";
 
         /// <summary>
         /// 2024-11-24T13:33:22

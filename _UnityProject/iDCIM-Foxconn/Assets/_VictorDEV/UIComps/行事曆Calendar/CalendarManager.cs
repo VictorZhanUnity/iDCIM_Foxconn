@@ -84,7 +84,7 @@ namespace VictorDev.Calendar
         public void SetDateTimeRange(DateTime startDate, DateTime endDate)
         {
             this.startDate = startDate;
-            this.endDate = endDate;
+            this.endDate = endDate.AddDays(1).AddTicks(-1);
             currentDate = startDate;
             GenerateCalendar();
             onSelectedStartDateStrEvent.Invoke(startDate.ToString(DateTimeHandler.FullDateFormat));
@@ -226,7 +226,7 @@ namespace VictorDev.Calendar
             }
             else if (endDate == null && (isAllowSelectSameDay || dayItem.date != startDate)) // 已選擇起始日期但尚未選擇結束日期
             {
-                endDate = dayItem.date;
+                endDate = dayItem.date.AddDays(1).AddTicks(-1); //設定為23:59:59
                 Debug.Log($"選擇結束日期: {endDate}");
                 result = (DateTime)endDate;
                 onSelectedEndDateEvent.Invoke(result);
@@ -237,7 +237,7 @@ namespace VictorDev.Calendar
                 {
                     DateTime temp = startDate.Value;
                     startDate = endDate;
-                    endDate = temp;
+                    endDate = temp.AddDays(1).AddTicks(-1); //設定為23:59:59;
 
                     result = (DateTime)startDate;
                     onSelectedStartDateEvent.Invoke(result);
