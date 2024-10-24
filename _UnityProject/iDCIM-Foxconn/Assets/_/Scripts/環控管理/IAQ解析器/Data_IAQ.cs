@@ -60,9 +60,11 @@ public class Data_IAQ : Data_NoSQL
         IAQ_DateFormat dataFormat = UnitName[columnName];
 
         //清除圖表與設置
-        lineChart.series[0].data.Clear();
-        XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
-        xAxis.data.Clear();
+        ClearChart(lineChart);
+
+     //   lineChart.series[0].data.Clear();
+     //   XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
+       // xAxis.data.Clear();
         YAxis yAxis = lineChart.EnsureChartComponent<YAxis>();
         yAxis.minMaxType = Axis.AxisMinMaxType.Custom;
         yAxis.min = dataFormat.minValue;
@@ -71,7 +73,7 @@ public class Data_IAQ : Data_NoSQL
         Tooltip toolTip = lineChart.EnsureChartComponent<Tooltip>();
         toolTip.numericFormatter = "0.## " + dataFormat.unitName;
 
-        if (xAxis != null) xAxis.refreshComponent();
+      //  if (xAxis != null) xAxis.refreshComponent();
         toolTip.refreshComponent();
         lineChart.series[0].label.show = data.Count > 0;
         lineChart.series[0].label.formatter = "{c} " + dataFormat.unitName;
@@ -88,6 +90,20 @@ public class Data_IAQ : Data_NoSQL
                 lineChart.AddXAxisData(xKey);
             }
         });
+    }
+
+    /// <summary>
+    /// 清除圖表的data值與X Axis
+    /// </summary>
+    public static void ClearChart(LineChart lineChart)
+    {
+        lineChart.series.ForEach(keyPair => keyPair.data.Clear());
+        XAxis xAxis = lineChart.EnsureChartComponent<XAxis>();
+        if (xAxis != null)
+        {
+            xAxis.data.Clear();
+            xAxis.refreshComponent();
+        }
     }
 
 

@@ -81,4 +81,5 @@ public class IAQIndexDisplayer : MonoBehaviour
             else txtValue.text = x.ToString("0.#");
         }, float.Parse(txtValue.text), 0.15f).SetEase(Ease.OutQuart);
     }
+    private void OnDisable() => txtValue.text = "0";
 }
