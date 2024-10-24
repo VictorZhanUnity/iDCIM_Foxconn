@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using VictorDev.Advanced;
 using VictorDev.Async.CoroutineUtils;
 using VictorDev.Common;
 using VictorDev.IAQ;
@@ -67,6 +69,10 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
                     this.iaqDataAvg = iaqDataAvg;
                     iaqRealtimeIndexAvgList.ForEach(item => item.data = iaqDataAvg);
                     this.eachIAQData = eachIAQData;
+
+                    //更新IAQ圖標上的溫度值
+                    List<Landmark_IAQ> iaqLandmark = LandmarkManager.Landmarks.OfType<Landmark_IAQ>().ToList();
+                    iaqLandmark.ForEach(landmark => landmark.value = eachIAQData[landmark.deviceID].RT);
 
                     onUpdateIAQInfo.Invoke(eachIAQData);
                     //最後更新時間

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
+using VictorDev.RevitUtils;
 
 public class Landmark : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Landmark : MonoBehaviour
     public float offsetHeight;
     [Header(">>> 目標對像")]
     public Transform targetObject;
-    public string modelName => targetObject.name;
+    public string deviceID => RevitHandler.GetDeviceID(targetObject.name);
 
     [Header(">>> 地標分類")]
     public LandmarkCategory category;

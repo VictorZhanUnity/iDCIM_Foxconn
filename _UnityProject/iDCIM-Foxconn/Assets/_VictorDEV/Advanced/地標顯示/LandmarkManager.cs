@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using VictorDev.Common;
@@ -12,6 +13,7 @@ namespace VictorDev.Advanced
     {
         [Header(">>>地標列表")]
         [SerializeField] private List<Landmark> landmarks = new List<Landmark>();
+        public static List<Landmark> Landmarks => Instance.landmarks;
 
         [Header(">>>攝影機遠近之地標尺吋調整")]
         [SerializeField] private float minScale = 0.8f; // 最小缩放比例
@@ -98,6 +100,8 @@ namespace VictorDev.Advanced
             }
         }
     }
+
+    
 
     /// <summary>
     /// 地標分類

@@ -36,7 +36,6 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtTitle;
     [SerializeField] private AdvancedCanvasGroupFader fader;
     [SerializeField] private RectTransformResizeLerp resizer;
-    [SerializeField] private Toggle toggleContent;
 
     private void Start()
     {
