@@ -60,12 +60,18 @@ namespace VictorDev.Net.WebAPI
         public WWWForm formData => body.formData;
         public void SetFormData(Dictionary<string, string> dataSet) => body.SetFormData(dataSet);
         public void SetRawJsonData(string rawJsonString) => body.SetRawJsonData(rawJsonString);
+        public void SetTextAfterURL(string keyword) => keywordAfterURL = keyword.Trim();
 
         public string BodyJSON => body.rawJSON;
 
         public WebAPI_Request(string url) => this.apiURL = url;
 
         private UriBuilder uriBuilder { get; set; }
+
+        /// <summary>
+        /// 加在URL後面的文字，不算是Query Param的東西，因為沒用到欄位名
+        /// </summary>
+        private string keywordAfterURL { get; set; } = "";
 
         /// <summary>
         /// 完整WebAPI網址
@@ -79,13 +85,17 @@ namespace VictorDev.Net.WebAPI
                     uriBuilder = new UriBuilder(ipConfig.WebIP_Port);
                     uriBuilder.Path += apiURL.Trim();
                 }
-                else uriBuilder = new UriBuilder(apiURL.Trim());
+                else uriBuilder = new UriBuilder(apiURL.Trim()); //後面已加上 /
 
                 string resultString = uriBuilder.Uri.ToString();
                 //檢查Params設定
                 if (queryParams.IsActivated)
                 {
                     resultString = StringHandler.StringBuilderAppend(resultString, queryParams.queryString);
+                }
+                else if (string.IsNullOrEmpty(keywordAfterURL) == false)
+                {
+                    resultString += keywordAfterURL;
                 }
                 return resultString;
             }

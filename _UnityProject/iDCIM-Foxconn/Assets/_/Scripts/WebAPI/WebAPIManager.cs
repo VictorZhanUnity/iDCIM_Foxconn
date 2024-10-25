@@ -17,10 +17,10 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [Header(">>> [IAQ] 取得IAQ指數歷史資料")]
     [SerializeField] private WebAPI_Request request_GetIAQIndexHistory;
 
-    [Header(">>> 取得所有DCR機櫃及內含設備")]
+    [Header(">>> [資產管理] 取得所有DCR機櫃及內含設備")]
     [SerializeField] private WebAPI_Request request_GetAllDCRInfo;
-    [Header(">>> 取得設備的COBie資訊")]
-    [SerializeField] private WebAPI_Request request_GetDeviceCOBie;
+    [Header(">>> [資產管理] 取得設備的基本資訊與COBie")]
+    [SerializeField] private WebAPI_Request request_GetDeviceInfo;
 
     [Space(20)]
 
@@ -33,6 +33,9 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [Header(">>> 取得COBie時觸發")]
     public UnityEvent<string> onGetDeviceCOBie;
 
+    /// <summary>
+    /// 管理者登入
+    /// </summary>
     public static void SignIn(string account, string password, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
         Debug.Log($">>> [帳密登入] WebAPI Call: {Instance.request_SignIn.url}");
@@ -53,10 +56,12 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     }
 
     /// <summary>
-    /// 取得IAQ即時各項指數
+    /// [環境控制] 取得IAQ即時各項指數
     /// </summary>
     public static void GetIAQRealTimeIndex(List<string> tags, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
+        if (Instance.CheckToken(Instance.request_GetIAQRealTimeIndex) == false) return;
+
         Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
@@ -65,10 +70,12 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         Instance.SendRequest(data, Instance.request_GetIAQRealTimeIndex, onSuccess, onFailed);
     }
     /// <summary>
-    /// 取得IAQ各項指數歷史資料
+    /// [環境控制] 取得IAQ各項指數歷史資料
     /// </summary>
     public static void GetIAQIndexHistory(List<string> tags, DateTime from, DateTime to, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
+        if (Instance.CheckToken(Instance.request_GetIAQIndexHistory) == false) return;
+
         Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
         Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");
         Dictionary<string, object> data = new Dictionary<string, object>()
@@ -89,9 +96,35 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         Instance.SendRequest(data, Instance.request_GetIAQIndexHistory, onSuccess, onFailed);
     }
 
+    /// <summary>
+    /// [資產管理] 取得所有DCR機櫃及內含設備
+    /// </summary>
+    public static void GetAllDCRInfo(Action<long, string> onSuccess, Action<long, string> onFailed)
+    {
+        if (Instance.CheckToken(Instance.request_GetAllDCRInfo) == false) return;
+
+        Debug.Log($">>> [取得所有DCR機櫃及內含設備] WebAPI Call: {Instance.request_GetAllDCRInfo.url}");
+        WebAPI_Caller.SendRequest(Instance.request_GetAllDCRInfo, onSuccess, onFailed);
+    }
+
+    /// <summary>
+    /// [資產管理] 取得設備的COBie資訊，依據設備自身的containerID 
+    /// <para>+ 需先抓所有機櫃與設備清單以取得各台設備的containerID</para>
+    /// </summary>
+    public static void GetCOBieByContainerID(string containerID, Action<long, string> onSuccess, Action<long, string> onFailed)
+    {
+        if (Instance.CheckToken(Instance.request_GetDeviceInfo) == false) return;
+
+        Instance.request_GetDeviceInfo.SetTextAfterURL(containerID);
+        Debug.Log($">>> [取得設備的COBie資訊] WebAPI Call: {Instance.request_GetDeviceInfo.url} \n containerID: {containerID}");
+        WebAPI_Caller.SendRequest(Instance.request_GetDeviceInfo, onSuccess, onFailed);
+    }
+
+    /// <summary>
+    /// 傳送資料項 {欄位名, 值(型態)}
+    /// </summary>
     private void SendRequest<T>(Dictionary<string, T> data, WebAPI_Request request, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
-        request.token = token;
         request.SetRawJsonData(PrintJSONFormatting(JsonConvert.SerializeObject(data)));
         WebAPI_Caller.SendRequest(request, (responseCode, jsonString) =>
         {
@@ -99,6 +132,20 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
             Debug.Log($"*** WebAPI呼叫成功!!");
             PrintJSONFormatting(jsonString);
         }, onFailed);
+    }
+
+    /// <summary>
+    /// 檢查是否已取得Token
+    /// </summary>
+    private bool CheckToken(WebAPI_Request request)
+    {
+        if (Instance.token == null)
+        {
+            Debug.LogWarning($"尚未事先取得Token!!");
+            return false;
+        }
+        request.token = token;
+        return true;
     }
 
     /// <summary>
@@ -133,48 +180,15 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         return result;
     }
 
-    ///====================================
-
-    [ContextMenu(" - 取得所有DCR機櫃及內含設備")]
-    public void GetAllDCRInfo(Action<long, string> onSuccess, Action<long, string> onFailed)
-    {
-        if (token == null)
-        {
-            Debug.LogWarning($"尚未事先取得Token!!");
-            return;
-        }
-
-        request_GetAllDCRInfo.token = token;
-        Debug.Log($">>> [取得所有DCR機櫃及內含設備] WebAPI Call: {request_GetAllDCRInfo.url}");
-        WebAPI_Caller.SendRequest(request_GetAllDCRInfo, onSuccess, onFailed);
-    }
-
-    [ContextMenu(" - 取得設備的COBie資訊")]
-    public static void GetCOBieByDeviceId(string deviceId, Action<long, string> onSuccess, Action<long, string> onFailed)
-    {
-        if (Instance.token == null)
-        {
-            Debug.LogWarning($"尚未事先取得Token!!");
-            return;
-        }
-
-        Instance.request_GetDeviceCOBie.token = Instance.token;
-        Instance.request_GetDeviceCOBie.SetFormData(new Dictionary<string, string>() { { "deviceId", deviceId } });
-
-        Debug.Log($">>> [取得設備的COBie資訊] WebAPI Call: {Instance.request_GetDeviceCOBie.url} / deviceId: {deviceId}");
-        WebAPI_Caller.SendRequest(Instance.request_GetDeviceCOBie, onSuccess, onFailed);
-    }
-
-
-
-    [ContextMenu(" - 管理員登入")]
-    public void Test_SignIn()
+    #region [ContextMenu 測試API]
+    [ContextMenu("[帳號] 管理員登入")]
+    private void Test_SignIn()
     {
         SignIn("TCIT", "TCIT", null, null);
     }
 
-    [ContextMenu(" - 取得IAQ即時各項指數")]
-    public void Test_GetIAQRealTimeIndex()
+    [ContextMenu("[IAQ] 取得IAQ即時各項指數")]
+    private void Test_GetIAQRealTimeIndex()
     {
         List<string> tags = new List<string>()
         {
@@ -208,9 +222,8 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         GetIAQRealTimeIndex(tags, null, null);
     }
 
-
-    [ContextMenu(" - 取得IAQ各項指數歷史資料")]
-    public void Test_GetIAQIndexHistory()
+    [ContextMenu("[IAQ] 取得IAQ各項指數歷史資料")]
+    private void Test_GetIAQIndexHistory()
     {
         List<string> tags = new List<string>()
         {
@@ -245,4 +258,26 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         DateTime from = to.AddMonths(-1);
         GetIAQIndexHistory(tags, from, to, null, null);
     }
+
+    [ContextMenu("[資產管理] 取得所有DCR機櫃及內含設備")]
+    private void GetAllDCRInfo()
+    {
+        void onSuccess(long responseCode, string jsonString)
+        {
+            PrintJSONFormatting(jsonString);
+        }
+        GetAllDCRInfo(onSuccess, null);
+    }
+
+    [ContextMenu("[資產管理] 取得設備基本資訊與COBie")]
+    private void GetCOBieByContainerID()
+    {
+        void onSuccess(long responseCode, string jsonString)
+        {
+            PrintJSONFormatting(jsonString);
+        }
+        string containerID = "b8ef823e-4e1f-49c4-9f44-e37e8c0548d1";
+        GetCOBieByContainerID(containerID, onSuccess, null);
+    }
+    #endregion
 }

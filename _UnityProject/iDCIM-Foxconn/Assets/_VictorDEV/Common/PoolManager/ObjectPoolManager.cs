@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using VictorDev.Common;
@@ -82,7 +81,6 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         string className = typeof(T).Name;
         if (Instance.poolDict.ContainsKey(className) == false)
         {
-
             PoolContainer poolContainer = new PoolContainer(className);
             Instance.poolDict[className] = poolContainer;
         }
@@ -106,6 +104,9 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         public string ClassName { get; private set; }
         public int PoolCount => queuePool.Count;
 
+        /// <summary>
+        /// 物件容器 {物件類型名稱, 是否為UI物件
+        /// </summary>
         public PoolContainer(string typeName)
         {
             ClassName = typeName;
@@ -121,7 +122,7 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         public void AddToQueuePool(Component target)
         {
             queuePool.Enqueue(target);
-            target.transform.SetParent(container, true);
+            target.transform.SetParent(container, false);
             target.name = ClassName;
             target.gameObject.SetActive(false);
             ResetTarget(target);
@@ -131,19 +132,19 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
         /// <summary>
         /// 從Queue裡擷取物件
         /// <para>+ 若沒有目標物件型態時，則以prefab動態實例化並回傳</para>
+        /// <para>★ Instantiate與SetParent裡的worldPositionStays，都要設定為false</para>
+        /// <para>★ worldPositionStays為false，讓物件世界座標會隨著父物件而變化，不會固定值</para>
+        /// <para>+ 若物件世界座標為固定值的話，則物件呈現的位置會因為父物件的不同而不一樣</para>
         /// </summary>
         public T GetInstanceFromQueuePool<T>(T prefab, Transform container, bool isResetPosition) where T : Component
         {
             Component target =
-                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container, true);
+                (queuePool.Count > 0) ? queuePool.Dequeue() : Instantiate(prefab, container, false);
 
-            //target.transform.parent = container;
-            target.transform.SetParent(container, true);
+            target.transform.SetParent(container, false);
             target.transform.localScale = Vector3.one;
-
-          //  if(isResetPosition) target.transform.localPosition = target.transform.position = Vector3.zero;
-
             target.gameObject.SetActive(true);
+
             RefreshContainerName();
             return target.GetComponent<T>();
         }

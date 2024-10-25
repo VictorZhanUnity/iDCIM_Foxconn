@@ -177,7 +177,7 @@ namespace VictorDev.Calendar
             if (startDate.HasValue && endDate.HasValue && startDate != endDate)
             {
                 if (date == startDate) dayItem.isStartDate = true;
-                else dayItem.isEndDate = date == endDate;
+                else dayItem.isEndDate = (date.Date == endDate.Value.Date);
             }
 
             // 添加點擊事件
