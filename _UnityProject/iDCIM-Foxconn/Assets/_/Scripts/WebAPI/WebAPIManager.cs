@@ -18,7 +18,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [SerializeField] private WebAPI_Request request_GetIAQIndexHistory;
 
     [Header(">>> [資產管理] 取得所有DCR機櫃及內含設備")]
-    [SerializeField] private WebAPI_Request request_GetAllDCRInfo;
+    [SerializeField] private WebAPI_Request request_GetAllDCRContainer;
     [Header(">>> [資產管理] 取得設備的基本資訊與COBie")]
     [SerializeField] private WebAPI_Request request_GetDeviceInfo;
 
@@ -99,12 +99,12 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     /// <summary>
     /// [資產管理] 取得所有DCR機櫃及內含設備
     /// </summary>
-    public static void GetAllDCRInfo(Action<long, string> onSuccess, Action<long, string> onFailed)
+    public static void GetAllDCRContainer(Action<long, string> onSuccess, Action<long, string> onFailed)
     {
-        if (Instance.CheckToken(Instance.request_GetAllDCRInfo) == false) return;
+        if (Instance.CheckToken(Instance.request_GetAllDCRContainer) == false) return;
 
-        Debug.Log($">>> [取得所有DCR機櫃及內含設備] WebAPI Call: {Instance.request_GetAllDCRInfo.url}");
-        WebAPI_Caller.SendRequest(Instance.request_GetAllDCRInfo, onSuccess, onFailed);
+        Debug.Log($">>> [取得所有DCR機櫃及內含設備] WebAPI Call: {Instance.request_GetAllDCRContainer.url}");
+        WebAPI_Caller.SendRequest(Instance.request_GetAllDCRContainer, onSuccess, onFailed);
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         {
             PrintJSONFormatting(jsonString);
         }
-        GetAllDCRInfo(onSuccess, null);
+        GetAllDCRContainer(onSuccess, null);
     }
 
     [ContextMenu("[資產管理] 取得設備基本資訊與COBie")]

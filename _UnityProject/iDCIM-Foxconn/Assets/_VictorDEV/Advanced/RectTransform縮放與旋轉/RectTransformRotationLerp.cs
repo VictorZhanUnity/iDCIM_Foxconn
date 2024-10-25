@@ -56,17 +56,9 @@ namespace VictorDev.Advanced
 
             // 設置 rotateToTarget 變數
             this.rotateToTarget = rotateToTarget;
-
-            // 啟動新的 Coroutine
-            try
-            {
-                lerpCoroutine = StartCoroutine(LerpRotation());
-            }
-            catch (Exception e)
-            {
-                // 確保最終旋轉設置為目標角度或初始角度
-                rectTransform.localEulerAngles = new Vector3(0, 0, initialRotation);
-            }
+            
+            if(gameObject.activeInHierarchy) lerpCoroutine = StartCoroutine(LerpRotation());
+            else rectTransform.localEulerAngles = new Vector3(0, 0, initialRotation);
         }
 
         private IEnumerator LerpRotation()

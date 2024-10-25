@@ -54,7 +54,7 @@ public class ProgressBarController : MonoBehaviour
             txtValue.SetText($"{txtValue.text} {unitText}");
 
             float fontSize = txtPercent.fontSize * 0.4f;
-            fontSize = Mathf.Max((float)fontSize, 16);
+            fontSize = Mathf.Max((float)fontSize, 14);
             txtPercent.SetText($"{Mathf.FloorToInt(percentage * 100)}{StringHandler.SetFontSizeString("%", (int)fontSize)}");
         }
     }

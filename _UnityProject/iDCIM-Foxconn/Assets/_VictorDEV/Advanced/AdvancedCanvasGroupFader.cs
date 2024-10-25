@@ -37,14 +37,17 @@ namespace VictorDev.Advanced
                 DotweenHandler.ToLerpValue(canvasGroup.alpha, toAlpha, SetAlpha, duration);
                 yield return null;
             }
-            coroutine = StartCoroutine(enumerator());
+            if(gameObject.activeInHierarchy) coroutine = StartCoroutine(enumerator());
+            else SetAlpha(toAlpha);
         }
 
         private void SetAlpha(float alpha)
         {
             canvasGroup.alpha = alpha;
-            canvasGroup.interactable = alpha == 1;
-            canvasGroup.blocksRaycasts = alpha == 1;
+
+            bool isInterable = (initAlpha == 0) ? alpha == 1 : alpha >= initAlpha;
+            canvasGroup.interactable = isInterable;
+            canvasGroup.blocksRaycasts = isInterable;
         }
 
         private void OnValidate() => canvasGroup ??= GetComponent<CanvasGroup>();

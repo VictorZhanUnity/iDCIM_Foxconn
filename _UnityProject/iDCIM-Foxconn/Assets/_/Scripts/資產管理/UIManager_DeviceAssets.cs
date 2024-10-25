@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.CameraUtils;
-using static UnityEngine.GraphicsBuffer;
 
 public class UIManager_DeviceAssets : MonoBehaviour
 {
@@ -16,14 +15,32 @@ public class UIManager_DeviceAssets : MonoBehaviour
         set
         {
             deviceModelVisualizer.isOn = value;
-
             uiObj.SetActive(value);
+
+            if (value) WebAPI_GetAllRackAndDevice();
         }
     }
     private void Start()
     {
         deviceModelVisualizer.onClickEvent.AddListener(ShowRackInfoPanel);
         SetRackModelList();
+    }
+
+    /// <summary>
+    /// [WebAPI] 取得所有機櫃與其設備
+    /// </summary>
+    private void WebAPI_GetAllRackAndDevice()
+    {
+        void onSuccess(long responseCode, string jsonString)
+        {
+            print($"WebAPI_GetAllRackAndDevice: {jsonString}");
+        }
+        WebAPIManager.GetAllDCRContainer(onSuccess, onFailed);
+    }
+
+    private void onFailed(long responseCode, string msg)
+    {
+        throw new System.NotImplementedException();
     }
 
     /// <summary>
@@ -59,8 +76,6 @@ public class UIManager_DeviceAssets : MonoBehaviour
         }
 
     }
-
-
     private void ShowRackInfoPanel(Transform target)
     {
         print($"ShowRackInfoPanel: {target.name}");
