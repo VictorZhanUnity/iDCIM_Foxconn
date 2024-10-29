@@ -182,10 +182,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
 
     #region [ContextMenu 測試API]
     [ContextMenu("[帳號] 管理員登入")]
-    private void Test_SignIn()
-    {
-        SignIn("TCIT", "TCIT", null, null);
-    }
+    private void Test_SignIn() => SignIn("TCIT", "TCIT", null, null);
 
     [ContextMenu("[IAQ] 取得IAQ即時各項指數")]
     private void Test_GetIAQRealTimeIndex()

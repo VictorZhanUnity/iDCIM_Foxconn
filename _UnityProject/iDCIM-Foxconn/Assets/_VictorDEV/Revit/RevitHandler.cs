@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ namespace VictorDev.RevitUtils
     public abstract class RevitHandler
     {
         /// <summary>
-        /// 取得DeviceID 從[]
+        /// 從模型名稱[] 裡取得deviceId
         /// </summary>
         public static string GetDeviceID(string modelName)
         {
@@ -24,6 +26,162 @@ namespace VictorDev.RevitUtils
             if (match.Success) return match.Groups[1].Value;
             else return null;
         }
+
+
+        /// <summary>
+        /// COBie欄位對照表 (From冠宇 2024.10.25)
+        /// </summary>
+        private static Dictionary<string, string> cobieColumnTable { get; set; } = new Dictionary<string, string>()
+        {
+             {"component_description", "描述/設備名稱" },
+             {"component_assetIdentifier", "FM資產識別字" },
+             {"component_serialNumber", "產品序號" },
+             {"component_installationDate", "安裝日期" },
+             {"component_tagName", "設備編碼" },
+             {"component_warrantyDurationPart", "保固時間" },
+             {"component_warrantyDurationUnit", "保固時間單位" },
+             {"component_warrantyGuarantorLabor", "保固廠商" },
+             {"component_warrantyStartDate", "保固開始時間" },
+             {"component_warrantyEndDate", "保固結束時間" },
+             {"document_inspection", "保養檢查表" },
+             {"document_handout", "使用手冊" },
+             {"document_drawing", "圖說" },
+             {"contact_company", "聯絡單位公司" },
+             {"contact_department", "聯絡單位部門" },
+             {"contact_email", "聯絡人Email" },
+             {"contact_familyName", "聯絡人姓氏" },
+             {"contact_givenName", "聯絡人名字" },
+             {"contact_phone", "聯絡人電話" },
+             {"contact_street", "聯絡人地址" },
+             {"facility_name", "專案棟別名稱" },
+             {"facility_projectName", "專案名稱" },
+             {"facility_siteName", "項目地點" },
+             {"equipment_supplier", "供應廠商" },
+             {"floor_name", "樓層名稱/所屬樓層" },
+             {"space_name", "項目地點" },
+             {"space_roomTag", "空間名稱" },
+             {"system_category", "系統類別 DCS、DCN" },
+             {"system_name", "系統名稱" },
+             {"type_category", "OmniClass編碼" },
+             {"type_expectedLife", "使用年限" },
+             {"type_manufacturer", "製造廠商" },
+             {"type_modelNumber", "產品型號" },
+             {"type_name", "設備品類名稱" },
+             {"type_replacementCost", "設備售價" },
+             {"type_accessibilityPerformance", "無障礙功能" },
+             {"type_shape", "形狀" },
+             {"type_size", "尺寸" },
+             {"type_color", "顏色" },
+             {"type_finish", "完成面" },
+             {"type_grade", "設備分級" },
+             {"type_material", "材質" },
+        };
+        /// <summary>
+        /// 取得COBie欄位中文名稱
+        /// </summary>
+        public static string GetCOBieColumnName_ZH(string key) => cobieColumnTable.Keys.Contains(key) ? cobieColumnTable[key] : null;
+
+        #region [>>>>>>>>> WebAPI 資料項架構]
+        //資料解析運算是快的，不到一秒，只不過呈現在Inspector上會較慢些
+        /// <summary>
+        /// [資料項] 資產管理
+        /// </summary>
+        [Serializable]
+        public  class Data_iDCIMAsset
+        {
+            public string devicePath;
+            public string deviceId;
+            public string system;
+            public string manufacturer;
+            public string modelNumber;
+            public COBieInfo information;
+
+            public string deviceName => devicePath.Split(':')[1].Trim();
+        }
+        /// <summary>
+        /// [資料項] 機櫃Rack與其設備清單
+        /// </summary>
+        [Serializable]
+        public class Data_ServerRackAsset : Data_iDCIMAsset
+        {
+            public string rackId;
+            public string description;
+            public List<Data_DeviceAsset> containers;
+        }
+        /// <summary>
+        /// [資料項] 機櫃Rack與其設備清單
+        /// </summary>
+        [Serializable]
+        public class Data_DeviceAsset : Data_iDCIMAsset
+        {
+            public string containerId;
+            public int rackLocation;
+            public int state;
+        }
+
+        /// <summary>
+        /// [資料項] COBie資訊與長寬高
+        /// </summary>
+        [Serializable]
+        public class Information
+        {
+            public float length;
+            public float width;
+            public float height;
+            public float heightU;
+            public float watt;
+            public float weight;
+        }
+        [Serializable]
+        public class COBieInfo : Information
+        {
+            public string component_description;
+            public string component_assetIdentifier;
+            public string component_serialNumber;
+            public string component_installationDate;
+            public string component_tagName;
+            public string component_warrantyDurationPart;
+            public string component_warrantyDurationUnit;
+            public string component_warrantyGuarantorLabor;
+            public string component_warrantyStartDate;
+            public string component_warrantyEndDate;
+            public string document_inspection;
+            public string document_handout;
+            public string document_drawing;
+            public string contact_company;
+            public string contact_department;
+            public string contact_email;
+            public string contact_familyName;
+            public string contact_givenName;
+            public string contact_phone;
+            public string contact_street;
+            public string facility_name;
+            public string facility_projectName;
+            public string facility_siteName;
+            public string equipment_supplier;
+            public string floor_name;
+            public string space_name;
+            public string space_roomTag;
+            public string system_category;
+            public string system_name;
+            public string type_category;
+            public string type_expectedLife;
+            public string type_manufacturer;
+            public string type_modelNumber;
+            public string type_name;
+            public string type_replacementCost;
+            public string type_accessibilityPerformance;
+            public string type_shape;
+            public string type_size;
+            public string type_color;
+            public string type_finish;
+            public string type_grade;
+            public string type_material;
+        }
+        #endregion
+
+        //========================================================================================================
+
 
         /// <summary>
         /// 透過DCS、DCN設備的deviceId，取得其設備的高度U

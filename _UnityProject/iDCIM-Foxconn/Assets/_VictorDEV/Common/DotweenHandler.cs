@@ -23,12 +23,12 @@ namespace VictorDev.Common
             }).SetDelay(Random.Range(0, randomDelay)) ;
         }
 
-        public static Tween ToLerpValue(float startValue, float endValue, Action<float> onUpdate, float duration = 0.15f, float randomDelay = 0)
+        public static Tween ToLerpValue(float startValue, float endValue, Action<float> onUpdate, float duration = 0.15f, float dealy = 0)
         {
             return DOTween.To(() => startValue, x => {
                 startValue = x;
                 onUpdate.Invoke(startValue);
-            }, endValue, duration);
+            }, endValue, duration).SetDelay(dealy).SetEase(Ease.OutQuart);
         }
     }
 }

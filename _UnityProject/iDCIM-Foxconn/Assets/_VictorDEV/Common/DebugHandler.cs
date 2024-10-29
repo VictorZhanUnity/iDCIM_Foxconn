@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace VictorDev.Common
@@ -55,8 +56,24 @@ namespace VictorDev.Common
             onLogEvent?.Invoke(logData.logType, logData.msg);
             logHistory.Add(logData);
         }
+#if UNITY_EDITOR
+        public static void ClearConsole()
+        {
+            // 使用反射取得 UnityEditor.LogEntries 類型
+            var logEntries = Type.GetType("UnityEditor.LogEntries, UnityEditor.dll");
+            if (logEntries != null)
+            {
+                // 使用反射調用 Clear 方法
+                var clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+                clearMethod?.Invoke(null, null);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("無法取得 UnityEditor.LogEntries 類型。");
+            }
+        }
     }
-
+#endif
     public enum EnumLogType
     {
         Log, LogWarning, LogError

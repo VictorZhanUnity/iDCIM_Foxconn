@@ -15,7 +15,7 @@ public class ObjectPoolManager : SingletonMonoBehaviour<ObjectPoolManager>
 {
     [Header(">>> 每個類別的物件池最大數量<<< ")]
     [Range(30, 200)]
-    [SerializeField] private int maxSizeOfEachQueue = 60;
+    [SerializeField] private int maxSizeOfEachQueue = 200;
 
     /// <summary>
     /// 用Dictionary管理動態數量的物件池

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using VictorDev.Common;
@@ -21,23 +22,29 @@ namespace VictorDev.Advanced
         [SerializeField] private CanvasGroup canvasGroup;
 
         private Coroutine coroutine { get; set; } = null;
+        private Tween tween { get; set; } = null;
 
         public bool isOn { set => ToFade(value ? 1 : initAlpha); }
 
         private void Start() => SetAlpha(initAlpha);
 
+        public void ToFade(float toAlpha) => ToFade(toAlpha, 0);
         /// <summary>
         /// 開始 Lerp
         /// </summary>
-        public void ToFade(float toAlpha)
+        public void ToFade(float toAlpha, float delay, float fromAlpha = -1)
         {
             if (coroutine != null) StopCoroutine(coroutine);
+            float startValue = (fromAlpha == -1) ? canvasGroup.alpha : fromAlpha;
+            if(delay != 0) SetAlpha(startValue);
+
             IEnumerator enumerator()
             {
-                DotweenHandler.ToLerpValue(canvasGroup.alpha, toAlpha, SetAlpha, duration);
+                tween= DotweenHandler.ToLerpValue(startValue, toAlpha, SetAlpha, duration, delay);
                 yield return null;
             }
-            if(gameObject.activeInHierarchy) coroutine = StartCoroutine(enumerator());
+            if (tween != null) tween.Kill();
+            if (gameObject.activeInHierarchy) coroutine = StartCoroutine(enumerator());
             else SetAlpha(toAlpha);
         }
 

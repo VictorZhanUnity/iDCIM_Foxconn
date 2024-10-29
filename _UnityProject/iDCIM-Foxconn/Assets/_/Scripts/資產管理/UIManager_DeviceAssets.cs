@@ -29,11 +29,12 @@ public class UIManager_DeviceAssets : MonoBehaviour
     /// <summary>
     /// [WebAPI] 取得所有機櫃與其設備
     /// </summary>
+    [ContextMenu("[資產管理] 取得所有DCR機櫃及內含設備")]
     private void WebAPI_GetAllRackAndDevice()
     {
         void onSuccess(long responseCode, string jsonString)
         {
-            print($"WebAPI_GetAllRackAndDevice: {jsonString}");
+            print(WebAPIManager.PrintJSONFormatting(jsonString));
         }
         WebAPIManager.GetAllDCRContainer(onSuccess, onFailed);
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using VictorDev.Common;
 
 namespace VictorDev.Async.CoroutineUtils
 {
@@ -62,7 +63,8 @@ namespace VictorDev.Async.CoroutineUtils
             material.EnableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", colorMouseOver);
             currentColor = colorMouseOver;
-            iEnumerator = CoroutineHandler.LerpValue(minIntensity, maxIntensity, SetColor, duration_Lerp);
+
+            DotweenHandler.ToLerpValue(minIntensity, maxIntensity, SetColor, duration_Lerp);
         }
 
         [ContextMenu("- Stop")]
