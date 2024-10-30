@@ -37,4 +37,9 @@ public class ListItem_Device : MonoBehaviour
         txtWeight.SetText(data.information.weight.ToString());
         txtHeightU.SetText(data.information.heightU.ToString());
     }
+
+    private void OnDisable()
+    {
+        toggleRow.isOn = false;
+    }
 }

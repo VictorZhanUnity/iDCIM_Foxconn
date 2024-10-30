@@ -1,14 +1,22 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using VictorDev.Common;
+using VictorDev.RevitUtils;
 
 public class ListItem_COBie : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI txtTitle, txtLabel;
 
-    internal void Show(KeyValuePair<string, string> data)
+    private List<TextMeshProUGUI> txtList { get; set; }
+
+    public void ShowData(string columnName, string value)
     {
-        txtTitle.SetText(data.Key);
-        txtLabel.SetText(data.Value);
+        columnName = RevitHandler.GetCOBieColumnName_ZH(columnName);
+        txtTitle.SetText(columnName);
+        txtLabel.SetText(value);
+
+        txtList ??= new List<TextMeshProUGUI>() { txtTitle, txtLabel };
+        DotweenHandler.ToBlink(txtList);
     }
 }

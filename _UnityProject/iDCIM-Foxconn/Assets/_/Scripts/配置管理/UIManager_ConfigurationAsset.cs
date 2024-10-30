@@ -1,23 +1,16 @@
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static VictorDev.RevitUtils.RevitHandler;
+using VictorDev.CameraUtils;
 
 /// <summary>
 /// [配置管理]
 /// </summary>
 public class UIManager_ConfigurationAsset : MonoBehaviour
 {
-
-    [Header(">>> [資料項] Switch")]
-    [SerializeField] private List<Data_DeviceAsset> switchDataList;
-    [Header(">>> [資料項] Router")]
-    [SerializeField] private List<Data_DeviceAsset> routerDataList;
-    [Header(">>> [資料項] Server")]
-    [SerializeField] private List<Data_DeviceAsset> serverDataList;
-
     [Header(">>> UI組件")]
+    [SerializeField] private DeviceAssetList deviceList;
+    [SerializeField] private ServerRackInfoPanel serverRackInfoPanel;
+    [SerializeField] private DeviceInfoPanel deviceInfoPanel;
     [SerializeField] private GameObject uiObj;
     [SerializeField] private DeviceModelVisualizer deviceModelVisualizer;
 
@@ -30,5 +23,24 @@ public class UIManager_ConfigurationAsset : MonoBehaviour
         }
     }
 
-    
+    private void Start()
+    {
+        deviceList.onClickListItemEvent.AddListener(OnClickDeviceItemHandler);
+    }
+
+    private void OnClickDeviceItemHandler(ListItem_Device target)
+    {
+        Transform targetModel = deviceModelVisualizer.ModelList.FirstOrDefault(model => model.name.Contains(target.data.deviceName));
+        OrbitCamera.MoveTargetTo(targetModel); //運鏡
+        GameManager.ToSelectTarget(targetModel); //選取目標模型
+
+        switch (target.data.system)
+        {
+            case "DCR": serverRackInfoPanel.ShowData(target); break;
+            case "DCN":
+            case "DCS":
+                //deviceInfoPanel.ShowData(target);
+                break;
+        }
+    }
 }

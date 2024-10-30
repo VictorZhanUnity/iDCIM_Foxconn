@@ -39,7 +39,7 @@ namespace VictorDev.Net.WebAPI
         /// </summary>
         private static IEnumerator SendWebRequestCoroutine(WebAPI_Request request, Action<long, string> onSuccess, Action<long, string> onFailed)
         {
-            Debug.Log($"\t[Method] {request.requestMethod}");
+            //Debug.Log($"\t[Method] {request.requestMethod}");
 
             void RequestErrorChecker(UnityWebRequest webRequest)
             {
@@ -111,13 +111,13 @@ namespace VictorDev.Net.WebAPI
         {
             // 設定回應資料型態參數(Header)
             webRequest.SetRequestHeader("Content-Type", request.contentType);
-            Debug.Log($"\t[Content-Type] {request.contentType}");
+            //Debug.Log($"\t[Content-Type] {request.contentType}");
 
             //設定Authorization參數
             if (request.authorizationType != enumAuthorization.NoAuth)
             {
                 webRequest.SetRequestHeader("Authorization", $"{request.authorizationType} {request.token}");
-                Debug.Log($"\t[Authorization: {request.authorizationType}] Token: {request.token}");
+              //  Debug.Log($"\t[Authorization: {request.authorizationType}] Token: {request.token}");
             }
 
             DownloadHandler downloadHandler;

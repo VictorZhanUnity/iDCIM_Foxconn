@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -88,5 +90,29 @@ namespace VictorDev.Common
             return result;
         }
 
+
+        /// <summary>
+        /// 將目標類別實例裡的所有變數名稱，轉成字典對照表 {變數名稱, 變數值}
+        /// <para>+ 適用於COBie資訊的UI組件指派</para>
+        /// </summary>
+        public static Dictionary<string, T> ToClassInstanceVariableMap<T>(object target)
+        {
+            Dictionary<string, T> result = new Dictionary<string, T>();
+
+            // 使用反射獲取所有公有和私有的欄位
+            FieldInfo[] fields = target.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            foreach (FieldInfo field in fields)
+            {
+                // 檢查欄位是否為字串類型
+                if (field.FieldType == typeof(string))
+                {
+                    string name = field.Name;
+                    object value = field.GetValue(target);
+                    result[name] = (T)value;
+                }
+            }
+            return result;
+        }
     }
 }

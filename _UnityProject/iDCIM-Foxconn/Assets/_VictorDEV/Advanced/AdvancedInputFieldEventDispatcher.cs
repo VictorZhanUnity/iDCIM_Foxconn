@@ -19,6 +19,9 @@ namespace VictorDev.Advanced
         [Header(">>> 按下Enter送出值")]
         public UnityEvent<string> onSubmitEvent = new UnityEvent<string>();
 
+        [Header(">>> 點擊輸入框時(是否聚焦)")]
+        public UnityEvent<bool> onFocus = new UnityEvent<bool>();
+
         [Header(">>> 點擊輸入框時")]
         public UnityEvent<string> onSelect = new UnityEvent<string>();
         [Header(">>> 離開輸入框時")]
@@ -38,6 +41,9 @@ namespace VictorDev.Advanced
                 }
                 onKeyingEvent?.Invoke(isHaveValue);
             });
+
+            onSelect.AddListener((txtInput) => onFocus.Invoke(true));
+            onEndEdit.AddListener((txtInput) => onFocus.Invoke(false));
 
             inputFiled.onSubmit.AddListener(onSubmitEvent.Invoke);
             inputFiled.onValueChanged.Invoke(inputFiled.text);

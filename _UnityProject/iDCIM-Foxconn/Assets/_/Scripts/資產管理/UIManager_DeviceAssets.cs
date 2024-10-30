@@ -8,8 +8,8 @@ public class UIManager_DeviceAssets : MonoBehaviour
     [SerializeField] private GameObject uiObj;
     [SerializeField] private DeviceModelVisualizer deviceModelVisualizer;
     [SerializeField] private RackList rackList;
-    [SerializeField] private RackInfoPanel rackInfoPanel;
-    private RackInfoPanel currentPanel { get; set; }
+    [SerializeField] private ServerRackInfoPanel rackInfoPanel;
+    private ServerRackInfoPanel currentPanel { get; set; }
     public bool isOn
     {
         set

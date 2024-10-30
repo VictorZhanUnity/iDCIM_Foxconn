@@ -62,7 +62,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.CheckToken(Instance.request_GetIAQRealTimeIndex) == false) return;
 
-        Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
+       // Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },
@@ -76,8 +76,8 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.CheckToken(Instance.request_GetIAQIndexHistory) == false) return;
 
-        Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
-        Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");
+     /*   Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
+        Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");*/
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },
@@ -125,12 +125,13 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     /// </summary>
     private void SendRequest<T>(Dictionary<string, T> data, WebAPI_Request request, Action<long, string> onSuccess, Action<long, string> onFailed)
     {
-        request.SetRawJsonData(PrintJSONFormatting(JsonConvert.SerializeObject(data)));
+        //PrintJSONFormatting(JsonConvert.SerializeObject(data));
+        request.SetRawJsonData(JsonConvert.SerializeObject(data));
         WebAPI_Caller.SendRequest(request, (responseCode, jsonString) =>
         {
             onSuccess?.Invoke(responseCode, jsonString);
-            Debug.Log($"*** WebAPI呼叫成功!!");
-            PrintJSONFormatting(jsonString);
+           // Debug.Log($"*** WebAPI呼叫成功!!");
+            //PrintJSONFormatting(jsonString);
         }, onFailed);
     }
 

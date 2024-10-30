@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class DoTweenFadeController : MonoBehaviour
 {
-    private bool isHideInAwake = false;
+    [SerializeField] private bool isHideInAwake = false;
 
     [Tooltip("淡入淡出動畫持續時間")]
     public float fadeDuration = 0.5f;

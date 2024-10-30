@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -25,23 +26,31 @@ public class DeviceInfoPanel : MonoBehaviour
         demoCOBieData.ToList().ForEach(data =>
         {
             ListItem_COBie item = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_COBie>(listItemPrefab, scrollRect.content);
-            item.Show(data);
+            item.ShowData(data.Key, data.Value);
         });
         scrollRect.verticalNormalizedPosition = 1;
     }
 
     public void Show(DeviceRUItem item)
     {
-        txtTitle.SetText(item.deviceName);
+        txtTitle.SetText(item.data.deviceName);
         txtDeviceName.SetText("Schneider Rack");
-        txtSystem.SetText(item.system);
+        txtSystem.SetText(item.data.system);
         txtBrand.SetText("Schneider");
-        txtType.SetText(item.deviceName);
+        txtType.SetText(item.data.system);
 
         doTweenFadeController.FadeIn(true);
     }
 
     public void Close() => doTweenFadeController.FadeOut();
+
+    /// <summary>
+    /// 顯示資料
+    /// </summary>
+    public void ShowData(ListItem_Device target)
+    {
+        throw new NotImplementedException();
+    }
 
     private Dictionary<string, string> demoCOBieData = new Dictionary<string, string>()
     {

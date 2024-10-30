@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using VictorDev.Common;
 
 namespace VictorDev.RevitUtils
 {
@@ -87,14 +88,14 @@ namespace VictorDev.RevitUtils
         /// [資料項] 資產管理
         /// </summary>
         [Serializable]
-        public  class Data_iDCIMAsset
+        public class Data_iDCIMAsset
         {
             public string devicePath;
             public string deviceId;
             public string system;
             public string manufacturer;
             public string modelNumber;
-            public COBieInfo information;
+            public InfoWithCOBie information;
 
             public string deviceName => devicePath.Split(':')[1].Trim();
         }
@@ -109,7 +110,7 @@ namespace VictorDev.RevitUtils
             public List<Data_DeviceAsset> containers;
         }
         /// <summary>
-        /// [資料項] 機櫃Rack與其設備清單
+        /// [資料項] 設備資訊
         /// </summary>
         [Serializable]
         public class Data_DeviceAsset : Data_iDCIMAsset
@@ -133,7 +134,7 @@ namespace VictorDev.RevitUtils
             public float weight;
         }
         [Serializable]
-        public class COBieInfo : Information
+        public class InfoWithCOBie : Information
         {
             public string component_description;
             public string component_assetIdentifier;
@@ -177,6 +178,19 @@ namespace VictorDev.RevitUtils
             public string type_finish;
             public string type_grade;
             public string type_material;
+
+            private Dictionary<string, string> cobieMap { get; set; }
+            /// <summary>
+            /// COBie資訊對照表 {COBie名稱, 值}
+            /// </summary>
+            public Dictionary<string, string> COBieMap
+            {
+                get
+                {
+                    cobieMap ??= StringHandler.ToClassInstanceVariableMap<string>(this);
+                    return cobieMap;
+                }
+            }
         }
         #endregion
 
