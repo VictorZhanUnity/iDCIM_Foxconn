@@ -15,7 +15,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     [SerializeField] private Material mouseOverMaterial;
 
-
     private void Start()
     {
         Login("TCIT", "TCIT"); 
@@ -67,14 +66,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     void Update()
     {
-        MouseDownHandler();
-        MouseOverExitHandler();
+        MouseDownListener();
+        MouseOverAndExitListener();
     }
 
     private GameObject lastHoveredObject;  // 上一次指向的物體
     private GameObject currentHoveredObject;  // 當前指向的物體
 
-    private void MouseOverExitHandler()
+    private void MouseOverAndExitListener()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -127,15 +126,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     // 當滑鼠離開物體時觸發
     private void OnMouseExitHandler(GameObject exitedObject)
     {
-        // 在這裡處理 MouseExit 的邏輯 (例如還原物體顏色)
         if (currentSelectedObject != null)
         {
             if (exitedObject == currentSelectedObject.gameObject) return;
         }
+        // 在這裡處理 MouseExit 的邏輯 (例如還原物體顏色)
         LayerMaskHandler.SetGameObjectLayerToLayerMask(exitedObject, layerDefault);
     }
 
-    private void MouseDownHandler()
+    private void MouseDownListener()
     {
         if (Input.GetMouseButtonDown(0))
         {
