@@ -183,7 +183,7 @@ namespace VictorDev.RevitUtils
             /// <summary>
             /// COBie資訊對照表 {COBie名稱, 值}
             /// </summary>
-            public Dictionary<string, string> COBieMap
+            public Dictionary<string, string> COBieMapData
             {
                 get
                 {
