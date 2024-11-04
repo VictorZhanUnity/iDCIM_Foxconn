@@ -29,7 +29,7 @@ public class DeviceAssetToolTip : MonoBehaviour, IToolTipPanel
 
             deviceImgTags.ForEach(tag => tag.SetActive(tag.name.Contains(deviceAsset.system)));
         }
-        fadeController.FadeIn(true);
+        fadeController.FadeIn();
     }
 
     public void Close()

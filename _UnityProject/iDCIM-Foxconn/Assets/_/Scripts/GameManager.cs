@@ -1,12 +1,9 @@
- using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.CameraUtils;
 using VictorDev.Common;
-using VictorDev.Parser;
+using static VictorDev.RevitUtils.RevitHandler;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -15,6 +12,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public SelectableObject currentSelectedObject, lastMouseOverObject;
 
     [SerializeField] private Material mouseOverMaterial;
+    [SerializeField] private UIManager_DeviceAsset deviceAssetManager;
 
 
     [Header(">>> 當點擊模型物件時Invoke")]
@@ -22,7 +20,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Start()
     {
-        Login("TCIT", "TCIT"); 
+        Login("TCIT", "TCIT");
     }
 
     /// <summary>
@@ -127,11 +125,25 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         // 在這裡處理 MouseOver 的邏輯 (例如更改物體顏色)
         LayerMaskHandler.SetGameObjectLayerToLayerMask(hoveredObject, layerMouseOver);
+
+        //處理ToolTip
+        Data_iDCIMAsset data = deviceAssetManager.SearchDeviceAssetByModel(hoveredObject.transform);
+
+        if (data != null)
+        {
+            if (data.system.ToUpper().Equals("DCS") || data.system.ToUpper().Equals("DCN"))
+            {
+                Data_DeviceAsset deviceAsset = (Data_DeviceAsset)data;
+                Debug.Log($"{data} / {deviceAsset.rackLocation}");
+                ToolTipManager.ShowToolTip_DeviceAsset(data);
+            }
+        }
     }
 
     // 當滑鼠離開物體時觸發
     private void OnMouseExitHandler(GameObject exitedObject)
     {
+        ToolTipManager.CloseToolTip();
         if (currentSelectedObject != null)
         {
             if (exitedObject == currentSelectedObject.gameObject) return;

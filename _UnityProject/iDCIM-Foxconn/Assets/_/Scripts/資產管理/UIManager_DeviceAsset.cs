@@ -61,13 +61,16 @@ public class UIManager_DeviceAsset : MonoBehaviour
     /// </summary>
     public void OnSelectDeviceAsset(Transform target)
     {
-        Data_iDCIMAsset data = deviceAssetList.SearchDeviceAssetByModel(target);
+        Data_iDCIMAsset data = SearchDeviceAssetByModel(target);
         if (data != null) //List清單上所沒有顯示的
         {
             deviceInfoPanel.ShowData(data);
             print($"Data_iDCIMAsset: {data.deviceName}");
         }
     }
+
+    public Data_iDCIMAsset SearchDeviceAssetByModel(Transform target)
+         => deviceAssetList.SearchDeviceAssetByModel(target);
 }
 
 

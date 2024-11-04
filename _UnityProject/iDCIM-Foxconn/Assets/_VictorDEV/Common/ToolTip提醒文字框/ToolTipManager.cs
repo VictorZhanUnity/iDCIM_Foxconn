@@ -12,6 +12,11 @@ public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
 
     private IToolTipPanel currentToolTip { get; set; }
 
+    private void Start()
+    {
+        Instance.currentToolTip = Instance.deviceAssetToolTip;
+    }
+
     /// <summary>
     /// 顯示ToolTip - 資產設備
     /// </summary>
@@ -21,7 +26,7 @@ public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
         Instance.deviceAssetToolTip.ShowData(data);
     }
 
-    public void HideToolTip()
+    public static void CloseToolTip()
     {
         Instance.currentToolTip?.Close();
         Instance.currentToolTip = null;
@@ -63,6 +68,6 @@ public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
         float clampedX = Mathf.Clamp(position.x, minX, maxX);
         float clampedY = Mathf.Clamp(position.y, minY, maxY);
 
-        return new Vector2(clampedX, clampedY);
+        return new Vector2(clampedX + offset.x, clampedY + offset.y);
     }
 }
