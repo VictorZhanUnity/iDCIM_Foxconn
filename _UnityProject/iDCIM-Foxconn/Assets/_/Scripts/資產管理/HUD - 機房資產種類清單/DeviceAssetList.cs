@@ -22,6 +22,9 @@ public class DeviceAssetList : MonoBehaviour
     [Header(">>> [資料項] Router")]
     [SerializeField] private List<Data_DeviceAsset> routerDataList;
 
+    [Header(">>> 獲取所有機櫃與其設備資料時Invoke")]
+    public UnityEvent<List<Data_ServerRackAsset>> onGetAllDeviceDataComplete = new UnityEvent<List<Data_ServerRackAsset>>();
+
     [Header(">>> 點擊資料項時Invoke")]
     public UnityEvent<ListItem_Device> onClickListItemEvent = new UnityEvent<ListItem_Device>();
 
@@ -33,7 +36,13 @@ public class DeviceAssetList : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtAmountOfServerRack, txtAmountOfServer, txtAmountOfSwitch, txtAmountOfRouter;
     [SerializeField] private Toggle toggleServerRack, toggleServer, toggleSwitch, toggleRouter;
 
+    /// <summary>
+    /// 目前選擇的設備種類清單
+    /// </summary>
     private List<Data_iDCIMAsset> currentAssetList { get; set; }
+    /// <summary>
+    /// 廠牌過濾後所擷取的List
+    /// </summary>
     private List<Data_iDCIMAsset> filterList { get; set; }
     private List<string> brandList { get; set; }
 
@@ -81,7 +90,11 @@ public class DeviceAssetList : MonoBehaviour
     private void UpdateDeviceList()
     {
         //清除ListItem
-        listItems.ForEach(item => item.onClickItemEvent.RemoveAllListeners());
+        listItems.ForEach(item =>
+        {
+            item.onClickItemEvent.RemoveAllListeners();
+            item.SetToggleWithoutNotify(false);
+        });
         listItems.Clear();
         ObjectPoolManager.PushToPool<ListItem_Device>(scrollRect.content);
         scrollRect.verticalNormalizedPosition = 1;
@@ -121,6 +134,9 @@ public class DeviceAssetList : MonoBehaviour
         {
             print(WebAPIManager.PrintJSONFormatting(jsonString));
             serverRackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonString);
+
+            onGetAllDeviceDataComplete?.Invoke(serverRackDataList);
+
             //計算各種類的數量
             switchDataList = new List<Data_DeviceAsset>();
             routerDataList = new List<Data_DeviceAsset>();
@@ -130,13 +146,35 @@ public class DeviceAssetList : MonoBehaviour
             {
                 containers.ForEach(device =>
                 {
+                    //分類List
                     if (device.devicePath.Contains("Switch")) switchDataList.Add(device);
                     else if (device.devicePath.Contains("Router")) routerDataList.Add(device);
                     else if (device.devicePath.Contains("Server")) serverDataList.Add(device);
                 });
             });
-            UpdateUI();
 
+            //排序
+            int ParseNumberFromName(string name)
+            {
+                // 找到 "+" 的位置
+                int index = name.IndexOf('+');
+                if (index != -1 && index < name.Length - 1)
+                {
+                    // 嘗試解析 "+" 後的數字
+                    if (int.TryParse(name.Substring(index + 1), out int result))
+                    {
+                        return result;
+                    }
+                }
+                // 如果找不到 "+" 或無法解析，預設回傳 0
+                return 0;
+            }
+            serverRackDataList = serverRackDataList.OrderBy(rackData => ParseNumberFromName(rackData.deviceName)).ToList();
+            switchDataList = switchDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+            routerDataList = routerDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+            serverDataList = serverDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+
+            UpdateUI();
             toggleServerRack.isOn = true;
         }
         WebAPIManager.GetAllDCRContainer(onSuccess, onFailed);

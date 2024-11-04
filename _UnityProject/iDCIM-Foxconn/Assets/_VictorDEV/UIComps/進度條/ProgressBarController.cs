@@ -11,7 +11,14 @@ public class ProgressBarController : MonoBehaviour
     [Header(">>>最大值")]
     [SerializeField] private int maxValue = 5000;
 
-    public int MaxValue { set => maxValue = value; }
+    public int MaxValue
+    {
+        set
+        {
+            maxValue = value;
+            slider.maxValue = maxValue;
+        }
+    }
 
     [Header(">>> 單位文字")]
     [SerializeField] private string unitText = "w";

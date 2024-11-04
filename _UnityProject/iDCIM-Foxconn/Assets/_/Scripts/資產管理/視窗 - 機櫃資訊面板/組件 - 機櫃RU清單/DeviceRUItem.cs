@@ -22,6 +22,13 @@ public class DeviceRUItem : MonoBehaviour
     [SerializeField] private Toggle toggle;
     [SerializeField] private RectTransform rectTrans;
 
+    public void SetToggleWithoutNotify(bool isOn)
+    {
+        toggle.onValueChanged.RemoveAllListeners();
+        toggle.isOn = isOn;
+        Start();
+    }
+
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
     private void Start()

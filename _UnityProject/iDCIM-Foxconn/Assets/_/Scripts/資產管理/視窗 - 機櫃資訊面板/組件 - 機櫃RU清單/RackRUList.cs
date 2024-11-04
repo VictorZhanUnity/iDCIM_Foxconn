@@ -32,7 +32,11 @@ public class RackRUList : MonoBehaviour
         data = (Data_ServerRackAsset)listItem.data;
 
         //清空資料
-        itemList.ForEach(item => item.OnClickItemEvent.RemoveAllListeners());
+        itemList.ForEach(item =>
+        {
+            item.OnClickItemEvent.RemoveAllListeners();
+            item.SetToggleWithoutNotify(false);
+        });
         itemList.Clear();
         ObjectPoolManager.PushToPool<DeviceRUItem>(deviceRUItemContainer);
 

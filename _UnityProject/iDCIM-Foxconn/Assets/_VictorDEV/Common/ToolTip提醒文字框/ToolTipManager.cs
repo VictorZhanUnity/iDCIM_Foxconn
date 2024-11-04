@@ -1,35 +1,35 @@
-using TMPro;
 using UnityEngine;
+using VictorDev.Common;
+using static VictorDev.RevitUtils.RevitHandler;
 
-public class ToolTipManager : MonoBehaviour
+public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
 {
-    public GameObject toolTipPanel;  // ToolTip 背景 Panel
-    public TextMeshProUGUI toolTipText;         // ToolTip 顯示文字
-    public Vector2 offset = new Vector2(40f, 0f);  // ToolTip 與鼠標之間的偏移量
-    private RectTransform toolTipRectTransform;
-    private RectTransform canvasRectTransform;
+    [SerializeField] private DeviceAssetToolTip deviceAssetToolTip;
 
-    private void Awake()
-    {
-        toolTipRectTransform = toolTipPanel.GetComponent<RectTransform>();
-        canvasRectTransform = toolTipPanel.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-        //HideToolTip();
-    }
+    [Header(">>> UI組件")]
+    [SerializeField] private Vector2 offset = new Vector2(40f, 0f);  // ToolTip 與鼠標之間的偏移量
+    [SerializeField] private RectTransform canvasRectTransform;
 
-    public void ShowToolTip(string message)
+    private IToolTipPanel currentToolTip { get; set; }
+
+    /// <summary>
+    /// 顯示ToolTip - 資產設備
+    /// </summary>
+    public static void ShowToolTip_DeviceAsset(Data_iDCIMAsset data)
     {
-        toolTipText.text = message;
-        toolTipPanel.SetActive(true);
+        Instance.currentToolTip = Instance.deviceAssetToolTip;
+        Instance.deviceAssetToolTip.ShowData(data);
     }
 
     public void HideToolTip()
     {
-        toolTipPanel.SetActive(false);
+        Instance.currentToolTip?.Close();
+        Instance.currentToolTip = null;
     }
 
     private void Update()
     {
-        if (toolTipPanel.activeSelf)
+        if (Instance.currentToolTip != null && Instance.currentToolTip.isOn)
         {
             FollowMouse();
         }
@@ -40,20 +40,24 @@ public class ToolTipManager : MonoBehaviour
         // 將位置限制在 Canvas 範圍內
         Vector2 clampedPosition = ClampToCanvas(Input.mousePosition);
         // 更新 ToolTip Panel 的位置
-        toolTipPanel.transform.position = clampedPosition;
+        currentToolTip.UpdatePosition(clampedPosition);
     }
 
+    /// <summary>
+    /// 計算ToolTip所在的Canvas邊界
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private Vector2 ClampToCanvas(Vector2 position)
     {
         Vector2 canvasSize = canvasRectTransform.sizeDelta;
-        Vector2 toolTipSize = toolTipRectTransform.sizeDelta;
+        Vector2 toolTipSize = currentToolTip.sizeDelta;
 
         // 計算 ToolTip 的四邊界位置
-        float minX = 0;
-        float maxX = canvasSize.x - toolTipSize.x;
-        float minY = 0 + toolTipSize.y;
-        float maxY = canvasSize.y - toolTipSize.y;
-
+        float minX = 0 + offset.x;
+        float maxX = canvasSize.x - toolTipSize.x - offset.x;
+        float minY = 0 + toolTipSize.y + offset.y;
+        float maxY = canvasSize.y - offset.y;
 
         // 限制 ToolTip 的位置，使其保持在 Canvas 邊界內
         float clampedX = Mathf.Clamp(position.x, minX, maxX);

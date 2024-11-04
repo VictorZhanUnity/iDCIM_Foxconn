@@ -88,7 +88,7 @@ namespace VictorDev.RevitUtils
         /// [資料項] 資產管理
         /// </summary>
         [Serializable]
-        public class Data_iDCIMAsset
+        public class Data_iDCIMAsset : IToolTipPanel_Data
         {
             public string devicePath;
             public string deviceId;
@@ -108,6 +108,36 @@ namespace VictorDev.RevitUtils
             public string rackId;
             public string description;
             public List<Data_DeviceAsset> containers;
+
+            #region [>>> 計算資源使用率]
+            private float _usageOfWatt = -1;
+            public float usageOfWatt
+            {
+                get
+                {
+                    if (_usageOfWatt == -1) _usageOfWatt = containers.Sum(device => device.information.watt);
+                    return _usageOfWatt;
+                }
+            }
+            private float _usageOfRU = -1;
+            public float usageOfRU
+            {
+                get
+                {
+                    if (_usageOfRU == -1) _usageOfRU = containers.Sum(device => device.information.heightU);
+                    return _usageOfRU;
+                }
+            }
+            private float _usageOfWeight = -1;
+            public float usageOfWeight
+            {
+                get
+                {
+                    if (_usageOfWeight == -1) _usageOfWeight = containers.Sum(device => device.information.weight);
+                    return _usageOfWeight;
+                }
+            }
+            #endregion
         }
         /// <summary>
         /// [資料項] 設備資訊
