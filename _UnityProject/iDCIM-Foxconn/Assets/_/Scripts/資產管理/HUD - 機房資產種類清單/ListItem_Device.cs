@@ -21,6 +21,11 @@ public class ListItem_Device : MonoBehaviour
 
     public Data_iDCIMAsset data => _data;
 
+    /// <summary>
+    /// 開/關 Toggle
+    /// </summary>
+    public bool isOn { set => toggleRow.isOn = value; }
+
     public ToggleGroup toggleGroup { set => toggleRow.group = value; }
 
     private void Start() => toggleRow.onValueChanged.AddListener((isOn) =>

@@ -41,17 +41,18 @@ public class DeviceAssetList : MonoBehaviour
     /// </summary>
     private List<Data_iDCIMAsset> currentAssetList { get; set; }
     /// <summary>
-    /// 廠牌過濾後所擷取的List
+    /// (設備種類、廠牌)過濾後所擷取的List
     /// </summary>
     private List<Data_iDCIMAsset> filterList { get; set; }
     private List<string> brandList { get; set; }
 
     private List<ListItem_Device> listItems { get; set; } = new List<ListItem_Device>();
 
+    private Data_iDCIMAsset currentSelectData { get; set; }
+
     private void Start()
     {
         InitToggleListener();
-        WebAPI_GetAllRackAndDevice();
         dropdownBrandList.onValueChanged.AddListener((index) =>
         {
             if (index == 0) filterList = currentAssetList;
@@ -62,6 +63,8 @@ public class DeviceAssetList : MonoBehaviour
                 UpdateDeviceList();
             }
         });
+
+        toggleServerRack.isOn = true;
     }
 
     private void InitToggleListener()
@@ -127,61 +130,77 @@ public class DeviceAssetList : MonoBehaviour
         serverDataList.Clear();
     }
 
-    [ContextMenu("[WebAPI] 所有機櫃與設備清單")]
-    private void WebAPI_GetAllRackAndDevice()
+    public void WebAPI_onSuccess(long responseCode, string jsonString)
     {
-        void onSuccess(long responseCode, string jsonString)
+        print(WebAPIManager.PrintJSONFormatting(jsonString));
+        serverRackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonString);
+
+        onGetAllDeviceDataComplete?.Invoke(serverRackDataList);
+
+        //計算各種類的數量
+        switchDataList = new List<Data_DeviceAsset>();
+        routerDataList = new List<Data_DeviceAsset>();
+        serverDataList = new List<Data_DeviceAsset>();
+        List<List<Data_DeviceAsset>> containerList = serverRackDataList.Select(serverRack => serverRack.containers).ToList();
+        containerList.ForEach(containers =>
         {
-            print(WebAPIManager.PrintJSONFormatting(jsonString));
-            serverRackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonString);
-
-            onGetAllDeviceDataComplete?.Invoke(serverRackDataList);
-
-            //計算各種類的數量
-            switchDataList = new List<Data_DeviceAsset>();
-            routerDataList = new List<Data_DeviceAsset>();
-            serverDataList = new List<Data_DeviceAsset>();
-            List<List<Data_DeviceAsset>> containerList = serverRackDataList.Select(serverRack => serverRack.containers).ToList();
-            containerList.ForEach(containers =>
+            containers.ForEach(device =>
             {
-                containers.ForEach(device =>
-                {
-                    //分類List
-                    if (device.devicePath.Contains("Switch")) switchDataList.Add(device);
-                    else if (device.devicePath.Contains("Router")) routerDataList.Add(device);
-                    else if (device.devicePath.Contains("Server")) serverDataList.Add(device);
-                });
+                //分類List
+                if (device.devicePath.Contains("Switch")) switchDataList.Add(device);
+                else if (device.devicePath.Contains("Router")) routerDataList.Add(device);
+                else if (device.devicePath.Contains("Server")) serverDataList.Add(device);
             });
+        });
 
-            //排序
-            int ParseNumberFromName(string name)
+        //排序
+        int ParseNumberFromName(string name)
+        {
+            // 找到 "+" 的位置
+            int index = name.IndexOf('+');
+            if (index != -1 && index < name.Length - 1)
             {
-                // 找到 "+" 的位置
-                int index = name.IndexOf('+');
-                if (index != -1 && index < name.Length - 1)
+                // 嘗試解析 "+" 後的數字
+                if (int.TryParse(name.Substring(index + 1), out int result))
                 {
-                    // 嘗試解析 "+" 後的數字
-                    if (int.TryParse(name.Substring(index + 1), out int result))
-                    {
-                        return result;
-                    }
+                    return result;
                 }
-                // 如果找不到 "+" 或無法解析，預設回傳 0
-                return 0;
             }
-            serverRackDataList = serverRackDataList.OrderBy(rackData => ParseNumberFromName(rackData.deviceName)).ToList();
-            switchDataList = switchDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
-            routerDataList = routerDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
-            serverDataList = serverDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
-
-            UpdateUI();
-            toggleServerRack.isOn = true;
+            // 如果找不到 "+" 或無法解析，預設回傳 0
+            return 0;
         }
-        WebAPIManager.GetAllDCRContainer(onSuccess, onFailed);
+        serverRackDataList = serverRackDataList.OrderBy(rackData => ParseNumberFromName(rackData.deviceName)).ToList();
+        switchDataList = switchDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+        routerDataList = routerDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+        serverDataList = serverDataList.OrderBy(deviceData => ParseNumberFromName(deviceData.deviceName)).ToList();
+
+        UpdateUI();
     }
 
-    private void onFailed(long responseCode, string msg)
+    /// <summary>
+    /// 依模型名稱尋找相對應的ListItem
+    /// </summary>
+    public Data_iDCIMAsset SearchDeviceAssetByModel(Transform model)
     {
+        currentSelectData = null;
+        if (model.name.ToLower().Contains("rack") || model.name.ToLower().Contains("aten-pce"))
+        {
+            currentSelectData = serverRackDataList.FirstOrDefault(rackData => model.name.Contains(rackData.deviceName));
+            //toggleServerRack.isOn = true;
+        }
+        else
+        {
+            currentSelectData = serverRackDataList.SelectMany(rackData => rackData.containers) //SelectMany展平所有內部List
+              .FirstOrDefault(deviceData => model.name.Contains(deviceData.deviceName));
 
+            /* if(model.name.ToLower().Contains("server")) toggleServer.isOn  = true;
+             else if (model.name.ToLower().Contains("switch")) toggleSwitch.isOn = true;
+             else if (model.name.ToLower().Contains("router")) toggleRouter.isOn = true;*/
+        }
+
+        //檢查目前的列表上有無此資料
+        ListItem_Device targetItem = listItems.FirstOrDefault(item => item.data == currentSelectData);
+        if (targetItem != null) targetItem.isOn = true;
+        return currentSelectData;
     }
 }

@@ -21,7 +21,10 @@ public class DeviceInfoPanel : MonoBehaviour
     /// <summary>
     /// 顯示資料(From設備清單)
     /// </summary>
-    public void ShowData(ListItem_Device target) => UpdateUI(target.data);
+    public void ShowData(ListItem_Device target)
+    {
+        UpdateUI(target.data);
+    }
     /// <summary>
     /// 顯示資料(From機櫃面板RU設備清單)
     /// </summary>
@@ -29,7 +32,7 @@ public class DeviceInfoPanel : MonoBehaviour
     /// <summary>
     /// 顯示資料(From機櫃面板)
     /// </summary>
-    public void ShowData(Data_ServerRackAsset dataRack) => UpdateUI(dataRack);
+    public void ShowData(Data_iDCIMAsset dataRack) => UpdateUI(dataRack);
 
     /// <summary>
     /// 更新資料顯示畫面

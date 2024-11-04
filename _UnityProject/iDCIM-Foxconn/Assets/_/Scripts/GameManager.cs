@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.CameraUtils;
 using VictorDev.Common;
 using VictorDev.Parser;
@@ -14,6 +15,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public SelectableObject currentSelectedObject, lastMouseOverObject;
 
     [SerializeField] private Material mouseOverMaterial;
+
+
+    [Header(">>> 當點擊模型物件時Invoke")]
+    public UnityEvent<Transform> OnSelectedObject = new UnityEvent<Transform>();
 
     private void Start()
     {
@@ -61,6 +66,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         currentSelectedObject.SetIsOnWithoutNotify(true);
 
         LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerMouseDown);
+
     }
 
 
@@ -159,6 +165,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                     currentSelectedObject.IsOn = true;
 
                     LayerMaskHandler.SetGameObjectLayerToLayerMask(currentSelectedObject.gameObject, layerMouseDown);
+
+                    OnSelectedObject.Invoke(target.transform);
 
                     Vector3 postOffset = Vector3.zero;
                     if (currentSelectedObject.name.Contains("RACK")) postOffset.y = 10;

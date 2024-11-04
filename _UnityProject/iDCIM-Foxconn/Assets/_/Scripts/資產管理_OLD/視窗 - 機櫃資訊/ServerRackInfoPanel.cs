@@ -45,10 +45,14 @@ public class ServerRackInfoPanel : MonoBehaviour
     {
         listItem = target;
         data = (Data_ServerRackAsset)listItem.data;
+        rackRUList.ShowRULayout(target);
+        ShowData(data);
+    }
 
+    public void ShowData(Data_ServerRackAsset data)
+    {
         DotweenHandler.ToBlink(txtDeviceName, data.deviceName);
 
-        rackRUList.ShowRULayout(target);
         deviceInfoDisplay.ShowData(data);
 
         //設置進度條
@@ -70,5 +74,6 @@ public class ServerRackInfoPanel : MonoBehaviour
 
         doTweenFadeController.FadeIn();
     }
+
     public void Close() => doTweenFadeController.FadeOut();
 }

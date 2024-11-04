@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using VictorDev.CameraUtils;
+using static VictorDev.RevitUtils.RevitHandler;
 
 /// <summary>
 /// [資產管理]
@@ -8,7 +9,7 @@ using VictorDev.CameraUtils;
 public class UIManager_DeviceAsset : MonoBehaviour
 {
     [Header(">>> UI組件")]
-    [SerializeField] private DeviceAssetList deviceList;
+    [SerializeField] private DeviceAssetList deviceAssetList;
     [SerializeField] private ServerRackInfoPanel serverRackInfoPanel;
     [SerializeField] private DeviceInfoPanel deviceInfoPanel;
     [SerializeField] private GameObject uiObj;
@@ -25,9 +26,15 @@ public class UIManager_DeviceAsset : MonoBehaviour
 
     private void Start()
     {
-        deviceList.onClickListItemEvent.AddListener(OnClickDeviceItemHandler);
+        deviceAssetList.onClickListItemEvent.AddListener(OnClickDeviceItemHandler);
         serverRackInfoPanel.OnClickRUItemEvent.AddListener(deviceInfoPanel.ShowData);
         serverRackInfoPanel.OnClickRackTitleBar.AddListener(deviceInfoPanel.ShowData);
+
+        WebAPIManager.GetAllDCRContainer(deviceAssetList.WebAPI_onSuccess, onFailed);
+    }
+
+    private void onFailed(long responseCode, string msg)
+    {
     }
 
     private void OnClickDeviceItemHandler(ListItem_Device target)
@@ -38,14 +45,29 @@ public class UIManager_DeviceAsset : MonoBehaviour
 
         switch (target.data.system)
         {
-            case "DCR": 
-                serverRackInfoPanel.ShowData(target); 
+            case "DCR":
+                serverRackInfoPanel.ShowData(target);
                 deviceInfoPanel.Close();
                 break;
             case "DCN":
             case "DCS":
                 deviceInfoPanel.ShowData(target);
+                serverRackInfoPanel.Close();
                 break;
         }
     }
+    /// <summary>
+    /// [Inspector]  當點擊模型物件時Invoke (For GameManager)
+    /// </summary>
+    public void OnSelectDeviceAsset(Transform target)
+    {
+        Data_iDCIMAsset data = deviceAssetList.SearchDeviceAssetByModel(target);
+        if (data != null) //List清單上所沒有顯示的
+        {
+            deviceInfoPanel.ShowData(data);
+            print($"Data_iDCIMAsset: {data.deviceName}");
+        }
+    }
 }
+
+
