@@ -1,0 +1,278 @@
+<!-- 快捷Snippet製作
+导入代码片段：
+
+● 在 Visual Studio 中，打开 工具（Tools）菜单。
+● 选择 选项（Options）。
+● 在弹出的窗口中，找到 文本编辑器（Text Editor） > C# > 代码片段（Code Snippets）选项。
+● 点击 添加（Add），然后选择你刚才保存的 .snippet 文件。
+
+-->
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<!-- 快捷Snippet：Header標籤 -->
+	<CodeSnippet>
+		<Header>
+			<Title>HeaderSnippet</Title>
+			<Shortcut>Head</Shortcut>
+			<!-- 關鍵字 -->
+			<Description>Insert a header attribute</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<!-- 產生內容後Focus定位 -->
+					<ID>title</ID>
+					<ToolTip>Title for the header</ToolTip>
+					<Default>标题</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					[Header(">>> $title$")] 
+				]]> <!-- 按兩次Tab後所產生的內容、亦可以程式片段 -->
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：SerializeField標籤 -->
+	<CodeSnippet>
+		<Header>
+			<Title>SerializeFieldSnippet</Title>
+			<Shortcut>SerializeField</Shortcut>
+			<!-- 關鍵字 -->
+			<Description>Insert a SerializeField attribute</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<!-- 產生內容後Focus定位 -->
+					<ID>title</ID>
+					<ToolTip>Title for the SerializeField</ToolTip>
+					<Default>标题</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					[SerializeField] private 
+				]]> <!-- 按兩次Tab後所產生的內容、亦可以程式片段 -->
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Class類別區段 -->
+	<CodeSnippet>
+		<Header>
+			<Title>ClassSnippet</Title>
+			<Shortcut>myclass</Shortcut>
+			<Description>產生Class類別區段</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>className</ID>
+					<ToolTip>Title for the ClassName</ToolTip>
+					<Default>MyPublicClass</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					/// <summary>
+					/// 
+					/// </summary>
+					public class $className$
+					{				
+					}
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：MonoBehaviour類別區段 -->
+	<CodeSnippet>
+		<Header>
+			<Title>MonoBehaviourSnippet</Title>
+			<Shortcut>mono</Shortcut>
+			<Description>產生MonoBehaviour類別區段</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>className</ID>
+					<ToolTip>Title for the ClassName</ToolTip>
+					<Default>MyPublicClass</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					/// <summary>
+					/// 
+					/// </summary>
+					public class $className$ :MonoBehaviour
+					{				
+					}
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Getter與Setter -->
+	<CodeSnippet>
+		<Header>
+			<Title>Snippet: Getter與Setter</Title>
+			<Shortcut>gs</Shortcut>
+			<Description>產生Getter與Setter類別區段</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>name</ID>
+					<ToolTip>Title for the GetterSetter</ToolTip>
+					<Default>MyVariable</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					/// <summary>
+					/// 
+					/// </summary>
+					 public string $name$
+					{
+						get => ;
+						set
+						{
+
+						}
+					}
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Getter -->
+	<CodeSnippet>
+		<Header>
+			<Title>Snippet: Getter</Title>
+			<Shortcut>getter</Shortcut>
+			<Description>產生Getter</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>name</ID>
+					<ToolTip>Title for the Getter</ToolTip>
+					<Default>MyVariable</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					/// <summary>
+					/// 
+					/// </summary>
+					 public string $name$ =>;
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Setter -->
+	<CodeSnippet>
+		<Header>
+			<Title>Snippet: Setter</Title>
+			<Shortcut>setter</Shortcut>
+			<Description>產生Setter</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>name</ID>
+					<ToolTip>Title for the Setter</ToolTip>
+					<Default>MyVariable</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+					/// <summary>
+					/// 
+					/// </summary>
+					 public string $name$ {set=>};
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Debug.Log -->
+	<CodeSnippet>
+		<Header>
+			<Title>DebugLogSnippet</Title>
+			<Shortcut>Log</Shortcut>
+			<Description>Insert a Debug.Log statement</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>content</ID>
+					<ToolTip>Content to log</ToolTip>
+					<Default>Log内容</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[Debug.Log("$content$");]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Public函式區段 -->
+	<CodeSnippet>
+		<Header>
+			<Title>Snippet: Public函式</Title>
+			<Shortcut>Public</Shortcut>
+			<Description>Insert a basic method structure</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>func</ID>
+					<ToolTip>Public函式</ToolTip>
+					<Default>MyPublicFunc</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+				    /// <summary>
+					/// 
+					/// </summary>
+					public void $func$()
+					{
+					}
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+
+	<!-- 快捷Snippet：Private函式區段 -->
+	<CodeSnippet>
+		<Header>
+			<Title>Snippet: Private函式</Title>
+			<Shortcut>private</Shortcut>
+			<Description>Insert a basic method structure</Description>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>func</ID>
+					<ToolTip>Private函式</ToolTip>
+					<Default>MyPrivateFunc</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[
+				    /// <summary>
+					/// 
+					/// </summary>
+					public void $func$()
+					{
+					}
+					]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

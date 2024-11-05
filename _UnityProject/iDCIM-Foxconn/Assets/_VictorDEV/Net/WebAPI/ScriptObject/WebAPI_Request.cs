@@ -82,8 +82,16 @@ namespace VictorDev.Net.WebAPI
             {
                 if (ipConfig != null)
                 {
-                    uriBuilder = new UriBuilder(ipConfig.WebIP_Port);
+                    if (StringHandler.IsIPv4Format(ipConfig.WebIP_Port))
+                    {
+                        uriBuilder = new UriBuilder(ipConfig.WebIP_Port);
+                    }
+                    else
+                    {
+                        uriBuilder = new UriBuilder("http://" + ipConfig.WebIP_Port);
+                    }
                     uriBuilder.Path += apiURL.Trim();
+
                 }
                 else uriBuilder = new UriBuilder(apiURL.Trim()); //後面已加上 /
 

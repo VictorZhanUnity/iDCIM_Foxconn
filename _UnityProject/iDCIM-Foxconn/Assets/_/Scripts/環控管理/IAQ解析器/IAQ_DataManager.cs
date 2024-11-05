@@ -1,7 +1,10 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Parser;
@@ -36,7 +39,15 @@ namespace VictorDev.IAQ
 
 
         [ContextMenu("- 測試: 取得IAQ即時各項指數")]
-        public void GetRealtimeIAQIndex() => GetRealtimeIAQIndex(new List<string>() { "2132N0FF0238", "2132N0FF0239" }, null, null);
+        public void GetRealtimeIAQIndex() => GetRealtimeIAQIndex(new List<string>() {
+        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4",
+        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+1",
+        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5",
+        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+2",
+        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6",
+        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+3"
+
+        }, null, null);
 
         /// <summary>
         /// 取得IAQ即時各項指數
@@ -44,12 +55,53 @@ namespace VictorDev.IAQ
         /// </summary>
         public void GetRealtimeIAQIndex(List<string> modelID, Action<long, Dictionary<string, Data_IAQ>, Data_IAQ> onSuccess, Action<long, string> onFailed)
         {
-            //設定IAQ指數
             List<string> topicList = new List<string>();
-            modelID.ForEach(id => topicList.AddRange(ToAllIndexTopic(id)));
+            /*  //設定全部IAQ指數為Topic
+              modelID.ForEach(id => topicList.AddRange(ToAllIndexTopic(id)));*/
+
+            //設定溫濕度、煙霧為Topic
+            List<string> SetupTopic(string modelID)
+            {
+                List<string> result = new List<string>();
+                if (modelID.Contains("GarrisonJP")) result.Add($"{modelID}/Smoke");
+                else
+                {
+                    result.Add($"{modelID}/RT");
+                    result.Add($"{modelID}/RH");
+                }
+                return result;
+            }
+            modelID.ForEach(id => topicList.AddRange(SetupTopic(id)));
 
             WebAPIManager.GetIAQRealTimeIndex(topicList, (responseCode, jsonData) =>
             {
+                WebAPIManager.PrintJSONFormatting(jsonData);
+                List<TagData> tagDatas = JsonConvert.DeserializeObject<List<TagData>>(jsonData);
+
+                var groupList = tagDatas.GroupBy(data => data.tagName.Split("/")[1]);
+
+                var groupRT = groupList.FirstOrDefault(group => group.Key.Equals("RT"));
+                float avgRT = groupList.FirstOrDefault(group => group.Key.Equals("RT")).Average(td => (float)td.value);
+                float avgRH = groupList.FirstOrDefault(group => group.Key.Equals("RH")).Average(td => (float)td.value);
+                bool isHaveSmoke = groupList.FirstOrDefault(group => group.Key.Equals("Smoke")).All(td => (bool)td.value);
+
+                var groupSmoke = groupList.FirstOrDefault(group => group.Key.Equals("Smoke"));
+
+                // 遍歷 List<IGrouping<string, TagData>>
+                foreach (IGrouping<string, TagData> group in groupList)
+                {
+                    Console.WriteLine($"Category: {group.Key}");
+
+                    // 遍歷該分組中的 TagData 元素
+                    foreach (TagData tagData in group)
+                    {
+                        Console.WriteLine($"  TagName: {tagData.tagName}, Value: {tagData.value}");
+                    }
+                }
+
+                print(groupList);
+                //==========================
+
                 //解析JSON資料
                 modelRealtimeData = ParseData(jsonData);
                 // 使用 LINQ 來加總與計算平均值，並存入新的字典
@@ -93,5 +145,14 @@ namespace VictorDev.IAQ
                 .ToDictionary(group => group.Key, group => group.Sum(dictData => float.Parse(dictData["value"])).ToString())
             );
         }
+    }
+
+
+    [Serializable]
+    public class TagData
+    {
+        public string tagName;
+        public JValue value;
+        public object alarm;
     }
 }
