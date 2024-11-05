@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.RevitUtils;
 using static VictorDev.RevitUtils.RevitHandler;
 
 /// <summary>
@@ -183,19 +184,18 @@ public class DeviceAssetList : MonoBehaviour
     public Data_iDCIMAsset SearchDeviceAssetByModel(Transform model)
     {
         currentSelectData = null;
+        string modelDeviceName =RevitHandler.GetDeviceNameFromModel(model.name);
+
         if (model.name.ToLower().Contains("rack") || model.name.ToLower().Contains("aten-pce"))
         {
-            currentSelectData = serverRackDataList.FirstOrDefault(rackData => model.name.Contains(rackData.deviceName));
+          currentSelectData = serverRackDataList.FirstOrDefault(rackData => rackData.deviceName == modelDeviceName);
+           // currentSelectData = serverRackDataList.FirstOrDefault(rackData => rackData.deviceNamemodel.name.Contains(rackData.deviceName));
             //toggleServerRack.isOn = true;
         }
         else
         {
             currentSelectData = serverRackDataList.SelectMany(rackData => rackData.containers) //SelectMany展平所有內部List
-              .FirstOrDefault(deviceData => model.name.Contains(deviceData.deviceName));
-
-            /* if(model.name.ToLower().Contains("server")) toggleServer.isOn  = true;
-             else if (model.name.ToLower().Contains("switch")) toggleSwitch.isOn = true;
-             else if (model.name.ToLower().Contains("router")) toggleRouter.isOn = true;*/
+              .FirstOrDefault(deviceData => deviceData.deviceName == modelDeviceName);
         }
 
         //檢查目前的列表上有無此資料

@@ -28,6 +28,12 @@ namespace VictorDev.RevitUtils
             else return null;
         }
 
+        /// <summary>
+        /// 從模型上擷取DeviceName
+        /// </summary>
+        public static string GetDeviceNameFromModel(string modelName)
+            => RevitHandler.GetDeviceID(modelName).Split(":")[1].Trim();
+
 
         /// <summary>
         /// COBie欄位對照表 (From冠宇 2024.10.25)

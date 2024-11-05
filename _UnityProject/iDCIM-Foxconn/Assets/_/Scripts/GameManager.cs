@@ -134,7 +134,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             if (data.system.ToUpper().Equals("DCS") || data.system.ToUpper().Equals("DCN"))
             {
                 Data_DeviceAsset deviceAsset = (Data_DeviceAsset)data;
-                Debug.Log($"{data} / {deviceAsset.rackLocation}");
                 ToolTipManager.ShowToolTip_DeviceAsset(data);
             }
         }

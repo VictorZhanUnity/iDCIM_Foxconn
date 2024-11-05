@@ -22,6 +22,7 @@ public class DeviceAssetToolTip : MonoBehaviour, IToolTipPanel
     public void ShowData(IToolTipPanel_Data data)
     {
         _isOn = true;
+
         if (data is Data_DeviceAsset deviceAsset)
         {
             txtDeviceName.SetText(deviceAsset.deviceName);

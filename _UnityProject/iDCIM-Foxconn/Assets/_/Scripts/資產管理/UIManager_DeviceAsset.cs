@@ -65,7 +65,7 @@ public class UIManager_DeviceAsset : MonoBehaviour
         if (data != null) //List清單上所沒有顯示的
         {
             deviceInfoPanel.ShowData(data);
-            print($"Data_iDCIMAsset: {data.deviceName}");
+            print($"Data_iDCIMAsset: {data.deviceName} / ");
         }
     }
 
