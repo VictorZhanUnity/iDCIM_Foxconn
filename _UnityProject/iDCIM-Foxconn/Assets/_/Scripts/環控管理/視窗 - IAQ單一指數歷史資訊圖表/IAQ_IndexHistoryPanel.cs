@@ -51,7 +51,7 @@ public class IAQ_IndexHistoryPanel : MonoBehaviour
         indexDisplayer = item;
         imgICON.sprite = indexDisplayer.imgICON_Sprite;
 
-        string title = indexDisplayer.data.ModelID.Contains(",") ? "機房平均數據 - " : $"[{indexDisplayer.data.ModelID}] ";
+        string title = indexDisplayer.data.ModelID.Contains(",") ? "機房平均數據 - " : $"{indexDisplayer.data.ModelID.Split(":")[1].Trim()} ";
         txtTitle.SetText(title + iaqDataFormat.columnName_ZH);
 
         DotweenHandler.ToBlink(txtTitle);
