@@ -72,7 +72,7 @@ public class IAQRealtimeIndexPanel : MonoBehaviour
 
                     //更新IAQ圖標上的溫度值
                     List<Landmark_IAQ> iaqLandmark = LandmarkManager.Landmarks.OfType<Landmark_IAQ>().ToList();
-                    iaqLandmark.ForEach(landmark => landmark.value = eachIAQData[landmark.deviceID].RT);
+                    iaqLandmark.ForEach(landmark => landmark.ShowData(eachIAQData[landmark.deviceID]));
 
                     onUpdateIAQInfo.Invoke(eachIAQData);
                     //最後更新時間

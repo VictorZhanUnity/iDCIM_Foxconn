@@ -1,18 +1,44 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using VictorDev.Common;
 
 public class Landmark_IAQ : Landmark
 {
-    [Header(">>> 文字：目前溫度")]
-    [SerializeField] private TextMeshProUGUI txtTemperature;
+    [Header(">>> [資料項]")]
+    [SerializeField] private Data_IAQ _data;
 
-    public float value
+    [Header(">>> UI組件")]
+    [SerializeField] private TextMeshProUGUI txtValue;
+    [SerializeField] private Image iconRT, iconSmoke, iconSmokeWarning;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void ShowData(Data_IAQ data)
     {
-        set
+        _data = data;
+
+        if (string.IsNullOrEmpty(data.GetValue("RT")))
         {
-            txtTemperature.SetText(value.ToString("0.#"));
-            DotweenHandler.ToBlink(txtTemperature);
+            bool isHaveSmoke = bool.Parse(data.GetValue("Smoke"));
+            txtValue.SetText(isHaveSmoke ? "煙霧警報" : "正常運作");
+            txtValue.DOColor(isHaveSmoke ? Color.red : Color.green, 1f);
+
+            iconRT.gameObject.SetActive(false);
+            iconSmoke.gameObject.SetActive(isHaveSmoke == false);
+            iconSmokeWarning.gameObject.SetActive(isHaveSmoke);
+        }
+        else
+        {
+            float rtValue = float.Parse(data.GetValue("RT"));
+            txtValue.SetText(rtValue.ToString("0.#") + "°c");
+            DotweenHandler.ToBlink(txtValue);
+
+            iconRT.gameObject.SetActive(true);
+            iconSmoke.gameObject.SetActive(false);
+            iconSmokeWarning.gameObject.SetActive(false);
         }
     }
 }
