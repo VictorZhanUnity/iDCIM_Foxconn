@@ -43,8 +43,8 @@ public class DeviceInfoPanel : MonoBehaviour
 
         deviceImgTags.ForEach(tag=> tag.SetActive(tag.name.Contains(data.system)));
 
-        txtManufacturer.SetText(data.manufacturer);
-        txtModelNumber.SetText(data.modelNumber);
+        txtManufacturer.SetText(data.information.type_manufacturer);
+        txtModelNumber.SetText(data.information.type_modelNumber);
 
         txtDescription.gameObject.SetActive(false);
         txtRackLocation.gameObject.SetActive(false);
