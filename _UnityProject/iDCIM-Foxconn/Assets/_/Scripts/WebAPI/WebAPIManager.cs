@@ -62,7 +62,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.CheckToken(Instance.request_GetIAQRealTimeIndex) == false) return;
 
-        Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
+        //Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },

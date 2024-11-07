@@ -105,7 +105,6 @@ namespace VictorDev.IAQ
                     eachIAQData[keyPair.Key] = iaqData;
                 });
 
-                Debug.Log($"eachIAQData: {eachIAQData.Count}");
                 onSuccess?.Invoke(responseCode, eachIAQData, iaqAvg);
             }, onFailed);
         }
