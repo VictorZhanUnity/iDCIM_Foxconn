@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using VictorDev.CameraUtils;
 using VictorDev.Common;
 using static VictorDev.RevitUtils.RevitHandler;
@@ -98,6 +99,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 // 如果現在指向了新的物體，觸發 MouseOver
                 if (currentHoveredObject != null)
                 {
+                    if (EventSystem.current.IsPointerOverGameObject()) return;
                     OnMouseOverHandler(currentHoveredObject);
                 }
 

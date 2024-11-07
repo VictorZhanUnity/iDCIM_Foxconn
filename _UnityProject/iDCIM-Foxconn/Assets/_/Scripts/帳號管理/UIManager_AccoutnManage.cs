@@ -14,6 +14,7 @@ public class UIManager_AccoutnManage : MonoBehaviour
     [SerializeField] private ScrollRect scrollView_AccountList;
     [SerializeField] private ListItem_AccountList listItemPrefab;
     [SerializeField] private AccoutDetailPanel accoutDetailPanelPrefab;
+    [SerializeField] private AddUserHandler addUserHandler;
 
     private AccoutDetailPanel currentPanel { get; set; } = null;
     private List<ListItem_AccountList> listItems { get; set; } = new List<ListItem_AccountList>();
@@ -29,11 +30,18 @@ public class UIManager_AccoutnManage : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        addUserHandler.onClickCreateUser.AddListener(CreateUserListItem);
+    }
+
     /// <summary>
     /// 取得帳號資訊
     /// </summary>
     private void WebAPI_GetAccountList()
     {
+        if (listItems.Count > 0) return;
+
         // 資料集
         List<Dictionary<string, string>> dataList = DemoDataCenter.usersRecords;
 
@@ -42,14 +50,20 @@ public class UIManager_AccoutnManage : MonoBehaviour
         //建立項目
         dataList.ForEach(data =>
         {
-            ListItem_AccountList item = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_AccountList>(listItemPrefab, scrollView_AccountList.content);
-            item.userData = new Data_User(data);
-            item.onClickEvent.AddListener(ShowDetailPanel);
-            listItems.Add(item);
+            CreateUserListItem(new Data_User(data));
         });
 
         searchResult = listItems;
     }
+
+    private void CreateUserListItem(Data_User data)
+    {
+        ListItem_AccountList item = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_AccountList>(listItemPrefab, scrollView_AccountList.content);
+        item.userData = data;
+        item.onClickEvent.AddListener(ShowDetailPanel);
+        listItems.Add(item);
+    }
+
 
     /// <summary>
     ///移除列表原有項目
