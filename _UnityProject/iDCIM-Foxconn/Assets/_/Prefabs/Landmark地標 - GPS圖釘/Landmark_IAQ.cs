@@ -10,7 +10,7 @@ public class Landmark_IAQ : Landmark
     [SerializeField] private Data_IAQ _data;
 
     [Header(">>> UI組件")]
-    [SerializeField] private TextMeshProUGUI txtValue;
+    [SerializeField] private TextMeshProUGUI txtValue, txtModelID;
     [SerializeField] private Image iconRT, iconSmoke, iconSmokeWarning;
 
     /// <summary>
@@ -19,6 +19,8 @@ public class Landmark_IAQ : Landmark
     public void ShowData(Data_IAQ data)
     {
         _data = data;
+
+        txtModelID.SetText(data.ModelID);
 
         if (string.IsNullOrEmpty(data.GetValue("RT")))
         {

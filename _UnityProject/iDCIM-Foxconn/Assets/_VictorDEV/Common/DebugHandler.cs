@@ -72,8 +72,8 @@ namespace VictorDev.Common
                 UnityEngine.Debug.LogWarning("無法取得 UnityEditor.LogEntries 類型。");
             }
         }
-    }
 #endif
+    }
     public enum EnumLogType
     {
         Log, LogWarning, LogError

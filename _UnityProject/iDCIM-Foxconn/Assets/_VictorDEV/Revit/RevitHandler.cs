@@ -98,7 +98,8 @@ namespace VictorDev.RevitUtils
         {
             public string devicePath;
             public string deviceId;
-            public string system;
+            public string system => devicePath.Split("+")[5];
+
             public string manufacturer;
             public string modelNumber;
             public InfoWithCOBie information;

@@ -39,12 +39,12 @@ namespace VictorDev.IAQ
 
         [ContextMenu("- 測試: 取得IAQ即時各項指數")]
         public void GetRealtimeIAQIndex() => GetRealtimeIAQIndex(new List<string>() {
-        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4",
-        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+1",
-        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5",
-        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+2",
-        "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6",
-        "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+3"
+        "T/H-01, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4",
+        "T/H-02, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+1",
+        "T/H-03, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5",
+        "T/H-04, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+2",
+        "T/H-05, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6",
+        "T/H-06, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+3"
 
         }, null, null);
 
@@ -55,18 +55,19 @@ namespace VictorDev.IAQ
         public void GetRealtimeIAQIndex(List<string> modelID, Action<long, Dictionary<string, Data_IAQ>, Data_IAQ> onSuccess, Action<long, string> onFailed)
         {
             List<string> topicList = new List<string>();
-            /*  //設定全部IAQ指數為Topic
-              modelID.ForEach(id => topicList.AddRange(ToAllIndexTopic(id)));*/
 
             //設定溫濕度、煙霧為Topic
             List<string> SetupTopic(string modelID)
             {
                 List<string> result = new List<string>();
-                if (modelID.Contains("GarrisonJP")) result.Add($"{modelID}/Smoke");
+
+                string code = modelID.Split(",")[0]; //取,前的 T/H-01流水號
+
+                if (modelID.Contains("GarrisonJP")) result.Add($"{code}/Smoke");
                 else
                 {
-                    result.Add($"{modelID}/RT");
-                    result.Add($"{modelID}/RH");
+                    result.Add($"{code}/RT");
+                    result.Add($"{code}/RH");
                 }
                 return result;
             }
@@ -76,11 +77,12 @@ namespace VictorDev.IAQ
             {
                 List<TagData> tagDatas = JsonConvert.DeserializeObject<List<TagData>>(jsonData);
 
-                var deviceGroupList = tagDatas.GroupBy(data => data.tagName.Split("/")[0]);
-                //儲存即時資料 {設備名稱, {IAQ標籤, 值}}
-                modelRealtimeData = deviceGroupList.ToDictionary(g => g.Key, g => g.ToDictionary(data => data.tagName.Split("/")[1], data => data.value.ToString()));
+                List<IGrouping<string, TagData>> deviceGroupList = tagDatas.GroupBy(data => data.tagName.Substring(0, data.tagName.LastIndexOf("/"))).ToList();
 
-                var tagGroupList = tagDatas.GroupBy(data => data.tagName.Split("/")[1]);
+                //儲存即時資料 {設備名稱, {IAQ標籤, 值}}
+                modelRealtimeData = deviceGroupList.ToDictionary(g => g.Key, g => g.ToDictionary(data => data.tagName.Split("/")[2], data => data.value.ToString()));
+
+                var tagGroupList = tagDatas.GroupBy(data => data.tagName.Split("/")[2]);
                 float avgRT = tagGroupList.FirstOrDefault(group => group.Key.Equals("RT")).Average(td => (float)td.value);
                 float avgRH = tagGroupList.FirstOrDefault(group => group.Key.Equals("RH")).Average(td => (float)td.value);
                 bool isHaveSmoke = tagGroupList.FirstOrDefault(group => group.Key.Equals("Smoke")).All(td => (bool)td.value);

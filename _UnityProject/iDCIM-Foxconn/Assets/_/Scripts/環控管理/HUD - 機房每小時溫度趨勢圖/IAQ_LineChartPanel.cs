@@ -49,7 +49,7 @@ public class IAQ_LineChartPanel : MonoBehaviour
             Data_IAQ.SetChart(lineChart, avgValues, columnName, false);
         }
         List<string> tagList = new List<string>();
-        uiManager_IAQ.deviceModelVisualizer.ModelNameList.ForEach(name => tagList.Add(name + "/RT"));
+        uiManager_IAQ.deviceModelVisualizer.ModelDevicePathList.ForEach(name => tagList.Add(name + "/RT"));
         WebAPIManager.GetIAQIndexHistory(tagList, startOfDay, endOfDay, onSuccess, onFailed);
     }
 

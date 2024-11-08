@@ -16,7 +16,7 @@ public class DeviceInfoPanel : MonoBehaviour
     [SerializeField] private ListItem_COBie listItemPrefab;
     [SerializeField] private List<GameObject> deviceImgTags;
     [SerializeField] private DoTweenFadeController doTweenFadeController;
-    [SerializeField] private TextMeshProUGUI txtDeviceName, txtManufacturer, txtModelNumber, txtDescription, txtRackLocation;
+    [SerializeField] private TextMeshProUGUI txtDeviceName, txtDeviceID, txtManufacturer, txtModelNumber, txtDescription, txtRackLocation;
 
     /// <summary>
     /// 顯示資料(From設備清單)
@@ -39,6 +39,7 @@ public class DeviceInfoPanel : MonoBehaviour
     /// </summary>
     private void UpdateUI(Data_iDCIMAsset data)
     {
+        txtDeviceID.SetText(data.devicePath);
         txtDeviceName.SetText(data.deviceName);
 
         deviceImgTags.ForEach(tag=> tag.SetActive(tag.name.Contains(data.system)));
