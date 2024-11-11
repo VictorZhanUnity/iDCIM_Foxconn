@@ -21,7 +21,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Start()
     {
-        Login("TCIT", "TCIT");
+      //  Login("TCIT", "TCIT");
     }
 
     /// <summary>

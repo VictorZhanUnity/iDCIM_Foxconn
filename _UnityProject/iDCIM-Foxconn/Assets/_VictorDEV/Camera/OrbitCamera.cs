@@ -73,6 +73,8 @@ namespace VictorDev.CameraUtils
             if (target == null)
                 return;
 
+            if (EventHandler.IsUsingInputField) return;
+
             // 检测鼠标中键是否按下以取消跟随
             if (isFollowing && Input.GetMouseButtonDown(2)) StopFollowing();
 

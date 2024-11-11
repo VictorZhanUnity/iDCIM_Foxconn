@@ -5,7 +5,7 @@ using VictorDev.Advanced;
 
 namespace VictorDev.Common
 {
-    public class MaterialHandler : MonoBehaviour
+    public class MaterialHandler : SingletonMonoBehaviour<MaterialHandler>
     {
         [Header(">>> 指定要替換的材質")]
         [SerializeField] private Material replaceMaterial;
@@ -26,15 +26,26 @@ namespace VictorDev.Common
         private Dictionary<Transform, Material[]> originalMaterials { get; set; } = new Dictionary<Transform, Material[]>();
 
         /// <summary>
+        /// 根據關鍵字，針對目標物件底下所有子物件進行比對，找出名字包含關鍵字的子物件
+        /// </summary>
+        public static List<Transform> FindTargetObjects(List<string> keyWords) => ObjectHandler.FindObjectsByKeywords(Instance.targetTransform, keyWords);
+
+        /// <summary>
+        /// 根據關鍵字，針對目標物件底下所有子物件進行比對，找出名字包含關鍵字的子物件
+        /// </summary>
+        public static List<Transform> FindTargetObjects(string keyWord) => ObjectHandler.FindObjectsByKeyword(Instance.targetTransform, keyWord);
+
+        /// <summary>
         ///  替換當前物件及所有子物件的材質
         ///  <para>+ 用HashSet以便材質的比對</para>
+        ///  <para>+ 會先自動復原全部材質</para>
         /// </summary>
-        public void ReplaceMaterialWithExclude(HashSet<Transform> exlcudeTargets = null, Material material = null)
+        public static void ReplaceMaterialWithExclude(HashSet<Transform> exlcudeTargets = null, Material material = null)
         {
             RestoreOriginalMaterials();
-            ReplaceMaterialRecursively(targetTransform, material ?? replaceMaterial, exlcudeTargets);
+            Instance.ReplaceMaterialRecursively(Instance.targetTransform, material ?? Instance.replaceMaterial, exlcudeTargets);
         }
-        public void ReplaceMaterial(HashSet<Transform> targets = null)
+        public static void ReplaceMaterial(HashSet<Transform> targets = null)
         {
             RestoreOriginalMaterials();
             targets.ToList().ForEach(target =>
@@ -42,10 +53,10 @@ namespace VictorDev.Common
                 if (target.TryGetComponent<Renderer>(out Renderer renderer))
                 {
                     // 如果尚未保存原始材質，將它存儲到字典中
-                    if (!originalMaterials.ContainsKey(target))
+                    if (!Instance.originalMaterials.ContainsKey(target))
                     {
-                        originalMaterials[target] = renderer.sharedMaterials;
-                        materialDictionaryVisualize.Add(new DictionaryVisualizer<Transform, Material[]>(target, renderer.sharedMaterials));
+                        Instance.originalMaterials[target] = renderer.sharedMaterials;
+                        Instance.materialDictionaryVisualize.Add(new DictionaryVisualizer<Transform, Material[]>(target, renderer.sharedMaterials));
                     }
 
                     // 判斷是否有多個材質
@@ -57,7 +68,7 @@ namespace VictorDev.Common
                         for (int i = 0; i < newMaterials.Length; i++)
                         {
                             // 替換為指定的材質
-                            newMaterials[i] = replaceMaterial;
+                            newMaterials[i] = Instance.replaceMaterial;
                         }
 
                         // 設定新的材質陣列
@@ -66,7 +77,7 @@ namespace VictorDev.Common
                     else
                     {
                         // 如果只有一個材質，直接替換
-                        renderer.material = replaceMaterial;
+                        renderer.material = Instance.replaceMaterial;
                     }
 
                     //關閉Collider
@@ -147,9 +158,9 @@ namespace VictorDev.Common
         // <summary>
         ///  恢復原始材質
         /// </summary>
-        public void RestoreOriginalMaterials()
+        public static void RestoreOriginalMaterials()
         {
-            foreach (var kvp in originalMaterials)
+            foreach (var kvp in Instance.originalMaterials)
             {
                 Transform objTransform = kvp.Key;
                 Material[] originalMats = kvp.Value;
