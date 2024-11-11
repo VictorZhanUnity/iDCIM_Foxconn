@@ -28,6 +28,8 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [Header(">>> WebAPI 登入後取得的Token值")]
     [SerializeField] private string token;
 
+    public static string Token => Instance.token;
+
     [Header(">>> 取得所有DCR資料時觸發")]
     public UnityEvent<string> onGetAllDCRInfo;
     [Header(">>> 取得COBie時觸發")]
