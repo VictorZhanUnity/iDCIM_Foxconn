@@ -66,7 +66,11 @@ namespace VictorDev.Common
                Collider[] existingColliders = obj.GetComponents<Collider>();
                foreach (var collider in existingColliders)
                {
+#if UNITY_EDITOR
+                   Object.DestroyImmediate(collider);
+#else
                    Object.Destroy(collider);
+#endif
                }
            });
     }

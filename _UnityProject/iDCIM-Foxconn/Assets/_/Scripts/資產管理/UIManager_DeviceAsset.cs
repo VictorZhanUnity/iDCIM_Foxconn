@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using VictorDev.CameraUtils;
+using VictorDev.Common;
 using static VictorDev.RevitUtils.RevitHandler;
 
 /// <summary>
@@ -41,7 +42,7 @@ public class UIManager_DeviceAsset : MonoBehaviour
     {
         Transform targetModel = deviceModelVisualizer.ModelList.FirstOrDefault(model => model.name.Contains(target.data.deviceName));
         OrbitCamera.MoveTargetTo(targetModel); //運鏡
-        GameManager.ToSelectTarget(targetModel); //選取目標模型
+        RaycastHitManager.ToSelectTarget(targetModel); //選取目標模型
 
         switch (target.data.system)
         {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.CameraUtils;
+using VictorDev.Common;
 using VictorDev.Parser;
 
 public class UIManager_DeviceAssets_Old : MonoBehaviour
@@ -74,7 +75,7 @@ public class UIManager_DeviceAssets_Old : MonoBehaviour
         {
             OrbitCamera.MoveTargetTo(data.rack);
            // rackInfoPanel.Show(data);
-            GameManager.ToSelectTarget(data.rack);
+            RaycastHitManager.ToSelectTarget(data.rack);
         }
 
     }

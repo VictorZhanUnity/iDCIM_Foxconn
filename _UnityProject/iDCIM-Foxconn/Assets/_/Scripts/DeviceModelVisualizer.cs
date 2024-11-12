@@ -49,7 +49,7 @@ public class DeviceModelVisualizer : MonoBehaviour
     {
         set
         {
-            GameManager.RestoreSelectedObject();
+            RaycastHitManager.RestoreSelectedObject();
 
             if (value) MaterialHandler.ReplaceMaterialWithExclude(models);
             else MaterialHandler.RestoreOriginalMaterials();

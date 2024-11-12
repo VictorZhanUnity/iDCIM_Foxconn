@@ -18,10 +18,14 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
     /// </summary>
     protected List<Transform> modelList => modelForDisplay.modelsList;
 
+    private bool _isOn { get; set; }
+
     public bool isOn
     {
+        get => _isOn;
         set
         {
+            _isOn = value;
             transform.GetChild(0).gameObject.SetActive(value);
             if (value) ToShow();
             else ToClose();
@@ -30,8 +34,6 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
 
     private void ToShow()
     {
-
-
         MaterialHandler.ReplaceMaterialWithExclude(modelForDisplay.modelsList.ToHashSet());
         OnShowHandler();
     }
