@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.Parser;
 using VictorDev.RevitUtils;
 using static VictorDev.RevitUtils.RevitHandler;
 
@@ -134,7 +135,7 @@ public class DeviceAssetList : MonoBehaviour
 
     public void WebAPI_onSuccess(long responseCode, string jsonString)
     {
-        print(WebAPIManager.PrintJSONFormatting(jsonString));
+        print(JsonUtils.PrintJSONFormatting(jsonString));
         serverRackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonString);
 
         onGetAllDeviceDataComplete?.Invoke(serverRackDataList);

@@ -53,5 +53,10 @@ public class DeviceRUItem : MonoBehaviour
         Vector2 size = rectTrans.sizeDelta;
         size.y = _data.information.heightU * 30;
         rectTrans.sizeDelta = size;
+
+        //位置
+        Vector2 pos = rectTrans.localPosition;
+        pos.y = (_data.rackLocation-1) * 30 + 3;
+        rectTrans.localPosition = pos;
     }
 }

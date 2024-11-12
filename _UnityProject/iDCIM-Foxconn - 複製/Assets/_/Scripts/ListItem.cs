@@ -34,6 +34,8 @@ public class ListItem : MonoBehaviour
         obj.listItem = this as ListItem_CCTV;
         landmark.listItem = this;
         txtLabel.SetText(selectableObject.title);
+
+        Debug.Log($"title: {selectableObject.title}");
     }
     private void OnEnable()
     {

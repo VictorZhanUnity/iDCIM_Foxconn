@@ -133,7 +133,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         {
             onSuccess?.Invoke(responseCode, jsonString);
            // Debug.Log($"*** WebAPI呼叫成功!!");
-            //PrintJSONFormatting(jsonString);
+            //PrintJSONFormatting(jsonString);j
         }, onFailed);
     }
 
@@ -151,37 +151,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         return true;
     }
 
-    /// <summary>
-    /// 按照JSON格式列印出JSON資料
-    /// </summary>
-    public static string PrintJSONFormatting(string jsonString)
-    {
-        string result = null;
-        try
-        {
-            JToken token = JToken.Parse(jsonString);
 
-            // 嘗試解析為 JArray（陣列）
-            if (token is JArray)
-            {
-                // 如果是 JArray，進行格式化並列印
-                JArray jsonArray = (JArray)token;
-                result = jsonArray.ToString(Formatting.Indented);
-            }
-            else if (token is JObject)
-            {
-                // 如果是 JObject，進行格式化並列印
-                JObject jsonObject = (JObject)token;
-                result = jsonObject.ToString(Formatting.Indented);
-            }
-            Debug.Log($"---> JSON資料:\n{result}");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("JSON 格式錯誤: " + e.Message);
-        }
-        return result;
-    }
 
     #region [ContextMenu 測試API]
     [ContextMenu("[帳號] 管理員登入")]
@@ -247,7 +217,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         void onSuccess(long responseCode, string jsonString)
         {
-            PrintJSONFormatting(jsonString);
+            JsonUtils.PrintJSONFormatting(jsonString);
         }
         GetAllDCRContainer(onSuccess, null);
     }
@@ -257,7 +227,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         void onSuccess(long responseCode, string jsonString)
         {
-            PrintJSONFormatting(jsonString);
+            JsonUtils.PrintJSONFormatting(jsonString);
         }
         string containerID = "b8ef823e-4e1f-49c4-9f44-e37e8c0548d1";
         GetCOBieByContainerID(containerID, onSuccess, null);

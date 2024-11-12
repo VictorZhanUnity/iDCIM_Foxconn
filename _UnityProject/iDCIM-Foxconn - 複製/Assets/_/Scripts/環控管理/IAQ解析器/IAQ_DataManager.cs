@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,10 +35,18 @@ namespace VictorDev.IAQ
         /// 各IAQ設備即時資料
         /// </summary>
         public Dictionary<string, Dictionary<string, string>> modelRealtimeData { get; private set; }
-
+        private Dictionary<string, Data_IAQ> eachIAQData { get; set; }
 
         [ContextMenu("- 測試: 取得IAQ即時各項指數")]
-        public void GetRealtimeIAQIndex() => GetRealtimeIAQIndex(new List<string>() { "2132N0FF0238", "2132N0FF0239" }, null, null);
+        public void GetRealtimeIAQIndex() => GetRealtimeIAQIndex(new List<string>() {
+        "T/H-01, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4",
+        "T/H-02, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+1",
+        "T/H-03, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5",
+        "T/H-04, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+2",
+        "T/H-05, FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6",
+        "T/H-06, FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+3"
+
+        }, null, null);
 
         /// <summary>
         /// 取得IAQ即時各項指數
@@ -44,29 +54,52 @@ namespace VictorDev.IAQ
         /// </summary>
         public void GetRealtimeIAQIndex(List<string> modelID, Action<long, Dictionary<string, Data_IAQ>, Data_IAQ> onSuccess, Action<long, string> onFailed)
         {
-            //設定IAQ指數
             List<string> topicList = new List<string>();
-            modelID.ForEach(id => topicList.AddRange(ToAllIndexTopic(id)));
+
+            //設定溫濕度、煙霧為Topic
+            List<string> SetupTopic(string modelID)
+            {
+                List<string> result = new List<string>();
+
+                string code = modelID.Split(",")[0]; //取,前的 T/H-01流水號
+
+                if (modelID.Contains("GarrisonJP")) result.Add($"{code}/Smoke");
+                else
+                {
+                    result.Add($"{code}/RT");
+                    result.Add($"{code}/RH");
+                }
+                return result;
+            }
+            modelID.ForEach(id => topicList.AddRange(SetupTopic(id)));
 
             WebAPIManager.GetIAQRealTimeIndex(topicList, (responseCode, jsonData) =>
             {
-                //解析JSON資料
-                modelRealtimeData = ParseData(jsonData);
-                // 使用 LINQ 來加總與計算平均值，並存入新的字典
-                Dictionary<string, string> averagedDict = modelRealtimeData
-                    .SelectMany(d => d.Value) // 展開內部字典
-                    .GroupBy(kvp => kvp.Key)  // 依據 key 分組
-                    .ToDictionary(
-                        g => g.Key, // 使用 key 分組
-                        g => g.Average(kvp => float.Parse(kvp.Value)).ToString("0.#") // 計算該 key 的所有值的平均
-                    );
+                List<TagData> tagDatas = JsonConvert.DeserializeObject<List<TagData>>(jsonData);
 
+                List<IGrouping<string, TagData>> deviceGroupList = tagDatas.GroupBy(data => data.tagName.Substring(0, data.tagName.LastIndexOf("/"))).ToList();
+
+                //儲存即時資料 {設備名稱, {IAQ標籤, 值}}
+                modelRealtimeData = deviceGroupList.ToDictionary(g => g.Key, g => g.ToDictionary(data => data.tagName.Split("/")[2], data => data.value.ToString()));
+
+                var tagGroupList = tagDatas.GroupBy(data => data.tagName.Split("/")[2]);
+                float avgRT = tagGroupList.FirstOrDefault(group => group.Key.Equals("RT")).Average(td => (float)td.value);
+                float avgRH = tagGroupList.FirstOrDefault(group => group.Key.Equals("RH")).Average(td => (float)td.value);
+                bool isHaveSmoke = tagGroupList.FirstOrDefault(group => group.Key.Equals("Smoke")).All(td => (bool)td.value);
+
+                //儲存各項的平均值
+                Dictionary<string, string> averagedDict = new Dictionary<string, string>()
+                {
+                   {"RT", avgRT.ToString()},
+                   {"RH", avgRH.ToString()},
+                   {"Smoke", isHaveSmoke.ToString()},
+                };
                 // 儲存IAQ資訊平均值為Data_IAQ
                 Data_IAQ iaqAvg = new Data_IAQ(averagedDict);
                 iaqAvg.ModelID = string.Join(",", modelRealtimeData.Keys.ToList());
 
                 // 儲存每一台設備的IAQ資訊為Data_IAQ
-                Dictionary<string, Data_IAQ> eachIAQData = new Dictionary<string, Data_IAQ>();
+                eachIAQData = new Dictionary<string, Data_IAQ>();
                 modelRealtimeData.ToList().ForEach(keyPair =>
                 {
                     Data_IAQ iaqData = new Data_IAQ(keyPair.Value);
@@ -74,7 +107,7 @@ namespace VictorDev.IAQ
                     eachIAQData[keyPair.Key] = iaqData;
                 });
 
-                onSuccess(responseCode, eachIAQData, iaqAvg);
+                onSuccess?.Invoke(responseCode, eachIAQData, iaqAvg);
             }, onFailed);
         }
         private List<string> ToAllIndexTopic(string modelID) => indexType.Select(index => ToIndexTopic(modelID, index)).ToList();
@@ -93,5 +126,14 @@ namespace VictorDev.IAQ
                 .ToDictionary(group => group.Key, group => group.Sum(dictData => float.Parse(dictData["value"])).ToString())
             );
         }
+    }
+
+
+    [Serializable]
+    public class TagData
+    {
+        public string tagName;
+        public JValue value;
+        public object alarm;
     }
 }

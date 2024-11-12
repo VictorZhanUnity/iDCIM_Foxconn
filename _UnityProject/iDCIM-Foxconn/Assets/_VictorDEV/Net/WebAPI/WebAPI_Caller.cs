@@ -117,7 +117,7 @@ namespace VictorDev.Net.WebAPI
             if (request.authorizationType != enumAuthorization.NoAuth)
             {
                 webRequest.SetRequestHeader("Authorization", $"{request.authorizationType} {request.token}");
-              //  Debug.Log($"\t[Authorization: {request.authorizationType}] Token: {request.token}");
+                //  Debug.Log($"\t[Authorization: {request.authorizationType}] Token: {request.token}");
             }
 
             DownloadHandler downloadHandler;
@@ -330,6 +330,18 @@ namespace VictorDev.Net.WebAPI
                 //成功，回傳Dictionary<欄位名, 值>
                 onSuccess?.Invoke(request.responseCode, JsonUtils.ParseJsonArray(downloadHandler.text));
             }
+        }
+
+
+        public static void WebAPI_OnSuccess(long responseCode, string jsonString)
+        {
+            Debug.Log($">>> WebAPI_OnSuccess - responseCode: {responseCode}");
+            JsonUtils.PrintJSONFormatting(jsonString);
+        }
+        public static void WebAPI_OnFailed(long responseCode, string msg)
+        {
+            Debug.LogWarning($">>>WebAPI_OnFailed - responseCode: {responseCode}");
+            Debug.LogWarning($"\tmsg: {msg}");
         }
     }
 }

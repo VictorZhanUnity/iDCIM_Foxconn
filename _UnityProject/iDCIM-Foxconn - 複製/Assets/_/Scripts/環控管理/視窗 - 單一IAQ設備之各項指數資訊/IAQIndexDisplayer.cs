@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Common;
-using Random = UnityEngine.Random;
 
 /// <summary>
 /// IAQ單項指數顯示器
@@ -28,7 +27,7 @@ public class IAQIndexDisplayer : MonoBehaviour
 
     [Header(">>> UI組件")]
     [SerializeField] private Button btn;
-    [SerializeField] protected Image imgICON;
+    [SerializeField] protected Image imgICON, imgGradient;
     [SerializeField] protected TextMeshProUGUI txtValue;
 
     public List<string> key
@@ -48,20 +47,32 @@ public class IAQIndexDisplayer : MonoBehaviour
         set
         {
             iaqData = value;
-            float iaqIndexValue = float.Parse(iaqData.GetValue(columnName));
 
-            DotweenHandler.ToBlink(txtValue, null, 0.1f, 0.1f);
-            DOTween.To(() => float.Parse(txtValue.text), x =>
+            if (columnName.Equals("Smoke"))
             {
-                // 更新文字
-                if (columnName != "RT" && columnName != "RH") txtValue.text = x.ToString("F0");
-                else txtValue.text = x.ToString("0.#");
-            }, iaqIndexValue, 0.2f).SetEase(Ease.OutQuart);
+                bool isHaveSmoke = bool.Parse(iaqData.GetValue(columnName));
+                txtValue.SetText(isHaveSmoke ? "煙霧警報" : "正常運作");
+                txtValue.DOColor(isHaveSmoke ? Color.red : Color.green, 1f);
+                imgGradient.DOColor(isHaveSmoke ? Color.red : Color.green, 2f);
+            }
+            else
+            {
+                txtValue.color = Color.white;
+                float iaqIndexValue = float.Parse(iaqData.GetValue(columnName));
 
-            if (columnName == "RT")
-            {
-                ColorHandler.ChangeColorLevel_Temperature(iaqIndexValue, txtValue, 1f); 
-                ColorHandler.ChangeColorLevel_Temperature(iaqIndexValue, imgICON, 1f); 
+                DotweenHandler.ToBlink(txtValue, null, 0.1f, 0.1f);
+                DOTween.To(() => float.Parse(txtValue.text), x =>
+                {
+                    // 更新文字
+                    if (columnName != "RT" && columnName != "RH") txtValue.text = x.ToString("F0");
+                    else txtValue.text = x.ToString("0.#");
+                }, iaqIndexValue, 0.2f).SetEase(Ease.OutQuart);
+
+                if (columnName == "RT")
+                {
+                    ColorHandler.ChangeColorLevel_Temperature(iaqIndexValue, txtValue, 1f);
+                    ColorHandler.ChangeColorLevel_Temperature(iaqIndexValue, imgICON, 1f);
+                }
             }
         }
     }
@@ -74,6 +85,8 @@ public class IAQIndexDisplayer : MonoBehaviour
 
     private void OnEnable()
     {
+        if (columnName.Equals("Smoke")) return;
+
         DOTween.To(() => 0, x =>
         {
             // 更新文字

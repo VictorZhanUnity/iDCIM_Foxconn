@@ -43,8 +43,9 @@ public class IAQDevicePanel : MonoBehaviour
 
     private void ShowData(Data_IAQ data)
     {
+        if (string.IsNullOrEmpty(data.GetValue("Smoke")) == false) return;
         iaqData = data;
-        txtTitle.SetText($"[{data.ModelID}]");
+        txtTitle.SetText($"{modelID.Split(":")[1].Trim()}");
         indexDisplayer.ForEach(item => item.data = iaqData);
         fader.isOn = true;
     }

@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 using VictorDev.Common;
 
 namespace VictorDev.Parser
@@ -11,6 +13,75 @@ namespace VictorDev.Parser
     /// </summary>
     public abstract class JsonUtils
     {
+        /// <summary>
+        /// 按照JSON格式Log列印出JSON資料
+        /// </summary>
+        public static string PrintJSONFormatting(string jsonString)
+        {
+            string result = null;
+            try
+            {
+                JToken token = JToken.Parse(jsonString);
+
+                // 嘗試解析為 JArray（陣列）
+                if (token is JArray)
+                {
+                    // 如果是 JArray，進行格式化並列印
+                    JArray jsonArray = (JArray)token;
+                    result = jsonArray.ToString(Formatting.Indented);
+                }
+                else if (token is JObject)
+                {
+                    // 如果是 JObject，進行格式化並列印
+                    JObject jsonObject = (JObject)token;
+                    result = jsonObject.ToString(Formatting.Indented);
+                }
+                Debug.Log($"---> JSON資料:\n{result}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("JSON 格式錯誤: " + e.Message);
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// 自訂的JSON解析操作，取消JsonConvert.DeserializeObject的操作而直接給string到變數上
+        /// <para> + 在變數上加上Tag  [JsonConverter(typeof(PageDataConverter))] </para>
+        /// </summary>
+        /* 範例
+           [Serializable]
+        public class DataPages
+        {
+            public int currentPageIndex;
+            public int totalPage;
+            [JsonConverter(typeof(JsonStringConverter))]
+            public string pageData; //此變數就不會被JsonConvert.DeserializeObject進行解析，而直接將原jsontString給此變數
+        }
+        */
+        public class CustomDeserializeConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return objectType == typeof(string);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                // 將當前 JSON 區段轉為字串
+                return JToken.ReadFrom(reader).ToString(Formatting.Indented);
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                // 寫回 JSON 時保留原始格式
+                writer.WriteRawValue(value.ToString());
+            }
+        }
+
+        //====================================================== 舊版本 ↓
+
         /// <summary>
         /// 解析Json字串資料
         /// <para>使用方式：JObject.Parse(jsonString)</para>
@@ -91,25 +162,25 @@ namespace VictorDev.Parser
 
 
 /**測試範例
-    可以直接針對JObject進行SelectToken依據路徑取值Value，並且可以直接轉換指定的資料型態，例如：DateTime
+可以直接針對JObject進行SelectToken依據路徑取值Value，並且可以直接轉換指定的資料型態，例如：DateTime
 
-  print("測試DateTime格式");
+print("測試DateTime格式");
 
-        var payload = new
-        {
-            timestamp = "2024-10-17T08:32:00Z",
-            A = new
-            {
-                B = "2024-10-17T08:32:00"
-            }
-        };
+var payload = new
+{
+    timestamp = "2024-10-17T08:32:00Z",
+    A = new
+    {
+        B = "2024-10-17T08:32:00"
+    }
+};
 
-        var jObj = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(payload));
+var jObj = JsonConvert.DeserializeObject<JObject>(JsonConvert.SerializeObject(payload));
 
-        var t = jObj.SelectToken("timestamp").Value<DateTime>();
-        var n = jObj.SelectToken("A.B").Value<DateTime>();
+var t = jObj.SelectToken("timestamp").Value<DateTime>();
+var n = jObj.SelectToken("A.B").Value<DateTime>();
 
-        print(t);
-        print(t.ToLocalTime());
-        print(n);
+print(t);
+print(t.ToLocalTime());
+print(n);
 */

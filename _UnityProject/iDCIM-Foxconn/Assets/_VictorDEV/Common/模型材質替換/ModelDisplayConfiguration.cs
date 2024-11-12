@@ -9,6 +9,9 @@ namespace VictorDev.Common
     {
         [SerializeField] List<Transform> models;
         [SerializeField] List<string> objKeyWords;
+        /// <summary>
+        /// 欲顯示的物件
+        /// </summary>
         public List<Transform> modelsList => models;
 
         public void FindTargetObjects()

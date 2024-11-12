@@ -14,14 +14,15 @@ public class DeviceModelVisualizer : MonoBehaviour
     [Header(">>> 搜尋名稱關鍵字(選填)")]
     [SerializeField] protected string keyName;
 
-    [Header(">>> 處理模型材質替換")]
-    [SerializeField] protected MaterialHandler materialHandler;
+   /* [Header(">>> 處理模型材質替換")]
+    [SerializeField] protected MaterialHandler materialHandler;*/
 
     public UnityEvent<List<SelectableObject>> onInitlialized = new UnityEvent<List<SelectableObject>>();
     public UnityEvent<Transform> onClickEvent = new UnityEvent<Transform>();
 
     public List<Transform> ModelList => modelList;
-    public List<string> ModelNameList => modelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
+    public List<string> ModelDevicePathList => modelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
+    public List<string> ModelNameList => modelList.Select(model => model.name).ToList();
 
     /// <summary>
     /// 暫存模型, 供材質替換進行哈希表比對
@@ -50,8 +51,8 @@ public class DeviceModelVisualizer : MonoBehaviour
         {
             GameManager.RestoreSelectedObject();
 
-            if (value) materialHandler.ReplaceMaterialWithExclude(models);
-            else materialHandler.RestoreOriginalMaterials();
+            if (value) MaterialHandler.ReplaceMaterialWithExclude(models);
+            else MaterialHandler.RestoreOriginalMaterials();
         }
     }
 

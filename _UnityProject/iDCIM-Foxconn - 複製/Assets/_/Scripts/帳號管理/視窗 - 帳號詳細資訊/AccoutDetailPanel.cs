@@ -37,7 +37,15 @@ public class AccoutDetailPanel : MonoBehaviour
         txtStatus.SetText(data.Status.ToString());
         imgStatus.color = data.Status == Config_Enum.enumAccountStatus.啟用 ? colorActivate : colorForbbiden;
 
-        txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+        if (string.IsNullOrEmpty(data.GetValue("LastLoginDateTime")))
+        {
+            txtLastLoginDateTime.SetText("尚未登入");
+        }
+        else
+        {
+            txtLastLoginDateTime.SetText(data.LastLoginDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
+        }
+
         txtEditDateTime.SetText(data.EditDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
         txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
         txtSuspendDate.SetText(data.SuspendDateTime);

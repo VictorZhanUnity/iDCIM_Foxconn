@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
@@ -12,6 +13,11 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
     [Header(">>> 欲顯示的目標物件")]
     [SerializeField] ModelDisplayConfiguration modelForDisplay;
 
+    /// <summary>
+    /// 欲顯示的物件
+    /// </summary>
+    protected List<Transform> modelList => modelForDisplay.modelsList;
+
     public bool isOn
     {
         set
@@ -24,6 +30,8 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
 
     private void ToShow()
     {
+
+
         MaterialHandler.ReplaceMaterialWithExclude(modelForDisplay.modelsList.ToHashSet());
         OnShowHandler();
     }

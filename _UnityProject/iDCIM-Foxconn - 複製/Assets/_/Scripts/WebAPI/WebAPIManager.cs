@@ -28,6 +28,8 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     [Header(">>> WebAPI 登入後取得的Token值")]
     [SerializeField] private string token;
 
+    public static string Token => Instance.token;
+
     [Header(">>> 取得所有DCR資料時觸發")]
     public UnityEvent<string> onGetAllDCRInfo;
     [Header(">>> 取得COBie時觸發")]
@@ -62,7 +64,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.CheckToken(Instance.request_GetIAQRealTimeIndex) == false) return;
 
-       // Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
+        //Debug.Log($">>> [取得IAQ即時各項指數] WebAPI Call: {Instance.request_GetIAQRealTimeIndex.url}");
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },
@@ -190,32 +192,15 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         List<string> tags = new List<string>()
         {
-            "2132N0FF0238/CO",
-        "2132N0FF0238/CO2",
-        "2132N0FF0238/Formaldehyde",
-        "2132N0FF0238/IAQ",
-        "2132N0FF0238/Lit",
-        "2132N0FF0238/Ozone",
-        "2132N0FF0238/PM10",
-        "2132N0FF0238/PM2.5",
-        "2132N0FF0238/RF",
-        "2132N0FF0238/RH",
-        "2132N0FF0238/RT",
-        "2132N0FF0238/RTO",
-        "2132N0FF0238/VOCs",
-        "2132N0FF0239/CO",
-        "2132N0FF0239/CO2",
-        "2132N0FF0239/Formaldehyde",
-        "2132N0FF0239/IAQ",
-        "2132N0FF0239/Lit",
-        "2132N0FF0239/Ozone",
-        "2132N0FF0239/PM10",
-        "2132N0FF0239/PM2.5",
-        "2132N0FF0239/RF",
-        "2132N0FF0239/RH",
-        "2132N0FF0239/RT",
-        "2132N0FF0239/RTO",
-        "2132N0FF0239/VOCs"
+           "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4/RT",
+            "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+4/RH",
+            "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+1/Smoke",
+            "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5/RT",
+            "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+5/RH",
+            "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+2/Smoke",
+            "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6/RT",
+            "FIT+TPE+DC+03F+1+WE+co2_溫濕度三合一感測器(天花): co2_溫濕度三合一感測器(天花)+6/RH",
+            "FIT+TPE+DC+03F+1+WE+GarrisonJP 溫度感應偵測器: GarrisonJP 溫度感應偵測器+3/Smoke"
         };
         GetIAQRealTimeIndex(tags, null, null);
     }

@@ -45,7 +45,7 @@ public class Data_User : Data_NoSQL
     /// <summary>
     /// 大頭照
     /// </summary>
-    public Sprite UserPhoto { get; private set; }
+    public Sprite UserPhoto { get;  set; }
     /// <summary>
     /// 型態(啟用/停用)
     /// </summary>

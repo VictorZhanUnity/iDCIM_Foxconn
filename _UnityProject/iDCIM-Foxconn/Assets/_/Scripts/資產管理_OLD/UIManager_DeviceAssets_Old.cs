@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.CameraUtils;
+using VictorDev.Parser;
 
 public class UIManager_DeviceAssets_Old : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class UIManager_DeviceAssets_Old : MonoBehaviour
     {
         void onSuccess(long responseCode, string jsonString)
         {
-            print(WebAPIManager.PrintJSONFormatting(jsonString));
+            print(JsonUtils.PrintJSONFormatting(jsonString));
         }
         WebAPIManager.GetAllDCRContainer(onSuccess, onFailed);
     }

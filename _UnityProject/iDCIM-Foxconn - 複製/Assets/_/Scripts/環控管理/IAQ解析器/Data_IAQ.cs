@@ -133,6 +133,9 @@ public class Data_IAQ : Data_NoSQL
     public float O3 => float.Parse(GetValue("Ozone"));
     public float Lux => float.Parse(GetValue("Lit"));
 
+    //是否有煙霧
+    public bool Smoke => bool.Parse(GetValue("Smoke"));
+
     /// <summary>
     /// IAQ指數等級顏色
     /// </summary>

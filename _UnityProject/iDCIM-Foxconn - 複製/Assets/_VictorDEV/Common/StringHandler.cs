@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -113,6 +114,15 @@ namespace VictorDev.Common
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// 是否為IPv4格式
+        /// </summary>
+        public static bool IsIPv4Format(string ipAddress)
+        {
+            string pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$";
+            return Regex.IsMatch(ipAddress, pattern);
         }
     }
 }

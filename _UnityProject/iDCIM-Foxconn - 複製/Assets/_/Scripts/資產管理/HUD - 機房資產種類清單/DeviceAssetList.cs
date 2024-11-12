@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -60,7 +61,7 @@ public class DeviceAssetList : MonoBehaviour
             else
             {
                 string keyWorld = dropdownBrandList.captionText.text.Split("(")[0].Trim();
-                filterList = currentAssetList.Where(data => data.manufacturer.Contains(keyWorld)).ToList();
+                filterList = currentAssetList.Where(data => data.information.type_manufacturer.Contains(keyWorld)).ToList();
                 UpdateDeviceList();
             }
         });
@@ -78,7 +79,7 @@ public class DeviceAssetList : MonoBehaviour
             //設置廠牌DropdownList
             dropdownBrandList.options.Clear();
             brandList = new List<string>() { $"全部 (共{dataList.Count}台)" };
-            brandList.AddRange(currentAssetList.GroupBy(data => data.manufacturer).Select(group => $"{group.Key} (共{group.Count()}台)").ToList());
+            brandList.AddRange(currentAssetList.GroupBy(data => data.information.type_manufacturer).Select(group => $"{group.Key} (共{group.Count()}台)").ToList());
             dropdownBrandList.AddOptions(brandList);
             dropdownBrandList.value = 0;
 
@@ -200,7 +201,7 @@ public class DeviceAssetList : MonoBehaviour
 
         //檢查目前的列表上有無此資料
         ListItem_Device targetItem = listItems.FirstOrDefault(item => item.data == currentSelectData);
-        if (targetItem != null) targetItem.isOn = true;
+        //if (targetItem != null) targetItem.SetToggleWithoutNotify(true);
         return currentSelectData;
     }
 }
