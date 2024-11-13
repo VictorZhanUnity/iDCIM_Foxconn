@@ -103,11 +103,11 @@ public class UIManager_CCTV : MonoBehaviour
     {
         if (currentPanel != null)
         {
-            if (currentPanel.data == data)
+          /*  if (currentPanel._data == data)
             {
                 currentPanel.ToShining();
                 return;
-            }
+            }*/
             currentPanel.Close();
             currentPanel = null;
         }
@@ -147,7 +147,7 @@ public class UIManager_CCTV : MonoBehaviour
 
             CheckAmountOfOpenedWindow();
         });
-        currentPanel.ShowData(data);
+        //currentPanel.ShowData(data);
         currentPanel.onClose.AddListener((data) =>
         {
             openedPanels.Remove(data.url);
@@ -183,10 +183,10 @@ public class UIManager_CCTV : MonoBehaviour
         List<Panel_CCTV> list = openedPanels.Values.ToList();
         if (currentPanel != null)
         {
-            SO_RTSP data = currentPanel.data;
+            /*SO_RTSP data = currentPanel._data;
             ListItem_CCTV listItem = currentPanel.listItem;
             CloseAllPanel();
-            cctv9Grid.Play(data, listItem);
+            cctv9Grid.Play(data, listItem);*/
         }
         else
         {
@@ -195,7 +195,7 @@ public class UIManager_CCTV : MonoBehaviour
 
         list.ForEach((panel) =>
         {
-            cctv9Grid.Play(panel.data, panel.listItem);
+            //cctv9Grid.Play(panel._data, panel.listItem);
         });
 
         CheckAmountOfOpenedWindow();

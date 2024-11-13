@@ -25,7 +25,7 @@ public class AccoutDetailPanel : MonoBehaviour
     {
         data = userData;
         UpdateUI();
-        fadeController.FadeIn(true);
+        fadeController.ToShow(true);
     }
 
     private void UpdateUI()
@@ -56,7 +56,7 @@ public class AccoutDetailPanel : MonoBehaviour
     private void Start()
     {
         btnClose.onClick.AddListener(() => onClickCloseBtn.Invoke(data));
-        fadeController.OnFadeOutEvent.AddListener(() =>
+        fadeController.OnHideEvent.AddListener(() =>
         {
             ObjectPoolManager.PushToPool<AccoutDetailPanel>(this);
         });
@@ -64,6 +64,6 @@ public class AccoutDetailPanel : MonoBehaviour
 
     public void Close()
     {
-        fadeController.FadeOut();
+        fadeController.ToHide();
     }
 }

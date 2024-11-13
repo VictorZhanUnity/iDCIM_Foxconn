@@ -19,18 +19,31 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
     protected List<Transform> modelList => modelForDisplay.modelsList;
 
     private bool _isOn { get; set; }
-
     public bool isOn
     {
         get => _isOn;
         set
         {
             _isOn = value;
-            transform.GetChild(0).gameObject.SetActive(value);
+            container.gameObject.SetActive(value);
             if (value) ToShow();
             else ToClose();
         }
     }
+
+    private Transform _container { get; set; }
+    /// <summary>
+    /// 顯示UI組件的容器
+    /// </summary>
+    protected Transform container
+    {
+        get
+        {
+            _container ??= transform.GetChild(0);
+            return _container;
+        }
+    }
+
 
     private void ToShow()
     {

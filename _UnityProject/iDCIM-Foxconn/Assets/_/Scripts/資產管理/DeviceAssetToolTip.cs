@@ -30,13 +30,13 @@ public class DeviceAssetToolTip : MonoBehaviour, IToolTipPanel
 
             deviceImgTags.ForEach(tag => tag.SetActive(tag.name.Contains(deviceAsset.system)));
         }
-        fadeController.FadeIn();
+        fadeController.ToShow();
     }
 
     public void Close()
     {
         _isOn = false;
-        fadeController.FadeOut();
+        fadeController.ToHide();
     }
 
     public void UpdatePosition(Vector2 position) => transform.position = position;

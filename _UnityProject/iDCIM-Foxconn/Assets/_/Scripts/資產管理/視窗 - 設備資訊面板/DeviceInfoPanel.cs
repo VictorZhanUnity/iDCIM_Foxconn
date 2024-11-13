@@ -62,10 +62,10 @@ public class DeviceInfoPanel : MonoBehaviour
 
         BuildCOBieList(data);
 
-        doTweenFadeController.FadeIn(true);
+        doTweenFadeController.ToShow(true);
     }
 
-    public void Close() => doTweenFadeController.FadeOut();
+    public void Close() => doTweenFadeController.ToHide();
 
     /// <summary>
     /// 建立COBie資料清單

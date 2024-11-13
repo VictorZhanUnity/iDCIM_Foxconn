@@ -9,15 +9,32 @@ using VictorDev.Common;
 public class CCTVManager : iDCIM_ModuleManager
 {
     [Header(">>> [WebAPI資料項] CCTV連線資訊")]
-    [SerializeField] List<Data_RTSP> webapiDatas;
+    [SerializeField] private List<Data_RTSP> webapiDatas;
 
     [Header(">>> Landmark圖標Prefab")]
-    [SerializeField] CCTV_LandMark landmarkPrefab;
+    [SerializeField] private CCTV_LandMark landmarkPrefab;
+
+    [Header(">>> CCTV資訊視窗")]
+    [SerializeField] private CCTV_InfoPanel infoPanelPrefab;
+    [SerializeField] private RectTransform containerForCCTVPanel;
+
+    [Header(">>> CCTV全屏播放視窗")]
+    [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
+
+    /// <summary>
+    /// 目前的CCTV資訊視窗
+    /// </summary>
+    private CCTV_InfoPanel currentPanel { get; set; } = null;
+
+    private List<CCTV_InfoPanel> openedPanels { get; set; } = new List<CCTV_InfoPanel>();
+
 
     private void Start()
     {
         LandmarkManager_RE.onToggleOnEvent.AddListener(OnLandmarkToggleOnHandler);
-        RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) => ShowData(webapiDatas.FirstOrDefault(data => targetModel.name.Contains(data.DevicePath))));
+        RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
+            ShowData(webapiDatas.FirstOrDefault(data => targetModel.name.Contains(data.DevicePath))
+        ));
         GetAllCCTVInfo();
     }
     private void OnLandmarkToggleOnHandler(bool isOn, ILandmarkHandler result)
@@ -25,9 +42,50 @@ public class CCTVManager : iDCIM_ModuleManager
         if (isOn != false && result is CCTV_LandMark landmark) ShowData(landmark.data);
     }
 
+    /// <summary>
+    /// 創建CCTV獨立視窗
+    /// </summary>
     private void ShowData(Data_RTSP data)
     {
         Debug.Log($"CCTVManager - ShowData: {data.devicePath}");
+
+        if (currentPanel != null)
+        {
+            if (currentPanel.data == data)
+            {
+                Debug.Log("已存在於畫面上");
+                return;
+            }
+            currentPanel.onClickZoomButtn.RemoveAllListeners();
+            currentPanel.ToClose();
+        }
+
+        var existPanel = openedPanels.FirstOrDefault(panel => panel.data == data);
+        if (existPanel != null)
+        {
+            Debug.Log("已存在於畫面上");
+            return;
+        }
+
+        //  var infoPanel = ObjectPoolManager.GetInstanceFromQueuePool(infoPanelPrefab, containerForCCTVPanel);
+        var infoPanel = Instantiate(infoPanelPrefab, containerForCCTVPanel);
+        infoPanel.containerForDrag = containerForCCTVPanel;
+        infoPanel.ShowData(data);
+        infoPanel.onClickZoomButtn.AddListener(OnZoomHandler);
+        infoPanel.onClickCloseButton.AddListener((data) => openedPanels.Remove(infoPanel));
+
+        infoPanel.onDraggedEvent.AddListener(() =>
+        {
+            openedPanels.Add(infoPanel);
+            currentPanel = null;
+        });
+
+        currentPanel = infoPanel;
+    }
+
+    private void OnZoomHandler(Data_RTSP data)
+    {
+        fullScreenPlayer.Show(data);
     }
 
     protected override void OnShowHandler()
@@ -59,27 +117,4 @@ public class CCTVManager : iDCIM_ModuleManager
 
     private void ShowLandmarks()
         => LandmarkManager_RE.AddLandMarks(landmarkPrefab, webapiDatas, modelList);
-
-    [Serializable]
-    public class Data_RTSP : ILandmarkData
-    {
-        public string name;
-        public string devicePath;
-        /// <summary>
-        /// 編號
-        /// </summary>
-        public string idNumber => name.Split('-')[1];
-
-        public string DevicePath => devicePath;
-
-        public DeviceInformation deviceInformation;
-
-        [Serializable]
-        public class DeviceInformation
-        {
-            public string rtsp_connection_string;
-            public string description;
-        }
-    }
-
 }

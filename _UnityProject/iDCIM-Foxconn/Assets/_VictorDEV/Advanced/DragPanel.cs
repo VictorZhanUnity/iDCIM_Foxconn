@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using VictorDev.Common;
 
 namespace VictorDev.Advanced
 {
@@ -26,23 +27,16 @@ namespace VictorDev.Advanced
         [SerializeField] private RectTransform rectTransform;
         [Header(">>> 父物件RectTransform")]
         [SerializeField] private RectTransform parentRectTransform;
-        
+
+        public RectTransform ParentRectTransform { set => parentRectTransform = value; }
+
+        [Header(">>> 本身物件的Canvas(選填：設定SortOrder先後順序用)")]
+        [SerializeField] private Canvas canvas;
+
         private Vector2 pointerOffset;
         private bool isDragging { get; set; }
 
         public UnityEvent onDragged = new UnityEvent();
-
-        private void Start()
-        {
-            OnValidate();
-            parentRectTransform = transform.parent.GetComponent<RectTransform>();
-        }
-
-        private void OnValidate()
-        { 
-            rectTransform ??= GetComponent<RectTransform>();
-            parentRectTransform ??= transform.parent.GetComponent<RectTransform>();
-        }
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -57,11 +51,12 @@ namespace VictorDev.Advanced
             {
                 isDragging = false;
             }
+            MoveToFront();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (isDragging && _isActivated)
+            if (isDragging || _isActivated)
             {
                 // 將滑鼠位置轉換為父物件的本地座標
                 Vector2 localPointerPosition;
@@ -75,6 +70,8 @@ namespace VictorDev.Advanced
 
                     // 設置 Panel 的新位置
                     rectTransform.localPosition = clampedPosition;
+
+                    MoveToFront();
                 }
             }
             onDragged?.Invoke();
@@ -107,5 +104,7 @@ namespace VictorDev.Advanced
 
             return new Vector2(clampedX, clampedY);
         }
+
+        public void MoveToFront() => CanvasSorter.MoveCanvasToFront(canvas);
     }
 }

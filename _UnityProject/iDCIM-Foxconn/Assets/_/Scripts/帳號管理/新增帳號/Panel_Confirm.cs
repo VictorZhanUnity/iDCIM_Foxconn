@@ -9,13 +9,13 @@ public class Panel_Confirm : MonoBehaviour
 
     public void ShowData(Data_User data)
     {
-        fadeController.FadeIn(true);
+        fadeController.ToShow(true);
         txtAccount.SetText(data.Account);
         txtEmail.SetText(data.EMail);
         txtRole.SetText(data.Role.ToString());
         txtCreateDateTime.SetText(data.CreateDateTime.ToString(DateTimeHandler.FullDateTimeMinuteFormat));
-        fadeController.FadeIn();
+        fadeController.ToShow();
     }
 
-    public void Close() => fadeController.FadeOut();
+    public void Close() => fadeController.ToHide();
 }

@@ -19,7 +19,7 @@ public class Panel_AddUser : MonoBehaviour
 
     private void Start()
     {
-        fadeController.OnFadeOutEvent.AddListener(() =>
+        fadeController.OnHideEvent.AddListener(() =>
         {
             inputAccount.text = inputPassword.text = inputConfirmPassword.text = inputEmail.text = string.Empty;
             dropdownRole.value = 0;
@@ -29,10 +29,10 @@ public class Panel_AddUser : MonoBehaviour
 
     public void Show()
     {
-        fadeController.FadeIn(true);
+        fadeController.ToShow(true);
     }
 
-    public void Close() => fadeController.FadeOut();
+    public void Close() => fadeController.ToHide();
 
     private void CreateUser()
     {

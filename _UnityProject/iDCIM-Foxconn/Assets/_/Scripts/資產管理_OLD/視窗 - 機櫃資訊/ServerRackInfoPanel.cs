@@ -72,8 +72,8 @@ public class ServerRackInfoPanel : MonoBehaviour
         pbRuSpace.value = data.usageOfRU;
         pbWeight.value = data.usageOfWeight;
 
-        doTweenFadeController.FadeIn();
+        doTweenFadeController.ToShow();
     }
 
-    public void Close() => doTweenFadeController.FadeOut();
+    public void Close() => doTweenFadeController.ToHide();
 }
