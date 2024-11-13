@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using VictorDev.Common;
 
 namespace VictorDev.Advanced
 {
@@ -29,9 +28,6 @@ namespace VictorDev.Advanced
         [SerializeField] private RectTransform parentRectTransform;
 
         public RectTransform ParentRectTransform { set => parentRectTransform = value; }
-
-        [Header(">>> 本身物件的Canvas(選填：設定SortOrder先後順序用)")]
-        [SerializeField] private Canvas canvas;
 
         private Vector2 pointerOffset;
         private bool isDragging { get; set; }
@@ -105,6 +101,9 @@ namespace VictorDev.Advanced
             return new Vector2(clampedX, clampedY);
         }
 
-        public void MoveToFront() => CanvasSorter.MoveCanvasToFront(canvas);
+        public void MoveToFront()
+        {
+            transform.SetAsLastSibling();
+        }
     }
 }

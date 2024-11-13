@@ -27,11 +27,9 @@ public class CCTV_InfoPanel : InfoPanel<Data_RTSP>
     {
         //ObjectPoolManager.PushToPool(this);
 #if UNITY_EDITOR
-        DestroyImmediate(this);
-
-        Debug.Log("Called");
+        DestroyImmediate(gameObject);
 #else
-        Destroy(this);
+        Destroy(gameObject);
 #endif
     }
 }

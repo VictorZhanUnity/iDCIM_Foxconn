@@ -47,6 +47,8 @@ public abstract class InfoPanel<T> : MonoBehaviour
         doTweenFadeController.ToShow();
     }
 
+    public void ToBlink() => doTweenFadeController.ToShow(true);
+
     protected abstract void OnShowDataHandler(T data);
     protected abstract void OnCloseHandler(T data);
 }

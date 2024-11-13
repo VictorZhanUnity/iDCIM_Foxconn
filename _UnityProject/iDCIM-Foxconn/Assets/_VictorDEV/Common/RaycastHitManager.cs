@@ -13,6 +13,10 @@ namespace VictorDev.Common
         /// </summary>
         public static UnityEvent<Transform> onSelectObjectEvent { get; set; } = new UnityEvent<Transform>();
         /// <summary>
+        /// 當取消選取模型物件時Invoke
+        /// </summary>
+        public static UnityEvent<Transform> onDeselectObjectEvent { get; set; } = new UnityEvent<Transform>();
+        /// <summary>
         /// 當MouseOver模型物件時Invoke
         /// </summary>
         public static UnityEvent<Transform> onMouseOverObjectEvent { get; set; } = new UnityEvent<Transform>();
@@ -135,7 +139,8 @@ namespace VictorDev.Common
                 List<Transform> result = RaycastHitObjects();
                 if (result.Count > 0)
                 {
-                    ToSelectTarget(result[0]);
+                    if (LayerMaskHandler.IsSameLayerMask(result[0].gameObject, layerMouseDown)) CancellObjectSelected(result[0]);
+                    else ToSelectTarget(result[0]);
                 }
             }
         }
@@ -158,15 +163,16 @@ namespace VictorDev.Common
         {
             if (Instance.currentSelectedObject != null)
             {
-                CancellObjectSelected(Instance.currentSelectedObject);
+                CancellObjectSelected(Instance.currentSelectedObject, false);
                 Instance.currentSelectedObject = null;
             }
         }
 
-        public static void CancellObjectSelected(Transform target)
+        public static void CancellObjectSelected(Transform target, bool isInvokeEvent = true)
         {
             target.GetChild(0).gameObject.SetActive(false);
             LayerMaskHandler.SetGameObjectLayerToLayerMask(target.gameObject, Instance.layerDefault);
+            if(isInvokeEvent) onDeselectObjectEvent.Invoke(target);
         }
 
         //==============================

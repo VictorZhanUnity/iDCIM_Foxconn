@@ -42,10 +42,10 @@ namespace VictorDev.Advanced
         /// <summary>
         /// 選取目標對像
         /// </summary>
-        public static void SetToggleOnWithoutNotify(Transform target)
+        public static void SetToggleOnWithoutNotify(Transform target, bool isOn = true)
         {
             ILandmarkHandler result = Instance.landmarkForDisplay.FirstOrDefault(landmark => landmark.targetModel == target);
-            if (result != null) result.SetToggleOnWithoutNotify();
+            if (result != null) result.SetToggleOnWithoutNotify(isOn);
         }
 
         /// <summary>
