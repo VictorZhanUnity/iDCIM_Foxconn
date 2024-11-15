@@ -9,8 +9,6 @@ public abstract class InfoPanel<T> : MonoBehaviour
     [SerializeField] private T _data;
     public T data => _data;
 
-    [Header(">>> 點擊全螢幕按鈕時Invoke")]
-    public UnityEvent<T> onClickZoomButtn = new UnityEvent<T>();
     [Header(">>> 點擊關閉按鈕時Invoke")]
     public UnityEvent<T> onClickCloseButton = new UnityEvent<T>();
     [Header(">>> 拖曳時Invoke")]
@@ -18,19 +16,21 @@ public abstract class InfoPanel<T> : MonoBehaviour
 
     [Header(">>> 組件")]
     [SerializeField] private Toggle toggleTitlebar;
-    [SerializeField] private Button btnZoom, btnClose;
+    [SerializeField] private Button btnClose;
     [SerializeField] private DoTweenFadeController doTweenFadeController;
     [SerializeField] private DragPanel dragPanel;
 
     public RectTransform containerForDrag { set => dragPanel.ParentRectTransform = value; }
 
-    private void Start()
+    private void Awake()
     {
-        btnZoom.onClick.AddListener(() => onClickZoomButtn.Invoke(data));
         btnClose.onClick.AddListener(doTweenFadeController.ToHide);
-        doTweenFadeController.OnHideEvent.AddListener(Close);
         dragPanel.onDragged.AddListener(onDraggedEvent.Invoke);
+        doTweenFadeController.OnHideEvent.AddListener(Close);
+
+        OnAwakeHandler();
     }
+    protected abstract void OnAwakeHandler();
 
     private void Close()
     {
@@ -45,6 +45,13 @@ public abstract class InfoPanel<T> : MonoBehaviour
         this._data = data;
         OnShowDataHandler(data);
         doTweenFadeController.ToShow();
+    }
+    private void OnDestroy()
+    {
+        btnClose.onClick.RemoveAllListeners();
+        dragPanel.onDragged.RemoveAllListeners();
+        onClickCloseButton.RemoveAllListeners();
+        onDraggedEvent.RemoveAllListeners();
     }
 
     public void ToBlink() => doTweenFadeController.ToShow(true);

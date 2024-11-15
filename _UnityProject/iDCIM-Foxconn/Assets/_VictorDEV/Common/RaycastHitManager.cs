@@ -33,6 +33,9 @@ namespace VictorDev.Common
         [SerializeField] private bool isActivated = true;
         public static bool IsActivated { set => Instance.isActivated = value; }
 
+        [Header(">>> [僅顯示] - 目前已選取的物件清單")]
+        [SerializeField] private List<GameObject> selectedObject = new List<GameObject>();
+
         [Header(">>> [僅顯示] - 滑鼠事件之對像物件")]
         [SerializeField] private Transform currentSelectedObject;
         public static Transform CurrentSelectedObject => Instance.currentSelectedObject;
@@ -144,35 +147,46 @@ namespace VictorDev.Common
                 }
             }
         }
+
         /// <summary>
-        /// 選取目標對像
+        /// 選取目標對像 [多選邏輯]
         /// </summary>
         public static void ToSelectTarget(Transform target, bool isInvokeEvent = true)
         {
-            RestoreSelectedObject();
-            Instance.currentSelectedObject = target;
-            LayerMaskHandler.SetGameObjectLayerToLayerMask(Instance.currentSelectedObject.gameObject, Instance.layerMouseDown);
-            target.GetChild(0).gameObject.SetActive(true);
+            //檢查對像是否已被選取
+            bool isAlreadySelected = target.GetChild(0) ? target.GetChild(0).gameObject.activeSelf : false;
 
-            if (isInvokeEvent) onSelectObjectEvent.Invoke(target);
+            if (isAlreadySelected) Instance.selectedObject.Remove(target.gameObject);
+            else Instance.selectedObject.Add(target.gameObject);
+            Instance.currentSelectedObject = isAlreadySelected ? null : target;
+
+            //設定對像狀態
+            target.GetChild(0)?.gameObject.SetActive(!isAlreadySelected);
+            LayerMaskHandler.SetGameObjectLayerToLayerMask(target.gameObject, isAlreadySelected ? Instance.layerDefault : Instance.layerMouseDown);
+
+            if (isInvokeEvent)
+            {
+                if (isAlreadySelected) onDeselectObjectEvent.Invoke(target);
+                else onSelectObjectEvent.Invoke(target);
+            }
         }
         /// <summary>
-        ///復原選擇物件的狀態
+        ///復原全部已選擇物件的狀態
         /// </summary>
-        public static void RestoreSelectedObject()
+        public static void RestoreSelectedObjects()
         {
-            if (Instance.currentSelectedObject != null)
-            {
-                CancellObjectSelected(Instance.currentSelectedObject, false);
-                Instance.currentSelectedObject = null;
-            }
+            Instance.selectedObject.ForEach(target => onDeselectObjectEvent.Invoke(target.transform));
+            Instance.selectedObject.Clear();
+            Instance.currentSelectedObject = null;
         }
 
         public static void CancellObjectSelected(Transform target, bool isInvokeEvent = true)
         {
-            target.GetChild(0).gameObject.SetActive(false);
+            //設定對像狀態
+            target.GetChild(0)?.gameObject.SetActive(false);
             LayerMaskHandler.SetGameObjectLayerToLayerMask(target.gameObject, Instance.layerDefault);
-            if(isInvokeEvent) onDeselectObjectEvent.Invoke(target);
+            Instance.selectedObject.Remove(target.gameObject);
+            if (isInvokeEvent) onDeselectObjectEvent.Invoke(target);
         }
 
         //==============================

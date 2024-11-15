@@ -18,7 +18,7 @@ public class UIManager_Dashboard : MonoBehaviour
     {
         set
         {
-            RaycastHitManager.RestoreSelectedObject();
+            RaycastHitManager.RestoreSelectedObjects();
 
             if (value) MaterialHandler.ReplaceMaterial(walls.ToHashSet());
             else MaterialHandler.RestoreOriginalMaterials();

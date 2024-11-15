@@ -10,7 +10,7 @@ using VictorDev.Common;
 /// </summary>
 public abstract class iDCIM_ModuleManager : MonoBehaviour
 {
-    [Header(">>> 欲顯示的目標物件")]
+    [Header(">>> [模型處理] 欲顯示的目標物件")]
     [SerializeField] ModelDisplayConfiguration modelForDisplay;
 
     /// <summary>

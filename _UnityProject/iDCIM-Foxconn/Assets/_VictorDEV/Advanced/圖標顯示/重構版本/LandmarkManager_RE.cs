@@ -61,7 +61,7 @@ namespace VictorDev.Advanced
 
                 T landmark = ObjectPoolManager.GetInstanceFromQueuePool(landmarkPrefab, Instance.container);
                 landmark.name = $"[{typeof(T).Name}] - {targetModel.name}";
-                landmark.toggleGroup = Instance.toggleGroup;
+              //  landmark.toggleGroup = Instance.toggleGroup;
                 landmark.ShowData(data, targetModel);
                 Instance.landmarkForDisplay.Add(landmark);
                 landmark.onToggleEvent.AddListener(onToggleOnEvent.Invoke);

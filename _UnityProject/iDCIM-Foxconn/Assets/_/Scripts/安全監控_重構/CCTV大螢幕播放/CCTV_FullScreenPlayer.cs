@@ -10,19 +10,27 @@ public class CCTV_FullScreenPlayer : MonoBehaviour
     [Header(">>> ²Õ¥ó")]
     [SerializeField] private GameObject canvasObj;
     [SerializeField] private Button btnClose;
-    [SerializeField] private Image rtspScreen;
+    [SerializeField] private RawImage rawImgScreen;
     [SerializeField] private TextMeshProUGUI txtDeviceName, txtDevicePath, txtIdNumber, txtDescription, txtRTSP_URL;
     [SerializeField] private DoTweenFadeController doTweenFadeController;
+
+    private CCTV_InfoPanel currentCCTVPanel { get; set; }
 
     private void Start()
     {
         btnClose.onClick.AddListener(doTweenFadeController.ToHide);
-        doTweenFadeController.OnHideEvent.AddListener(() => canvasObj.SetActive(false));
+        doTweenFadeController.OnHideEvent.AddListener(() =>
+        {
+            currentCCTVPanel.RtspScreen.RemoveRenderingTarget(rawImgScreen.gameObject);
+            currentCCTVPanel = null;
+            canvasObj.SetActive(false);
+        });
     }
 
-    public void Show(Data_RTSP data)
+    public void Show(CCTV_InfoPanel panel)
     {
-        this.data = data;
+        currentCCTVPanel = panel;
+        data = panel.data;
 
         txtDeviceName.SetText(data.name);
         txtDevicePath.SetText(data.devicePath);
@@ -30,20 +38,9 @@ public class CCTV_FullScreenPlayer : MonoBehaviour
         txtDescription.SetText(data.deviceInformation.description);
         txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);
 
+        panel.RtspScreen.AddRenderingTarget(rawImgScreen.gameObject);
+
         canvasObj.SetActive(true);
         doTweenFadeController.ToShow();
-
-        ConnectRTSP();
     }
-
-    private void ConnectRTSP()
-    {
-
-    }
-
-    public void Show(SO_RTSP data)
-    {
-
-    }
-
 }

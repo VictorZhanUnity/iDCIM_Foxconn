@@ -104,6 +104,11 @@ namespace VictorDev.Advanced
         public void MoveToFront()
         {
             transform.SetAsLastSibling();
+            onDragged.Invoke();
+        }
+        private void OnDestroy()
+        {
+            onDragged.RemoveAllListeners();
         }
     }
 }

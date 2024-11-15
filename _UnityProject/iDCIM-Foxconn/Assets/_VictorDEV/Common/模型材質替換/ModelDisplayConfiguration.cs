@@ -10,7 +10,7 @@ namespace VictorDev.Common
         [SerializeField] List<Transform> models;
         [SerializeField] List<string> objKeyWords;
         /// <summary>
-        /// ±ýÅã¥Üªºª«¥ó
+        /// æ¬²é¡¯ç¤ºçš„ç‰©ä»¶
         /// </summary>
         public List<Transform> modelsList => models;
 

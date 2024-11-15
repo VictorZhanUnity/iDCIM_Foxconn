@@ -76,7 +76,7 @@ public class UIManager_CCTV : MonoBehaviour
             listItem.isOn = true;
         });
 
-        cctv9Grid.onClickScaleBtn.AddListener(fullScreenPlayer.Show);
+       // cctv9Grid.onClickScaleBtn.AddListener(fullScreenPlayer.Show);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class UIManager_CCTV : MonoBehaviour
         //當視窗被拖曳時，即設為釘選狀態
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, transform);
         currentPanel.listItem = listItem;
-        currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
+        //currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
         currentPanel.onDragged.AddListener(() =>
         {
             openedPanels.TryAdd(data.url, currentPanel);

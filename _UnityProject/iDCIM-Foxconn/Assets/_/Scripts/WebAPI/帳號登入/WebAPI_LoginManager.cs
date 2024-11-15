@@ -28,13 +28,12 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
 
         void onSuccessHandler(long responseCode, string jsonString)
         {
-            Data_LoginInfo result = JsonConvert.DeserializeObject<Data_LoginInfo>(jsonString);
-            result.account = account;
-            result.password = password;
-            Instance.loginInfo = result;
+            Instance.loginInfo = JsonConvert.DeserializeObject<Data_LoginInfo>(jsonString);
+            Instance.loginInfo.account = account;
+            Instance.loginInfo.password = password;
 
             Debug.Log($"*** 登入成功!! / {account}");
-            onSuccess?.Invoke(responseCode, result);
+            onSuccess?.Invoke(responseCode, Instance.loginInfo);
         }
         WebAPI_Caller.SendRequest(Instance.request_SignIn, onSuccessHandler, onFailed);
     }
@@ -46,8 +45,7 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
     {
         if (string.IsNullOrEmpty(LoginInfo.access_token))
         {
-            Debug.LogWarning($">>> [WebAPI] - 尚未登入取得Token!!");
-            Instance.Test_SignIn();
+            Debug.Log($">>> [WebAPI] - 尚未登入取得Token!!");
             return false;
         }
         request.token = LoginInfo.access_token;
