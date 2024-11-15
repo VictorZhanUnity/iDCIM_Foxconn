@@ -17,7 +17,6 @@ public class CCTVManager : iDCIM_ModuleManager
     [Header(">>> CCTV資訊視窗")]
     [SerializeField] private CCTV_InfoPanel infoPanelPrefab;
     [SerializeField] private RectTransform containerForCCTVPanel;
-    [SerializeField] private RectTransform containerLines;
 
     public RectTransform linePrefab;
 
@@ -104,8 +103,10 @@ public class CCTVManager : iDCIM_ModuleManager
 
         //設定連接線
         infoPanel.targetModel = targetModel;
-        infoPanel.lineImage = Instantiate(linePrefab, containerForCCTVPanel);
-        infoPanel.lineImage.SetSiblingIndex(infoPanel.transform.GetSiblingIndex() - 1);
+        infoPanel.lineSegment1 = Instantiate(linePrefab, containerForCCTVPanel);
+        infoPanel.lineSegment2 = Instantiate(linePrefab, containerForCCTVPanel);
+        infoPanel.lineSegment1.SetSiblingIndex(infoPanel.transform.GetSiblingIndex() - 1);
+        infoPanel.lineSegment2.SetSiblingIndex(infoPanel.transform.GetSiblingIndex() - 1);
 
         infoPanel.containerForDrag = containerForCCTVPanel;
         infoPanel.ShowData(data);
