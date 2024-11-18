@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -48,12 +47,8 @@ public class Landmark : MonoBehaviour
 
     private void OnDisable()
     {
-        try
-        {
-            toggle.isOn = false;
-            toggle.onValueChanged.RemoveListener(onToggleChanged.Invoke);
-        }
-        catch (Exception e) { }
+        toggle.isOn = false;
+        toggle.onValueChanged.RemoveListener(onToggleChanged.Invoke);
     }
     /// <summary>
     /// 初始化 {目標模型、圖標位移高度、圖標分類}

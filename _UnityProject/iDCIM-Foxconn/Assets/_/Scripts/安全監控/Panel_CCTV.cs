@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
 using VictorDev.Common;
+using VictorDev.DoTweenUtils;
 using static CCTVManager;
 
 public class Panel_CCTV : MonoBehaviour

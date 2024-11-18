@@ -26,9 +26,10 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
 
     override protected void Start()
     {
-        int counter = 0;
+       // int counter = 0;
         //依照模型建立Landmark與SelectableObject架構
-        modelList.ForEach(model =>
+        return;
+      /*  modelList.ForEach(model =>
         {
             models.Add(model);
 
@@ -51,7 +52,7 @@ public class DeviceModelVisualizerWithLandmark : DeviceModelVisualizer
         onInitlializedWithLandMark.Invoke(selectableObjects, landmarkList);
 
         //如果只有一個地標的話，直接設定選取中
-        selectableObjects[0].IsOn = (models.Count == 1);
+        selectableObjects[0].IsOn = (models.Count == 1);*/
     }
 
     override public bool isOn

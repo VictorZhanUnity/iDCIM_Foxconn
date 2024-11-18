@@ -11,17 +11,17 @@ public class MainDoorRecordPanel : MonoBehaviour
     [SerializeField] private List<Data_AccessRecord> recordDataList;
 
     [Header(">>> 點擊項目時觸發")]
-    public UnityEvent<ListItem_AccessRecord> onClickItemEvent = new UnityEvent<ListItem_AccessRecord>();
+    public UnityEvent<ListItem_AccessRecord_OLD> onClickItemEvent = new UnityEvent<ListItem_AccessRecord_OLD>();
 
     [Header(">>> UI物件")]
     [SerializeField] private GameObject uiObj;
     [SerializeField] private LineChart lineChart;
-    [SerializeField] private ListItem_AccessRecord listItemPrefab;
+    [SerializeField] private ListItem_AccessRecord_OLD listItemPrefab;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private ToggleGroup toggleGroup;
     [SerializeField] private Toggle defaultToggle;
 
-    private List<ListItem_AccessRecord> listItems { get; set; } = new List<ListItem_AccessRecord>();
+    private List<ListItem_AccessRecord_OLD> listItems { get; set; } = new List<ListItem_AccessRecord_OLD>();
 
     public bool isOn
     {
@@ -54,11 +54,11 @@ public class MainDoorRecordPanel : MonoBehaviour
         // 更新表格
         listItems.ForEach(item => item.onClickItemEvent.RemoveAllListeners());
         listItems.Clear();
-        ObjectPoolManager.PushToPool<ListItem_AccessRecord>(scrollRect.content);
+        ObjectPoolManager.PushToPool<ListItem_AccessRecord_OLD>(scrollRect.content);
 
         recordDataList.ForEach(data =>
         {
-            ListItem_AccessRecord listItem = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_AccessRecord>(listItemPrefab, scrollRect.content);
+            ListItem_AccessRecord_OLD listItem = ObjectPoolManager.GetInstanceFromQueuePool<ListItem_AccessRecord_OLD>(listItemPrefab, scrollRect.content);
             listItem.recordData = data;
             listItem.toggleGroup = toggleGroup;
             listItem.onClickItemEvent.AddListener(onClickItemEvent.Invoke);

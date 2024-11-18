@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using VictorDev.DoTweenUtils;
 using static VictorDev.RevitUtils.RevitHandler;
 
 public class DeviceAssetToolTip : MonoBehaviour, IToolTipPanel

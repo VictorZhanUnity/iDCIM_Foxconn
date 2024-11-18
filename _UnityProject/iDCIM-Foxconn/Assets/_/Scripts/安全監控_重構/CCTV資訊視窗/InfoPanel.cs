@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
+using VictorDev.DoTweenUtils;
 
 public abstract class InfoPanel<T> : MonoBehaviour
 {

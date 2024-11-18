@@ -24,17 +24,17 @@ public class UMPPostBuilds : MonoBehaviour
                 BuildWindowsPlayer64(path, settings);
                 break;
 
-            case BuildTarget.StandaloneLinux:
+          /*case BuildTarget.StandaloneLinux:
                 BuildLinuxPlayer32(path, settings);
-                break;
+                break;*/
 
             case BuildTarget.StandaloneLinux64:
                 BuildLinuxPlayer64(path, settings);
                 break;
 
-            case BuildTarget.StandaloneLinuxUniversal:
+            /*case BuildTarget.StandaloneLinuxUniversal:
                 BuildLinuxPlayerUniversal(path, settings);
-                break;
+                break;*/
 
             case BuildTarget.iOS:
                 BuildForiOS(path, settings);

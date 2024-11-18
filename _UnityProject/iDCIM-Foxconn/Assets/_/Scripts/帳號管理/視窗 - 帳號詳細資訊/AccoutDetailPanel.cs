@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Common;
+using VictorDev.DoTweenUtils;
 
 public class AccoutDetailPanel : MonoBehaviour
 {

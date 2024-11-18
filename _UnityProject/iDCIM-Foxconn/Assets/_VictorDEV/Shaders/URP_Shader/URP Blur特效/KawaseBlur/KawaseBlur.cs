@@ -63,15 +63,15 @@ public class KawaseBlur : ScriptableRendererFeature
             tmpRT1 = new RenderTargetIdentifier(tmpId1);
             tmpRT2 = new RenderTargetIdentifier(tmpId2);
             
-            ConfigureTarget(tmpRT1);
-            ConfigureTarget(tmpRT2);
+            /*ConfigureTarget(tmpRT1);
+            ConfigureTarget(tmpRT2);*/
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get(profilerTag);
 
-            cameraColorTarget = renderingData.cameraData.renderer.cameraColorTarget;
+            //cameraColorTarget = renderingData.cameraData.renderer.cameraColorTarget;
 
             RenderTextureDescriptor opaqueDesc = renderingData.cameraData.cameraTargetDescriptor;
             opaqueDesc.depthBufferBits = 0;

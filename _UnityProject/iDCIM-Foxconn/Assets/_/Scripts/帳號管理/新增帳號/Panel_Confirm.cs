@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
+using VictorDev.DoTweenUtils;
 
 public class Panel_Confirm : MonoBehaviour
 {

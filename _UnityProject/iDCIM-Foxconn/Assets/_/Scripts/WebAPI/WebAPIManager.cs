@@ -144,7 +144,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.token == null)
         {
-            Debug.LogWarning($"尚未事先取得Token!!");
+          //  Debug.LogWarning($"尚未事先取得Token!!");
             return false;
         }
         request.token = token;

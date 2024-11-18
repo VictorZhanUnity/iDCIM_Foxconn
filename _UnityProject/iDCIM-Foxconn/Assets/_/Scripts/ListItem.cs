@@ -46,13 +46,13 @@ public class ListItem : MonoBehaviour
 
     private void OnDisable()
     {
-        try
-        {
+        /*try
+        {*/
             onToggled.RemoveListener((isOn) => selectableObject.IsOn = isOn);
             toggle.onValueChanged.RemoveAllListeners();
             selectableObject.onToggleEvent.RemoveListener(SetIsOnWithoutNotify);
-        }
-        catch (Exception e) { }
+    /*    }
+        catch (Exception e) { }*/
     }
 
     public virtual void SetIsOnWithoutNotify(bool isOn)

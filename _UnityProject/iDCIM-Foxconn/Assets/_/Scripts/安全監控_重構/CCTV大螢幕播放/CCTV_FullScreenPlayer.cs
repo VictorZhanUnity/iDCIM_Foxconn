@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VictorDev.DoTweenUtils;
 
 public class CCTV_FullScreenPlayer : MonoBehaviour
 {
