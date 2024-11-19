@@ -14,6 +14,7 @@ public class CCTVManager : iDCIM_ModuleManager
     [Header(">>> Landmark圖標Prefab")]
     [SerializeField] private CCTV_LandMark landmarkPrefab;
 
+    [Space(10)]
     [Header(">>> CCTV資訊視窗")]
     [SerializeField] private CCTV_InfoPanel infoPanelPrefab;
     [SerializeField] private RectTransform containerForCCTVPanel;
@@ -135,10 +136,7 @@ public class CCTVManager : iDCIM_ModuleManager
         fullScreenPlayer.Show(data);
     }
 
-    protected override void OnShowHandler()
-    {
-        GetAllCCTVInfo();
-    }
+    protected override void OnShowHandler() => GetAllCCTVInfo();
 
     protected override void OnCloseHandler()
     {
@@ -153,7 +151,9 @@ public class CCTVManager : iDCIM_ModuleManager
         }
         webApiHandler.LoadDatas(() => { if (isOn) ShowLandmarks(); }, onFailed);
     }
-
+    /// <summary>
+    /// 顯示圖標
+    /// </summary>
     private void ShowLandmarks()
         => LandmarkManager_RE.AddLandMarks(landmarkPrefab, webApiHandler.datas, modelList);
 

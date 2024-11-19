@@ -8,7 +8,7 @@ using XCharts.Runtime;
 public class MainDoorRecordPanel : MonoBehaviour
 {
     [Header(">>> 資料項目集")]
-    [SerializeField] private List<Data_AccessRecord> recordDataList;
+    [SerializeField] private List<Data_AccessRecord_OLD> recordDataList;
 
     [Header(">>> 點擊項目時觸發")]
     public UnityEvent<ListItem_AccessRecord_OLD> onClickItemEvent = new UnityEvent<ListItem_AccessRecord_OLD>();
@@ -38,7 +38,7 @@ public class MainDoorRecordPanel : MonoBehaviour
     {
         uiObj.SetActive(true);
         recordDataList.Clear();
-        dataList.ForEach(data => recordDataList.Add(new Data_AccessRecord(data)));
+        dataList.ForEach(data => recordDataList.Add(new Data_AccessRecord_OLD(data)));
 
         //依進出時間排序
         TableSortKeyHandler("AccessTimeStamp", true);

@@ -13,6 +13,11 @@ public abstract class LandmarkHandler<T> : MonoBehaviour, ILandmarkHandler where
     [SerializeField] private T _data;
     public T data => _data;
 
+    private Image imgGradient { get; set; }
+
+    [Header(">>> 選取中的顏色")]
+    [SerializeField] protected Color selectedColor = ColorHandler.HexToColor(0x5191F1);
+
     [Header(">>> [僅顯示] 目標對像")]
     [SerializeField] private Transform targetObject;
 
@@ -52,6 +57,7 @@ public abstract class LandmarkHandler<T> : MonoBehaviour, ILandmarkHandler where
     public void SetToggleOnWithoutNotify(bool isOn = true)
     {
         toggle.onValueChanged.RemoveAllListeners();
+        ChangeColor(isOn);
         toggle.isOn = isOn;
         InitToggleListener();
     }
@@ -61,9 +67,16 @@ public abstract class LandmarkHandler<T> : MonoBehaviour, ILandmarkHandler where
         toggle.onValueChanged.AddListener((isOn) =>
         {
             onToggleEvent.Invoke(isOn, this);
+            ChangeColor(isOn);
             if (isOn) OnToggleOnHandler();
             else OnToggleOffHandler();
         });
+    }
+
+    private void ChangeColor(bool isOn)
+    {
+        imgGradient ??= transform.GetChild(0).GetComponent<Image>();
+        imgGradient.color = isOn ? selectedColor : Color.black;
     }
 
     protected abstract void OnToggleOnHandler();

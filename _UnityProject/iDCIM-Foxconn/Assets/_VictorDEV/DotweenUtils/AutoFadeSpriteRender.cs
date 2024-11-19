@@ -6,7 +6,7 @@ namespace VictorDev.DoTweenUtils
     [RequireComponent(typeof(SpriteRenderer))]
     public class AutoFadeSpriteRender : MonoBehaviour
     {
-        [SerializeField] private float fadeDuration = 1f; // 单次Fade的持续时间
+        [SerializeField] private float fadeDuration = .7f; // 单次Fade的持续时间
         [SerializeField] private float minAlpha = 0f; // 最低透明度
         [SerializeField] private float maxAlpha = 1f; // 最高透明度
 
@@ -14,7 +14,7 @@ namespace VictorDev.DoTweenUtils
         private void Start()
         {
             // 获取 SpriteRenderer 组件
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer ??= GetComponent<SpriteRenderer>();
 
             // 开始循环 Fade 动画
             StartFadeLoop();
@@ -22,6 +22,7 @@ namespace VictorDev.DoTweenUtils
 
         private void StartFadeLoop()
         {
+            spriteRenderer ??= GetComponent<SpriteRenderer>();
             // 设置初始颜色
             Color startColor = spriteRenderer.color;
             startColor.a = minAlpha; // 从最低透明度开始

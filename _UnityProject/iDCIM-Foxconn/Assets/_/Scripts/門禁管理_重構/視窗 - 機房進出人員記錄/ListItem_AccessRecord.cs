@@ -18,8 +18,8 @@ public class ListItem_AccessRecord : MonoBehaviour
 
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
-    private Data_AccessRecord data;
-    public Data_AccessRecord recordData
+    private Data_AccessRecord_OLD data;
+    public Data_AccessRecord_OLD recordData
     {
         get => data;
         set
