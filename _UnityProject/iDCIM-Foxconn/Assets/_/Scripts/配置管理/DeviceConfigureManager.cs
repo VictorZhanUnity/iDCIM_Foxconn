@@ -1,27 +1,51 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using VictorDev.Common;
-using VictorDev.Net.WebAPI;
+using static DeviceConfigure_DataHandler;
 
 /// <summary>
-/// [�t�m�޲z] DeviceConfigure
+/// [配置管理] DeviceConfigure
 /// </summary>
+[RequireComponent(typeof(DeviceConfigure_DataHandler))]
 public class DeviceConfigureManager : iDCIM_ModuleManager
 {
-    [Header(">>> WebAPI")]
-    [SerializeField] DeviceConfigure_WebAPI webAPI;
+    [Header(">>> [資料項] 所有庫存設備資料")]
+    [SerializeField] private List<StockDeviceSet> dataList;
 
+    [Header(">>> [組件] HUD - 庫存設備清單")]
+    [SerializeField] private Comp_StockDeviceList stockDeviceList;
+
+    private DeviceConfigure_DataHandler _dataHandler { get; set; }
+    private DeviceConfigure_DataHandler dataHandler => _dataHandler ??= GetComponent<DeviceConfigure_DataHandler>();
 
 
     protected override void OnShowHandler()
     {
-        //GetAllStockDevice();
+        GetAllStockDevice();
     }
 
     protected override void OnCloseHandler()
     {
     }
 
+    private void GetAllStockDevice()
+    {
+        void onFailed(long responseCode, string msg) { }
+        dataHandler.GetAllStockDevice((data) => dataList = data, onFailed);
+    }
+    private void OnClickItemHandler(StockDeviceListItem item)
+    {
+        Debug.Log($"OnClickItemHandler: {item}");
+    }
+
+    private void OnEnable()
+    {
+        dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
+        stockDeviceList.onClickItemEvent.AddListener(OnClickItemHandler);
+    }
+
+    private void OnDisable()
+    {
+        dataHandler.onGetAllStockDevices.RemoveAllListeners();
+        stockDeviceList.onClickItemEvent.RemoveAllListeners();
+    }
 }

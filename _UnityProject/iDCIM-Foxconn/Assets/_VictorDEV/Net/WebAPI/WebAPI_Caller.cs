@@ -39,8 +39,6 @@ namespace VictorDev.Net.WebAPI
         /// </summary>
         private static IEnumerator SendWebRequestCoroutine(WebAPI_Request request, Action<long, string> onSuccess, Action<long, string> onFailed)
         {
-            //Debug.Log($"\t[Method] {request.requestMethod}");
-
             void RequestErrorChecker(UnityWebRequest webRequest)
             {
                 if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)

@@ -46,6 +46,7 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
         if (string.IsNullOrEmpty(LoginInfo.access_token))
         {
             Debug.Log($">>> [WebAPI] - 尚未登入取得Token!!");
+            Instance.Test_SignIn();
             return false;
         }
         request.token = LoginInfo.access_token;

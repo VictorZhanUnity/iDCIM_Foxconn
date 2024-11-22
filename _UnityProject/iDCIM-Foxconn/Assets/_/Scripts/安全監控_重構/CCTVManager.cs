@@ -9,7 +9,7 @@ using VictorDev.Common;
 public class CCTVManager : iDCIM_ModuleManager
 {
     [Header(">>> [資料處理] WebAPI CCTV連線資訊")]
-    [SerializeField] private DataHandler webApiHandler;
+    [SerializeField] private CCTV_DataHandler webApiHandler;
 
     [Header(">>> Landmark圖標Prefab")]
     [SerializeField] private CCTV_LandMark landmarkPrefab;
@@ -161,7 +161,7 @@ public class CCTVManager : iDCIM_ModuleManager
     /// [WebAPI資料項] CCTV連線資訊
     /// </summary>
     [Serializable]
-    public class DataHandler
+    public class CCTV_DataHandler
     {
         [SerializeField] private List<Data_RTSP> _datas;
         public List<Data_RTSP> datas => _datas;

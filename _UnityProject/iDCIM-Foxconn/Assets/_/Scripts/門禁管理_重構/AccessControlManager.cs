@@ -6,7 +6,7 @@ using VictorDev.Common;
 /// <summary>
 /// [門禁管理] UI與操作流程處理
 /// </summary>
-[RequireComponent(typeof(DataHandler_AccessRecord))]
+[RequireComponent(typeof(AccessRecord_DataHandler))]
 public class AccessControlManager : iDCIM_ModuleManager
 {
     [Header(">>> [資料項] - 今年度門禁資料")]
@@ -27,11 +27,11 @@ public class AccessControlManager : iDCIM_ModuleManager
     /// <summary>
     ///  [資料處理] 門禁記錄資訊
     /// </summary>
-    private DataHandler_AccessRecord dataHandler { get; set; }
+    private AccessRecord_DataHandler dataHandler { get; set; }
 
     private void Awake()
     {
-        dataHandler = GetComponent<DataHandler_AccessRecord>();
+        dataHandler = GetComponent<AccessRecord_DataHandler>();
         dataHandler.onGetAccessRecordOfThisYear.AddListener(compTotalCount.ShowData);
         dataHandler.onGetAccessRecordOfThisYear.AddListener(compCalendar.SetDatas);
         compCalendar.onSelectedDateEvent.AddListener(chartDayCount.ShowData);
