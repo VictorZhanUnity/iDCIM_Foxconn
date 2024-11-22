@@ -3,9 +3,12 @@ using VictorDev.Advanced;
 using VictorDev.Common;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
-{
-
+{ 
     [SerializeField] private UIManager_DeviceAsset deviceAssetManager;
+
+    [SerializeField] private Canvas _mainCanvas;
+
+    public static Canvas mainCanvas => Instance._mainCanvas;
 
     private void Start()
     {

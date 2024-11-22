@@ -64,6 +64,7 @@ public class StockDeviceListItem : MonoBehaviour
 
     private void OnEnable()
     {
+        GetComponent<DragAndReplace>().canvas = GameManager.mainCanvas;
         toggle.onValueChanged.AddListener((isOn) =>
         {
             if (isOn) onClickItemEvent.Invoke(this);
