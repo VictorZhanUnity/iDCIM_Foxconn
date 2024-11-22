@@ -43,15 +43,10 @@ namespace VictorDev.Common
         [SerializeField] private GameObject currentHoveredObject;  // 當前指向的物體
 
         private Camera _mainCamera;
-        private Camera mainCamera
-        {
-            get
-            {
-                _mainCamera ??= Camera.main;
-                return _mainCamera;
-            }
-        }
+        private Camera mainCamera => _mainCamera ??= Camera.main;
 
+        public static bool isModelSelected(Transform target)
+            => LayerMaskHandler.IsSameLayerMask(target.gameObject, Instance.layerMouseDown);
         void Update()
         {
             if (isActivated)
@@ -178,6 +173,12 @@ namespace VictorDev.Common
             Instance.selectedObject.ForEach(target => onDeselectObjectEvent.Invoke(target.transform));
             Instance.selectedObject.Clear();
             Instance.currentSelectedObject = null;
+        }
+
+        public static void CancellObjectSelected(string modelName, bool isInvokeEvent = true)
+        {
+            List<Transform> model = MaterialHandler.FindTargetObjects(modelName);
+            if (model.Count > 0) CancellObjectSelected(model[0]);
         }
 
         public static void CancellObjectSelected(Transform target, bool isInvokeEvent = true)

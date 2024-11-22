@@ -1,9 +1,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Net.WebAPI;
+using static CCTVManager;
 using static DataHandler_AccessRecord.SendRawJSON;
 
 /// <summary>
@@ -12,18 +15,23 @@ using static DataHandler_AccessRecord.SendRawJSON;
 [Serializable]
 public class DataHandler_AccessRecord : MonoBehaviour
 {
-    [Header(">>> [資料項]")]
+    [Header(">>> [資料項] - 今年度門禁資料")]
     [SerializeField] private List<Data_AccessRecord> _datas;
     public List<Data_AccessRecord> datas => _datas;
 
-    [Header(">>> [WebAPI] 查詢門禁記錄")]
+    [Header(">>> [Event] - 擷取到今年度門禁資料時Invoke")]
+    public UnityEvent<List<Data_AccessRecord>> onGetAccessRecordOfThisYear = new UnityEvent<List<Data_AccessRecord>>();
+
+    [Header(">>> [WebAPI] - 查詢門禁記錄")]
     [SerializeField] private WebAPI_Request requestAccessRecord;
 
-    [Header(">>> [傳送資料項]")]
+    [Header(">>> [僅顯示] - 傳送資料項")]
     [SerializeField] private SendRawJSON sendData;
 
     private DateTime today => DateTime.Today;
 
+    public Data_AccessRecord GetDataByDevicePath(string targetModelName)
+         => _datas.FirstOrDefault(data => targetModelName.Contains(data.DevicePath));
 
     /// <summary>
     /// [目前年份] 門禁記錄
@@ -32,6 +40,7 @@ public class DataHandler_AccessRecord : MonoBehaviour
     {
         DateTime from = new DateTime(today.Year, 1, 1);
         DateTime to = new DateTime(today.Year, 12, 31);
+        onSuccess += (dataList) => onGetAccessRecordOfThisYear.Invoke(dataList);
         GetAccessRecordsFromTimeInterval(from, to, onSuccess, onFailed);
     }
 

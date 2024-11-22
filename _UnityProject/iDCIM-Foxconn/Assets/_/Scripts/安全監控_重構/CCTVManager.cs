@@ -15,7 +15,7 @@ public class CCTVManager : iDCIM_ModuleManager
     [SerializeField] private CCTV_LandMark landmarkPrefab;
 
     [Space(10)]
-    [Header(">>> CCTV資訊視窗")]
+    [Header(">>> [Prefab] - CCTV資訊視窗")]
     [SerializeField] private CCTV_InfoPanel infoPanelPrefab;
     [SerializeField] private RectTransform containerForCCTVPanel;
 
@@ -38,7 +38,7 @@ public class CCTVManager : iDCIM_ModuleManager
         RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
         {
             Data_RTSP data = webApiHandler.GetDataByDevicePath(targetModel.name);
-            ShowData(data, targetModel);
+            if (data != null) ShowData(data, targetModel);
         });
         GetAllCCTVInfo();
     }

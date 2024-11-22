@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
@@ -49,7 +50,17 @@ namespace VictorDev.Calendar
         public DateTime StartDateTime => (DateTime)startDate;
         public DateTime EndDateTime => (DateTime)endDate;
 
-        void Start() => ShowToday();
+        private List<DayItem> dayItemList { get; set; } = new List<DayItem>();
+
+        void Awake() => ShowToday();
+
+        private List<DateTime> dateWithData { get; set; }
+        public void CheckDateIsHaveData(List<DateTime> dateWithData)
+        {
+            this.dateWithData = dateWithData;
+            dayItemList.ForEach(item => item.isHaveData = dateWithData.Contains(item.date));
+        }
+
 
         /// <summary>
         /// 設定日期{過去N週}
@@ -123,6 +134,7 @@ namespace VictorDev.Calendar
             {
                 Destroy(child.gameObject);
             }
+            dayItemList.Clear();
 
             // 取得該月份的天數
             DateTime firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
@@ -182,6 +194,10 @@ namespace VictorDev.Calendar
 
             // 添加點擊事件
             dayItem.onClickEvent.AddListener(OnDayClicked);
+
+            if (dateWithData != null) dayItem.isHaveData = dateWithData.Contains(date);
+
+            dayItemList.Add(dayItem);
         }
 
         /// <summary>

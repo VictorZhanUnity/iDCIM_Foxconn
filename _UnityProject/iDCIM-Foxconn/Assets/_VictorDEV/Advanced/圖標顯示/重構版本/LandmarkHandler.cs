@@ -49,8 +49,6 @@ public abstract class LandmarkHandler<T> : MonoBehaviour, ILandmarkHandler where
         this._data = (T)data;
         this.targetModel = targetModel;
         OnShowDataHandler((T)data);
-
-        if (RaycastHitManager.CurrentSelectedObject == targetModel) SetToggleOnWithoutNotify();
     }
     protected abstract void OnShowDataHandler(T data);
 

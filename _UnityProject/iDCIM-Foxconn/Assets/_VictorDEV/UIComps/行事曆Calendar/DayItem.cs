@@ -10,6 +10,7 @@ public class DayItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtDay;
     [SerializeField] private Image imgInclude, imgInclude_Left, imgInclude_Right;
     [SerializeField] private Image imgSelected, imgToday;
+    [SerializeField] private Image imgIsHaveData;
 
     [SerializeField] private DateTime _dateTime;
 
@@ -42,6 +43,8 @@ public class DayItem : MonoBehaviour
             if (value) txtDay.alpha = 1;
         }
     }
+
+    public bool isHaveData { set => imgIsHaveData.gameObject.SetActive(value); }
 
     public bool isStartDate { set => imgInclude_Right.gameObject.SetActive(value); }
     public bool isEndDate { set => imgInclude_Left.gameObject.SetActive(value); }

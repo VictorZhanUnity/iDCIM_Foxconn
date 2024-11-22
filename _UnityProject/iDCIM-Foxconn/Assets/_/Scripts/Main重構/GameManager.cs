@@ -12,13 +12,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         LandmarkManager_RE.onToggleOnEvent.AddListener((isOn, landmark) =>
         {
             if (isOn) RaycastHitManager.ToSelectTarget(landmark.targetModel, false);
-           else RaycastHitManager.CancellObjectSelected(landmark.targetModel, false);
+            else RaycastHitManager.CancellObjectSelected(landmark.targetModel, false);
         });
         RaycastHitManager.onSelectObjectEvent.AddListener((target) => LandmarkManager_RE.SetToggleOnWithoutNotify(target));
         RaycastHitManager.onDeselectObjectEvent.AddListener((target) => LandmarkManager_RE.SetToggleOnWithoutNotify(target, false));
-
-
-
         RaycastHitManager.onSelectObjectEvent.AddListener(deviceAssetManager.OnSelectDeviceAsset);
     }
 

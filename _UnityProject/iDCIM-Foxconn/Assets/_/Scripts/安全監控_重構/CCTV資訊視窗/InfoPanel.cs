@@ -16,7 +16,6 @@ public abstract class InfoPanel<T> : MonoBehaviour
     public UnityEvent onDraggedEvent = new UnityEvent();
 
     [Header(">>> 組件")]
-    [SerializeField] private Toggle toggleTitlebar;
     [SerializeField] private Button btnClose;
     [SerializeField] private DoTweenFadeController doTweenFadeController;
     [SerializeField] private DragPanel dragPanel;
@@ -35,7 +34,6 @@ public abstract class InfoPanel<T> : MonoBehaviour
 
     private void Close()
     {
-        toggleTitlebar.isOn = false;
         onClickCloseButton.Invoke(data);
         OnCloseHandler(data);
     }
