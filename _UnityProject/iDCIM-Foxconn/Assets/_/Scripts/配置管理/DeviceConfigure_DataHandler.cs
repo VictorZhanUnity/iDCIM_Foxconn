@@ -46,7 +46,6 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
         }
         stockList.Clear();
 
-        Debug.Log($"request_GetStockDevice: {request_GetStockDevice}");
         WebAPI_LoginManager.CheckToken(request_GetStockDevice);
         WebAPI_Caller.SendRequest(request_GetStockDevice, onSuccessHandler, onFailed);
     }
@@ -54,12 +53,19 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
     [ContextMenu("- 取得所有庫存設備")]
     private void GetAllStockDevice() => GetAllStockDevice(null, null);
 
+
+
+
     [Serializable]
     public class StockDeviceSet
     {
         public string modelNumber;
-        public Data_DeviceAsset deviceAsset;
+        [Header(">>> [ICON] - 選取後跟隨鼠標的ICON")]
+        public Sprite dragIcon;
+        [Header(">>> [模型] - 用於替換的3D物件B")]
         public Transform model;
+
+        public Data_DeviceAsset deviceAsset;
         public StockDeviceSet(Data_DeviceAsset data, Transform model)
         {
             this.deviceAsset = data;

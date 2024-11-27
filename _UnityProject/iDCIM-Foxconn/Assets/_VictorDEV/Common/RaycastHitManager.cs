@@ -148,6 +148,8 @@ namespace VictorDev.Common
         /// </summary>
         public static void ToSelectTarget(Transform target, bool isInvokeEvent = true)
         {
+            if(target.CompareTag("BuildContainer_Device")) return;
+
             //檢查對像是否已被選取
             bool isAlreadySelected = target.GetChild(0) ? target.GetChild(0).gameObject.activeSelf : false;
 

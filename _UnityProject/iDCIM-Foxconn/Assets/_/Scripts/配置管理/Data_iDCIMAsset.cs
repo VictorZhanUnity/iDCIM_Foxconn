@@ -44,7 +44,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
 /// [資料項] 設備資訊
 /// </summary>
 [Serializable]
-public class Data_DeviceAsset : Data_iDCIMAsset
+public class Data_DeviceAsset : Data_iDCIMAsset, INotifyData
 {
     public string containerId;
     public int rackLocation;

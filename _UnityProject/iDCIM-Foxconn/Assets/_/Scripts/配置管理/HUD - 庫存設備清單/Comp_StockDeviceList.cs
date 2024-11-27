@@ -11,7 +11,7 @@ public class Comp_StockDeviceList : MonoBehaviour
     [SerializeField] private List<StockDeviceSet> _data;
 
     [Header(">>> 點擊該資料項時Invoke")]
-    public UnityEvent<StockDeviceListItem> onClickItemEvent = new UnityEvent<StockDeviceListItem>();
+    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
 
     [Header(">>> [Prefab] - 列表項目")]
     [SerializeField] private StockDeviceListItem listItemPrefab;
@@ -40,7 +40,7 @@ public class Comp_StockDeviceList : MonoBehaviour
             StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
             item.ShowData(data);
             item.toggleGroup = toggleGroup;
-            item.onClickItemEvent.AddListener(onClickItemEvent.Invoke);
+            item.onDeployDeviceModel.AddListener(onDeployDeviceModel.Invoke);
         });
 
         scrollRect.verticalNormalizedPosition = 1;

@@ -1,26 +1,35 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DragAndReplace : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public GameObject replacementPrefab; // 用於替換的3D物件B
-    public string containerTag = "BuildContainer_Device";
+
+    [Header(">>> [Event] 新建設備模型時Invoke {新增設備, 目標機櫃U層}")]
+    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
+
     public Image dragImagePrefab;
-    private Image dragImage;
-
-    public Sprite sprite;
-    public Canvas canvas;
     public Vector3 offset = new Vector3(0, 0, -0.075f);
+    private StockDeviceListItem _item { get; set; }
+    private StockDeviceListItem item => _item ??= GetComponent<StockDeviceListItem>();
+    private Canvas _canvas { get; set; }
+    private Canvas canvas => _canvas ??= GameManager.mainCanvas;
 
+    private Image dragImage { get; set; }
+
+    private string containerTag { get; set; } = "BuildContainer_Device";
+
+    public Transform tempDevicePrefab;
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 創建拖拽用的Image
         dragImage = Instantiate(dragImagePrefab, canvas.transform);
         dragImage.transform.SetAsLastSibling(); // 確保在UI最上層
         dragImage.raycastTarget = false; // 防止拖拽影響UI交互
-        dragImage.sprite = sprite;
+        dragImage.sprite = item.data.dragIcon;
 
         // 添加半透明效果
         Color color = dragImage.color;
@@ -63,19 +72,26 @@ public class DragAndReplace : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                 {
                     //先取得對像模型的中心點位置
                     Vector3 targetPos = Vector3.zero;
-                    if (replacementPrefab.TryGetComponent<Renderer>(out Renderer renderer))
+                    if (tempDevicePrefab.TryGetComponent<Renderer>(out Renderer renderer))
                     {
                         targetPos = renderer.bounds.center;
                     }
                     // 創建替換物件B
-                    GameObject model = Instantiate(replacementPrefab, hit.transform.position - targetPos - offset, hit.transform.rotation);
-                    model.transform.parent = hit.transform.parent;
-                    model.transform.SetAsLastSibling();
+                    Transform model = Instantiate(tempDevicePrefab, hit.transform.position - targetPos - offset, hit.transform.rotation);
+                    model.parent = hit.transform.parent;
 
-                    Destroy(hit.collider.gameObject); // 刪除目標物件A
+                    hit.transform.SetAsLastSibling();
+                   // Destroy(hit.collider.gameObject); // 刪除目標物件A
+
+                    onDeployDeviceModel.Invoke(item, hit.transform.parent.GetComponent<RackSpacer>());
                 }
             }
             Destroy(dragImage.gameObject); // 清理拖拽Image
         }
+    }
+
+    private void OnDisable()
+    {
+        onDeployDeviceModel.RemoveAllListeners();
     }
 }

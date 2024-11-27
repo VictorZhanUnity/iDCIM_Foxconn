@@ -13,6 +13,6 @@ public class DemoData_StockDevice : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+         
     }
 }

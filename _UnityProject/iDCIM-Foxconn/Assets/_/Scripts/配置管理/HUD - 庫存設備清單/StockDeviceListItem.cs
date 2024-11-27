@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,9 +13,13 @@ public class StockDeviceListItem : MonoBehaviour
 {
     [Header(">>> [資料項] - StockDeviceSet")]
     [SerializeField] private StockDeviceSet _data;
+    public StockDeviceSet data => _data;
 
     [Header(">>> 點擊該資料項時Invoke")]
-    public UnityEvent<StockDeviceListItem> onClickItemEvent = new UnityEvent<StockDeviceListItem>();
+    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
+
+    private DragAndDeploy _dragController { get; set; }
+    private DragAndDeploy dragController => _dragController ??= GetComponent<DragAndDeploy>();
 
     #region [組件]
     private Toggle _toggle { get; set; }
@@ -34,7 +39,7 @@ public class StockDeviceListItem : MonoBehaviour
     /// <summary>
     /// 開/關 Toggle
     /// </summary>
-    public bool isOn { set => toggle.isOn = value; }
+    public bool isOn { get => toggle.isOn; set => toggle.isOn = value; }
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
     public void ShowData(StockDeviceSet data)
@@ -44,13 +49,15 @@ public class StockDeviceListItem : MonoBehaviour
         txtWatt.SetText(data.deviceAsset.information.watt.ToString());
         txtWeight.SetText(data.deviceAsset.information.weight.ToString());
         txtHeightU.SetText(data.deviceAsset.information.heightU.ToString());
+
+        name = txtDeviceName.text;
     }
     public void SetToggleWithoutNotify(bool isOn)
     {
         _toggle.onValueChanged.RemoveAllListeners();
         _toggle.isOn = isOn;
+        dragController.enabled = isOn;
         ChangeColor(isOn);
-
         OnEnable();
     }
 
@@ -64,16 +71,20 @@ public class StockDeviceListItem : MonoBehaviour
 
     private void OnEnable()
     {
-        GetComponent<DragAndReplace>().canvas = GameManager.mainCanvas;
         toggle.onValueChanged.AddListener((isOn) =>
         {
-            if (isOn) onClickItemEvent.Invoke(this);
+            dragController.enabled = isOn;
             ChangeColor(isOn);
         });
+
+        dragController.onDeployDeviceModel.AddListener(onDeployDeviceModel.Invoke);
+        dragController.enabled = false;
     }
+
     private void OnDisable()
     {
         toggle.onValueChanged.RemoveAllListeners();
-        onClickItemEvent.RemoveAllListeners();
+        dragController.onDeployDeviceModel.RemoveAllListeners();
+        dragController.enabled = false;
     }
 }

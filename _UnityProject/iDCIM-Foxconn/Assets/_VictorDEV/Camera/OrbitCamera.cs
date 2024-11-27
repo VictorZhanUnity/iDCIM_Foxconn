@@ -68,8 +68,17 @@ namespace VictorDev.CameraUtils
         // 检测鼠标点击是否在UI上
         private bool isClickOnUI { get; set; } = false;
 
+        private bool IsMouseInScreen()
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            return mousePosition.x >= 0 && mousePosition.x <= Screen.width &&
+                   mousePosition.y >= 0 && mousePosition.y <= Screen.height;
+        }
+
         void LateUpdate()
         {
+            if (IsMouseInScreen() == false) return;
+
             if (target == null)
                 return;
 
