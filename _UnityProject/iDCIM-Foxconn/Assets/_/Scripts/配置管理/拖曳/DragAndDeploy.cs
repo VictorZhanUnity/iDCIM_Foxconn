@@ -1,5 +1,4 @@
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -37,7 +36,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         dragImage.color = color;
 
         // 添加放大效果
-        dragImage.rectTransform.DOScale(1.2f, 0.7f);
+        dragImage.rectTransform.DOScale(1.2f, 0.1f);
 
         // 添加陰影效果（可選）
         Shadow shadow = dragImage.gameObject.AddComponent<Shadow>();
@@ -72,16 +71,34 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     //先取得對像模型的中心點位置
                     Vector3 targetPos = Vector3.zero;
-                    if (tempDevicePrefab.TryGetComponent<Renderer>(out Renderer renderer))
+
+                    var createModel = item.data.model;
+                  //  createModel = tempDevicePrefab;
+
+                    if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
                     {
-                        targetPos = renderer.bounds.center;
+                        targetPos = renderer.bounds.center; 
                     }
                     // 創建替換物件B
-                    Transform model = Instantiate(tempDevicePrefab, hit.transform.position - targetPos - offset, hit.transform.rotation);
-                    model.parent = hit.transform.parent;
+                   // Transform model = Instantiate(createModel, hit.transform.position - targetPos - offset, hit.transform.rotation);
+                    //Transform model = Instantiate(createModel, hit.transform.position - targetPos, hit.transform.rotation);
+                    //model.parent = hit.transform.parent;
+                    Transform model = Instantiate(createModel, hit.transform);
+                    //  model.position = hit.transform.position;
+
+                    Vector3 center = Vector3.zero;
+                    if (hit.transform.TryGetComponent<Renderer>(out Renderer renderer1))
+                    {
+                        center = renderer1.bounds.center;
+                    }
+
+
+                    Debug.Log($"targetPos: {targetPos}/center: {center}");
+                    model.localPosition = Vector3.zero;
+                    model.rotation = Quaternion.Euler(Vector3.zero);
 
                     hit.transform.SetAsLastSibling();
-                   // Destroy(hit.collider.gameObject); // 刪除目標物件A
+                    // Destroy(hit.collider.gameObject); // 刪除目標物件A
 
                     onDeployDeviceModel.Invoke(item, hit.transform.parent.GetComponent<RackSpacer>());
                 }
