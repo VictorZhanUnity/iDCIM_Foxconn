@@ -15,9 +15,9 @@ namespace VictorDev.Common
         private GraphicRaycaster rayCaster => _rayCaster ??= transform.GetComponent<GraphicRaycaster>();
 
         /// <summary>
-        /// 建立訊息通知
+        /// 建立訊息通知 {UI樣式組件, 標題文字, 所攜帶的資料項, 點選項目時行為, 點選關閉鈕時行為}
         /// </summary>
-        public static void CreateNotifyMessage(NotifyListItem itemPrefab, string title, INotifyData data, Action<INotifyData> onClickItem, Action onClose = null)
+        public static void CreateNotifyMessage(NotifyListItem itemPrefab, string title, INotifyData data, Action<INotifyData> onClickItem = null, Action onClose = null)
         {
             NotifyListItem notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
             notifyItem.ShowData(title, data);

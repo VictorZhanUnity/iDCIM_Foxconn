@@ -1,5 +1,6 @@
-using System;
+using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ using VictorDev.Common;
 using static DeviceConfigure_DataHandler;
 
 /// <summary>
-/// [清單資料項] - 機房現有設備清單
+/// [清單資料項] - 機房現有設備清單項目
 /// </summary>
 public class StockDeviceListItem : MonoBehaviour
 {
@@ -16,25 +17,20 @@ public class StockDeviceListItem : MonoBehaviour
     public StockDeviceSet data => _data;
 
     [Header(">>> 點擊該資料項時Invoke")]
-    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
+    public UnityEvent<StockDeviceListItem> onCreateTempDeviceModel = new UnityEvent<StockDeviceListItem>();
 
-    private DragAndDeploy _dragController { get; set; }
-    private DragAndDeploy dragController => _dragController ??= GetComponent<DragAndDeploy>();
-
-    #region [組件]
-    private Toggle _toggle { get; set; }
-    private Toggle toggle => _toggle ??= GetComponent<Toggle>();
-    private TextMeshProUGUI _txtDeviceName, _txtWatt, _txtWeight, _txtHeightU;
-    private TextMeshProUGUI txtDeviceName => _txtDeviceName ??= transform.GetChild(0).Find("txtDeviceName").GetComponent<TextMeshProUGUI>();
-    private TextMeshProUGUI txtWatt => _txtWatt ??= transform.GetChild(0).Find("HLayout").Find("txtWatt").GetComponent<TextMeshProUGUI>();
-    private TextMeshProUGUI txtWeight => _txtWeight ??= transform.GetChild(0).Find("HLayout").Find("txtWeight").GetComponent<TextMeshProUGUI>();
-    private TextMeshProUGUI txtHeightU => _txtHeightU ??= transform.GetChild(0).Find("HLayout").Find("txtHeightU").GetComponent<TextMeshProUGUI>();
-    private Image _imgWatt, _imgWeight, _imgHeightU, _imgBorder;
-    private Image imgWatt => _imgWatt ??= txtWatt.transform.Find("imgWatt").GetComponent<Image>();
-    private Image imgWeight => _imgWeight ??= txtWeight.transform.Find("imgWeight").GetComponent<Image>();
-    private Image imgHeightU => _imgHeightU ??= txtHeightU.transform.Find("imgHeightU").GetComponent<Image>();
-    private Image imgBorder => _imgBorder ??= transform.GetChild(0).Find("imgBorder").GetComponent<Image>();
-    #endregion
+    /// <summary>
+    /// 目前指向哪一個RackSpacer
+    /// </summary>
+    private RackSpacer selectRackSpacer { get; set; }
+    /// <summary>
+    /// 設備所佔目標機櫃名稱
+    /// </summary>
+    public string TargetRackName => selectRackSpacer.parentRack.name;
+    /// <summary>
+    /// 設備所佔目標機櫃U層數
+    /// </summary>
+    public string OccupyRuSpacer => $"U{selectRackSpacer.RuIndex} ~ U{selectRackSpacer.RuIndex + data.deviceAsset.information.heightU}";
 
     /// <summary>
     /// 開/關 Toggle
@@ -42,6 +38,9 @@ public class StockDeviceListItem : MonoBehaviour
     public bool isOn { get => toggle.isOn; set => toggle.isOn = value; }
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
+    /// <summary>
+    /// 顯示資訊
+    /// </summary>
     public void ShowData(StockDeviceSet data)
     {
         _data = data;
@@ -69,6 +68,7 @@ public class StockDeviceListItem : MonoBehaviour
         imgBorder.color = targetColor;
     }
 
+
     private void OnEnable()
     {
         toggle.onValueChanged.AddListener((isOn) =>
@@ -77,14 +77,73 @@ public class StockDeviceListItem : MonoBehaviour
             ChangeColor(isOn);
         });
 
-        dragController.onDeployDeviceModel.AddListener(onDeployDeviceModel.Invoke);
+        dragController.onCreateTempDevice.AddListener(OnCreateTempDeviceHandler);
         dragController.enabled = false;
     }
+
+    /// <summary>
+    /// 當Drag產生暫時的設備時
+    /// </summary>
+    private void OnCreateTempDeviceHandler(RackSpacer rackSpacer)
+    {
+        CancellUploadDevice();
+        selectRackSpacer = rackSpacer;
+        onCreateTempDeviceModel.Invoke(this);
+    }
+
 
     private void OnDisable()
     {
         toggle.onValueChanged.RemoveAllListeners();
-        dragController.onDeployDeviceModel.RemoveAllListeners();
+        dragController.onCreateTempDevice.RemoveAllListeners();
+        layoutElement.ignoreLayout = false;
         dragController.enabled = false;
+        transform.localScale = Vector3.one;
     }
+
+    /// <summary>
+    /// 取消上傳設備
+    /// </summary>
+    public void CancellUploadDevice()
+    {
+        selectRackSpacer?.CancellTempDevice();
+        selectRackSpacer = null;
+    }
+
+    /// <summary>
+    /// 確認上傳設備
+    /// </summary>
+    public void ConfirmUploadDevice()
+    {
+        selectRackSpacer?.ConfirmUploadDevice();
+        selectRackSpacer = null;
+
+        layoutElement.ignoreLayout = true;
+        rectTrans.DOLocalMoveX(-300, 0.2f).SetEase(Ease.InQuad)
+            .OnComplete(() => ObjectPoolManager.PushToPool(this));
+    }
+
+    #region [Components]
+    private DragAndDeploy _dragController { get; set; }
+    private DragAndDeploy dragController => _dragController ??= GetComponent<DragAndDeploy>();
+
+    private LayoutElement _layoutElement { get; set; }
+    private LayoutElement layoutElement => _layoutElement ??= GetComponent<LayoutElement>();
+    private Toggle _toggle { get; set; }
+    private Toggle toggle => _toggle ??= GetComponent<Toggle>();
+    private TextMeshProUGUI _txtDeviceName, _txtWatt, _txtWeight, _txtHeightU;
+    private TextMeshProUGUI txtDeviceName => _txtDeviceName ??= transform.GetChild(0).Find("txtDeviceName").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI txtWatt => _txtWatt ??= transform.GetChild(0).Find("HLayout").Find("txtWatt").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI txtWeight => _txtWeight ??= transform.GetChild(0).Find("HLayout").Find("txtWeight").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI txtHeightU => _txtHeightU ??= transform.GetChild(0).Find("HLayout").Find("txtHeightU").GetComponent<TextMeshProUGUI>();
+    private Image _imgWatt, _imgWeight, _imgHeightU, _imgBorder;
+    private Image imgWatt => _imgWatt ??= txtWatt.transform.Find("imgWatt").GetComponent<Image>();
+    private Image imgWeight => _imgWeight ??= txtWeight.transform.Find("imgWeight").GetComponent<Image>();
+    private Image imgHeightU => _imgHeightU ??= txtHeightU.transform.Find("imgHeightU").GetComponent<Image>();
+    private Image imgBorder => _imgBorder ??= transform.GetChild(0).Find("imgBorder").GetComponent<Image>();
+
+    private RectTransform _rectTrans { get; set; }
+    private RectTransform rectTrans => _rectTrans ??= GetComponent<RectTransform>();
+    #endregion
+
 }

@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.Common;
 using VictorDev.DoTweenUtils;
-using static DeviceConfigure_DataHandler;
 
 /// <summary>
 /// [配置管理] - 上架設備時的資訊輸入框
@@ -12,49 +13,42 @@ using static DeviceConfigure_DataHandler;
 public class Panel_StockDeviceUploadInfo : MonoBehaviour
 {
     [Header(">>> [資料項] - 所選庫存設備")]
-    [SerializeField] private StockDeviceListItem item;
-    [Header(">>> [資料項] - 所選目標機櫃U層")]
-    [SerializeField] private RackSpacer rackSpacer;
+    [SerializeField] private StockDeviceListItem stockDeviceItem;
 
-    [Header(">>> [Event] - 當點擊上架設備按鈕時Invoke")]
-    public UnityEvent<StockDeviceSet> onClickUploadDevice = new UnityEvent<StockDeviceSet>();
+    [Header(">>> [Prefab] - 訊息通知")]
+    [SerializeField] private NotifyListItem notifyPrefab;
 
-    [Header(">>> [Event] - 當上架設備完成時Invoke")]
-    public UnityEvent onUploadDeviceCompleteEvent = new UnityEvent();
+    [Header(">>> 上架設備成功時Invoke")]
+    public UnityEvent<StockDeviceListItem> onUploadDeviceComplete = new UnityEvent<StockDeviceListItem>();
 
-    [Header(">>> [Event] - 當取消上架設備時Invoke")]
-    public UnityEvent onClickCancellUpload = new UnityEvent();
-
-    public void ShowData(StockDeviceListItem item, RackSpacer rackSpacer)
+    public void ShowData(StockDeviceListItem item)
     {
-        Debug.Log($"Panel_StockDeviceUploadInfo: {item.data.modelNumber} / {rackSpacer.rackTarget.name} / {rackSpacer.RuIndex}");
-
-        this.item = item;
-        this.rackSpacer = rackSpacer;
-
+        if (stockDeviceItem != item)
+        {
+            CancellUploadDevice();
+            stockDeviceItem = item;
+        }
         UpdateUI();
         gameObject.SetActive(false);
         dotweenFade.ToShow();
     }
-    public void ToClose()
-    {
-        onClickCancellUpload.Invoke();
-        dotweenFade.ToHide();
-    }
 
     private void UpdateUI()
     {
-        txtUploadDevice.SetText(item.data.deviceAsset.deviceName);
-        txtTargetRack.SetText(rackSpacer.rackTarget.name);
-        txtOccupyRU.SetText($"U{rackSpacer.RuIndex}");
+        txtUploadDevice.SetText(stockDeviceItem.data.deviceAsset.deviceName);
+        txtTargetRack.SetText(stockDeviceItem.TargetRackName);
+        txtOccupyRU.SetText(stockDeviceItem.OccupyRuSpacer);
+    }
+    public void ToClose()
+    {
+        CancellUploadDevice();
+        dotweenFade.ToHide();
     }
 
-    private void OnEnable()
+    private void CancellUploadDevice()
     {
-        inputIdNumber.text = inputDeviceName.text = inputIPAddress.text = inputNote.text = string.Empty;
-        btnSend.onClick.AddListener(ToUploadDevice);
-        btnCancell.onClick.AddListener(ToClose);
-        dotweenFade.OnHideEvent.AddListener(OnDisable);
+        stockDeviceItem?.CancellUploadDevice();
+        stockDeviceItem = null;
     }
 
     /// <summary>
@@ -63,6 +57,7 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
     private void ToUploadDevice()
     {
         loadingScreen.gameObject.SetActive(true);
+
         //呼叫WebAPI Singleton進行上傳資料
         //
         //
@@ -76,21 +71,37 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
             {
                 yield return new WaitForSeconds(1);
             }
-            dotweenFade.ToHide();
-            onClickUploadDevice.Invoke(item.data);
+            OnUploadDeviceSuccess();
         }
         StartCoroutine(LoadingScreen());
         #endregion
     }
 
-    private void OnDisable()
+    private void OnUploadDeviceSuccess()
     {
+        dotweenFade.ToHide();
+        stockDeviceItem.ConfirmUploadDevice();
+        onUploadDeviceComplete.Invoke(stockDeviceItem);
+        NotificationManager.CreateNotifyMessage(notifyPrefab, "設備上架成功!!", stockDeviceItem.data.deviceAsset);
+    }
+
+    private void OnEnable()
+    {
+        btnSend.onClick.AddListener(ToUploadDevice);
+        btnCancel.onClick.AddListener(ToClose);
+        dotweenFade.OnHideEvent.AddListener(OnDisable);
+
         inputIdNumber.text = inputDeviceName.text = inputIPAddress.text = inputNote.text = string.Empty;
-        btnSend.onClick.RemoveAllListeners();
-        dotweenFade.OnHideEvent.RemoveAllListeners();
         loadingScreen.gameObject.SetActive(false);
     }
 
+
+    private void OnDisable()
+    {
+        btnSend.onClick.RemoveAllListeners();
+        btnCancel.onClick.RemoveAllListeners();
+        dotweenFade.OnHideEvent.RemoveAllListeners();
+    }
     #region [>>> Components]
 
     private GameObject _loadingScreen { get; set; }
@@ -124,7 +135,7 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
     private Button _btnSend { get; set; }
     private Button btnSend => _btnSend ??= transform.Find("Container").Find("Button上架").GetComponent<Button>();
     private Button _btnCancell { get; set; }
-    private Button btnCancell => _btnCancell ??= transform.Find("Container").Find("Button取消").GetComponent<Button>();
+    private Button btnCancel => _btnCancell ??= transform.Find("Container").Find("Button取消").GetComponent<Button>();
 
     #endregion
 }

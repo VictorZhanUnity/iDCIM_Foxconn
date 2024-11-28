@@ -8,7 +8,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
 
     [Header(">>> [Event] 新建設備模型時Invoke {新增設備, 目標機櫃U層}")]
-    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
+    public UnityEvent<RackSpacer> onCreateTempDevice = new UnityEvent<RackSpacer>();
 
     public Image dragImagePrefab;
     public Vector3 offset = new Vector3(0, 0, -0.075f);
@@ -21,7 +21,6 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private string containerTag { get; set; } = "BuildContainer_Device";
 
-    public Transform tempDevicePrefab;
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 創建拖拽用的Image
@@ -58,6 +57,11 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
+    private Transform model { get; set; }
+    private Transform hitContainer { get; set; }
+
+    public RackSpacer rackSpacer { get; private set; }
+
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dragImage != null)
@@ -73,42 +77,43 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     Vector3 targetPos = Vector3.zero;
 
                     var createModel = item.data.model;
-                  //  createModel = tempDevicePrefab;
+                    //  createModel = tempDevicePrefab;
 
                     if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
                     {
-                        targetPos = renderer.bounds.center; 
+                        targetPos = renderer.bounds.center;
                     }
                     // 創建替換物件B
-                   // Transform model = Instantiate(createModel, hit.transform.position - targetPos - offset, hit.transform.rotation);
+                    // Transform model = Instantiate(createModel, hit.transform.position - targetPos - offset, hit.transform.rotation);
                     //Transform model = Instantiate(createModel, hit.transform.position - targetPos, hit.transform.rotation);
                     //model.parent = hit.transform.parent;
-                    Transform model = Instantiate(createModel, hit.transform);
-                    //  model.position = hit.transform.position;
 
-                    Vector3 center = Vector3.zero;
-                    if (hit.transform.TryGetComponent<Renderer>(out Renderer renderer1))
-                    {
-                        center = renderer1.bounds.center;
-                    }
+                    /*  if (model != null) Destroy(model.gameObject);
+                      model = Instantiate(createModel, hit.transform);
+                      //  model.position = hit.transform.position;
 
+                      Vector3 center = Vector3.zero;
+                      if (hit.transform.TryGetComponent<Renderer>(out Renderer renderer1))
+                      {
+                          center = renderer1.bounds.center;
+                      }
 
-                    Debug.Log($"targetPos: {targetPos}/center: {center}");
-                    model.localPosition = Vector3.zero;
-                    model.rotation = Quaternion.Euler(Vector3.zero);
+                      Debug.Log($"targetPos: {targetPos}/center: {center}");
+                      model.localPosition = Vector3.zero;
+                      model.rotation = Quaternion.Euler(Vector3.zero);*/
 
-                    hit.transform.SetAsLastSibling();
+                    //hit.transform.SetAsLastSibling();
+
+                    //取得對像RackSpacer
+                    rackSpacer = hit.transform.parent.GetComponent<RackSpacer>();
+                    rackSpacer.CreateTempDevice(item.data.model);
                     // Destroy(hit.collider.gameObject); // 刪除目標物件A
 
-                    onDeployDeviceModel.Invoke(item, hit.transform.parent.GetComponent<RackSpacer>());
+                    //Invoke {建立的模型, 對像RackSpacer}
+                    onCreateTempDevice.Invoke(rackSpacer);
                 }
             }
             Destroy(dragImage.gameObject); // 清理拖拽Image
         }
-    }
-
-    private void OnDisable()
-    {
-        onDeployDeviceModel.RemoveAllListeners();
     }
 }

@@ -11,19 +11,12 @@ public class Comp_StockDeviceList : MonoBehaviour
     [SerializeField] private List<StockDeviceSet> _data;
 
     [Header(">>> 點擊該資料項時Invoke")]
-    public UnityEvent<StockDeviceListItem, RackSpacer> onDeployDeviceModel = new UnityEvent<StockDeviceListItem, RackSpacer>();
+    public UnityEvent<StockDeviceListItem> onCreateTempDeviceModel = new UnityEvent<StockDeviceListItem>();
 
     [Header(">>> [Prefab] - 列表項目")]
     [SerializeField] private StockDeviceListItem listItemPrefab;
 
-    #region[組件]
-    private ToggleGroup _toggleGroup { get; set; }
-    private ToggleGroup toggleGroup => _toggleGroup ??= transform.GetComponent<ToggleGroup>();
-    private ScrollRect _scrollRect { get; set; }
-    private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(2).Find("Container").GetChild(0).GetComponent<ScrollRect>();
-    private TextMeshProUGUI _txtAmount { get; set; }
-    private TextMeshProUGUI txtAmount => _txtAmount ??= transform.Find("txtAmount").GetComponent<TextMeshProUGUI>();
-    #endregion
+    private List<StockDeviceListItem> listItems { get; set; } = new List<StockDeviceListItem>();
 
     /// <summary>
     /// 顯示資料
@@ -40,9 +33,31 @@ public class Comp_StockDeviceList : MonoBehaviour
             StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
             item.ShowData(data);
             item.toggleGroup = toggleGroup;
-            item.onDeployDeviceModel.AddListener(onDeployDeviceModel.Invoke);
+            item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke);
+            listItems.Add(item);
         });
-
         scrollRect.verticalNormalizedPosition = 1;
     }
+
+    private void OnEnable()
+    {
+        listItems.ForEach(item => item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke));
+        scrollRect.verticalNormalizedPosition = 1;
+    }
+    private void OnDisable() => listItems.ForEach(item => item.onCreateTempDeviceModel.RemoveAllListeners());
+
+    public void UpdateList(StockDeviceListItem removeItem)
+    {
+        listItems.Remove(removeItem);
+        txtAmount.SetText($"共{listItems.Count}台");
+    }
+
+    #region[>>> Componenets]
+    private ToggleGroup _toggleGroup { get; set; }
+    private ToggleGroup toggleGroup => _toggleGroup ??= transform.GetComponent<ToggleGroup>();
+    private ScrollRect _scrollRect { get; set; }
+    private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(2).Find("Container").GetChild(0).GetComponent<ScrollRect>();
+    private TextMeshProUGUI _txtAmount { get; set; }
+    private TextMeshProUGUI txtAmount => _txtAmount ??= transform.Find("txtAmount").GetComponent<TextMeshProUGUI>();
+    #endregion
 }
