@@ -14,9 +14,20 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
     [SerializeField] ModelDisplayConfiguration modelForDisplay;
 
     /// <summary>
-    /// 欲顯示的物件
+    /// 欲顯示的模型物件
     /// </summary>
-    protected List<Transform> modelList => modelForDisplay.modelsList;
+    public List<Transform> modelList => modelForDisplay.modelsList;
+
+    public List<Transform> serverRackModels => GetModelsByKeywords("RACK", "ATEN");
+    public List<Transform> switchModels => GetModelsByKeywords("Switch");
+    public List<Transform> routerModels => GetModelsByKeywords("Router");
+    public List<Transform> serverModels => GetModelsByKeywords("Server");
+
+    /// <summary>
+    /// 依關鍵字去擷取模型
+    /// </summary>
+    private List<Transform> GetModelsByKeywords(params string[] keywords)
+        => modelList.Where(model => keywords.Any(keyword => model.name.Contains(keyword))).ToList();
 
     private bool _isOn { get; set; }
     public bool isOn

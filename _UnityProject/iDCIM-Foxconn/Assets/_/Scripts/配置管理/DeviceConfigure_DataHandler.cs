@@ -32,7 +32,7 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
             //用取得所有設備，來抓取場景上的設備來群組化，用來替代庫存設備
             List<Data_ServerRackAsset> dataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
 
-            //設定Demo庫存資料
+            #region [設定Demo庫存資料]
             List<Data_DeviceAsset> filterResult = dataList.SelectMany(data => data.containers).GroupBy(data => data.modelNumber).Select(data => data.ToList()[0]).ToList();
             filterResult.ForEach(data =>
             {
@@ -40,6 +40,7 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
                 List<Transform> models = MaterialHandler.FindTargetObjects(key);
                 stockList.Add(new StockDeviceSet(data, models.Count > 0 ? models[0] : null));
             });
+            #endregion
 
             onSuccess?.Invoke(stockList);
             onGetAllStockDevices.Invoke(stockList);
@@ -52,8 +53,6 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
 
     [ContextMenu("- 取得所有庫存設備")]
     private void GetAllStockDevice() => GetAllStockDevice(null, null);
-
-
 
 
     [Serializable]

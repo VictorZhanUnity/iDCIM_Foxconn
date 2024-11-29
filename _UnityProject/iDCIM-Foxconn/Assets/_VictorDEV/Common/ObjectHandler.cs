@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -73,5 +74,35 @@ namespace VictorDev.Common
 #endif
                }
            });
+
+        /// <summary>
+        /// 檢查B的包圍盒是否完全位於A的包圍盒內
+        /// </summary>
+        public static bool IsModelBCompletelyInsideModelA(Collider modelA, Collider modelB)
+            => modelA.bounds.Contains(modelB.bounds.min) && modelA.bounds.Contains(modelB.bounds.max);
+
+        /// <summary>
+        /// 檢查B是否部分在A內
+        /// </summary>
+        public static bool IsModelBPartiallyInsideModelA(Collider modelA, Collider modelB)
+            => modelA.bounds.Intersects(modelB.bounds);
+
+
+        /// <summary>
+        /// 將底下所有子物件，依照Y軸高底進行排序
+        /// </summary>
+        public static void SortingChildByPosY(Transform target)
+        {
+            // 將子物件依 Y 座標排序（從高到低）
+            var sortedChildren = target.Cast<Transform>()
+                                             .OrderByDescending(child => child.position.y)
+                                             .ToList();
+
+            // 更新 Sibling Index
+            for (int i = 0; i < sortedChildren.Count; i++)
+            {
+                sortedChildren[i].SetSiblingIndex(i);
+            }
+        }
     }
 }

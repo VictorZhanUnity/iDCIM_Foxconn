@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using VictorDev.Common;
 
 /// <summary>
@@ -18,6 +19,9 @@ public class Data_iDCIMAsset : IToolTipPanel_Data
     public InfoWithCOBie information;
 
     public string deviceName => devicePath.Split(':')[1].Trim();
+
+    [Header(">>> 設備模型")]
+    public Transform model;
 }
 /// <summary>
 /// [資料項] 機櫃Rack與其設備清單
