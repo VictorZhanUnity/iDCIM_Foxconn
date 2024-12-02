@@ -11,6 +11,9 @@ public class Comp_StockDeviceList : MonoBehaviour
     [SerializeField] private List<StockDeviceSet> _data;
 
     [Header(">>> 點擊該資料項時Invoke")]
+    public UnityEvent<StockDeviceListItem> onSelectDeviceModel = new UnityEvent<StockDeviceListItem>();
+
+    [Header(">>> 當Drag產生暫時的設備時Invoke")]
     public UnityEvent<StockDeviceListItem> onCreateTempDeviceModel = new UnityEvent<StockDeviceListItem>();
 
     [Header(">>> [Prefab] - 列表項目")]
@@ -33,6 +36,7 @@ public class Comp_StockDeviceList : MonoBehaviour
             StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
             item.ShowData(data);
             item.toggleGroup = toggleGroup;
+            item.onSelectDeviceModel.AddListener(onSelectDeviceModel.Invoke);
             item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke);
             listItems.Add(item);
         });

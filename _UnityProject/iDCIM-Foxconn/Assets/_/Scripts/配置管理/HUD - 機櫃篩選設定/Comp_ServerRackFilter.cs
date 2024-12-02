@@ -4,12 +4,14 @@ using UnityEngine.UI;
 using VictorDev.Common;
 using Random = UnityEngine.Random;
 
-public class ServerRackFilterManager : MonoBehaviour
+/// <summary>
+/// [組件] 機櫃過濾
+/// </summary>
+public class Comp_ServerRackFilter : MonoBehaviour
 {
     [Header(">>> Dotween設定")]
     [SerializeField] private float minScale = 0.001f;
     [SerializeField] private float duration = 0.3f;
-    [SerializeField] private int alpha = 100;
     [SerializeField] private Ease easeOut = Ease.OutBack;
     [SerializeField] private Ease easeIn = Ease.InQuad;
 
@@ -50,10 +52,12 @@ public class ServerRackFilterManager : MonoBehaviour
                     if (index == 0) color = rackGood;
                     else if (index == 1) color = rackNormal;
                     else if (index == 2) color = rackBad;
+
+
                 }
             }
 
-            color.a = isScaleOut ? alpha / 255 : 1;
+            color.a = isScaleOut ? 0: 1;
             if (isScaleOut) MaterialHandler.SetTransparentMode(mats[i]);
             else MaterialHandler.SetOpaqueMode(mats[i]);
             mats[i].DOColor(color, duration).SetEase(isScaleOut ? easeOut : easeIn).SetAutoKill(true);
@@ -67,6 +71,15 @@ public class ServerRackFilterManager : MonoBehaviour
     private void OnFilterOptionChangeHandler()
     {
         ShowFilterResult();
+    }
+
+
+
+    /// <summary>
+    /// 進行機櫃條件過濾
+    /// </summary>
+    public void ToFilterRack(StockDeviceListItem target)
+    {
     }
 
     #region [>>> Show/Hide]

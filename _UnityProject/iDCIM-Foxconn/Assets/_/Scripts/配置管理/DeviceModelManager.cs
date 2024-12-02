@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,6 +39,9 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
         {
             rackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
             rackDataList.ForEach(data => data.model = rackModels.FirstOrDefault(model => model.name.Contains(data.deviceName)));
+
+            rackDataList.ForEach(data => data.CaculateUsage());
+
             InitializedRackDevices();
         }
         void onFailed(long responseCode, string msg)

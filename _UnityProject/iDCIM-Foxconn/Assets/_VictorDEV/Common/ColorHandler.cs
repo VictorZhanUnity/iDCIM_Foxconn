@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -142,6 +143,28 @@ namespace VictorDev.Common
             float g = ((hexColor >> 8) & 0xFF) / 255.0f;
             float b = (hexColor & 0xFF) / 255.0f;
             return new Color(r, g, b, alpha); // Alpha 設為 1.0，表示完全不透明
+        }
+
+
+        /// <summary>
+        /// 顏色等級設定
+        /// </summary>
+        private static List<Tuple<float, Color>> colorLevels = new List<Tuple<float, Color>>
+        {
+           new Tuple<float, Color>(0.4f, Color.green),
+           new Tuple<float, Color> (0.6f, Color.yellow),
+           new Tuple<float, Color>(0.8f, new Color(1f, 0.647f, 0f)), // 橙色
+           new Tuple<float, Color>(1f, Color.red),
+        };
+        public static Color GetColorFromPercentage(float percentage) => GetColorFromPercentage(percentage, colorLevels);
+        public static Color GetColorFromPercentage(float percentage, List<Tuple<float, Color>> colorLevels)
+        {
+            //從小到大的排序，方便LINQ依序比對
+            List<Tuple<float, Color>> sortedColorLevels = colorLevels.OrderBy(threshold => threshold.Item1).ToList();
+            return sortedColorLevels
+                .Where(threshold => percentage <= threshold.Item1)  // 找出第一個符合條件的顏色
+                .Select(threshold => threshold.Item2)  // 取得對應的顏色
+                .FirstOrDefault();  // 若找不到，返回預設顏色（此處會返回Level第一個顏色）
         }
     }
 }

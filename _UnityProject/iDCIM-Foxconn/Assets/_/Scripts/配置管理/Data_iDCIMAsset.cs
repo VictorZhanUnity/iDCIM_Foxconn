@@ -31,18 +31,35 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
 {
     public string rackId;
     public string description;
+
+    [Header(">>> 計算資源使用率")]
+    // 數量
+    public float _usageOfWatt = -1;
+    public float usageOfWatt => (_usageOfWatt == -1) ? _usageOfWatt = containers.Sum(device => device.information.watt) : _usageOfWatt;
+    public float _usageOfRU = -1;
+    public float usageOfRU => (_usageOfRU == -1) ? _usageOfRU = containers.Sum(device => device.information.heightU) : _usageOfRU;
+    public float _usageOfWeight = -1;
+    public float usageOfWeight => (_usageOfWeight == -1) ? _usageOfWeight = containers.Sum(device => device.information.weight) : _usageOfWeight;
+    // 百分比
+    public float _percentOfWatt = -1;
+    public float percentOfWatt => (_percentOfWatt == -1) ? _percentOfWatt = usageOfWatt / information.watt : _percentOfWatt;
+    public float _percentOfRU = -1;
+    public float percentOfRU => (_percentOfRU == -1) ? _percentOfRU = usageOfRU / information.heightU : _percentOfRU;
+    public float _percentOfWeight = -1;
+    public float percentOfWeight => (_percentOfWeight == -1) ? _percentOfWeight = usageOfWeight / information.weight : _percentOfWeight;
+
+    [Header(">>> 內容設備")]
     public List<Data_DeviceAsset> containers;
 
-    #region [>>> 計算資源使用率]
-    private float _usageOfWatt = -1;
-    public float usageOfWatt => (_usageOfWatt == -1) ? _usageOfWatt = containers.Sum(device => device.information.watt) : _usageOfWatt;
-
-    private float _usageOfRU = -1;
-    public float usageOfRU => (_usageOfRU == -1) ? _usageOfWatt = containers.Sum(device => device.information.heightU) : _usageOfRU;
-
-    private float _usageOfWeight = -1;
-    public float usageOfWeight => (_usageOfWeight == -1) ? _usageOfWeight = containers.Sum(device => device.information.weight) : _usageOfWeight;
-    #endregion
+     public void CaculateUsage()
+    {
+        Debug.Log($"{usageOfWatt}");
+        Debug.Log($"{usageOfRU}");
+        Debug.Log($"{usageOfWeight}");
+        Debug.Log($"{percentOfWatt}");
+        Debug.Log($"{percentOfRU}");
+        Debug.Log($"{percentOfWeight}");
+    }
 }
 /// <summary>
 /// [資料項] 設備資訊

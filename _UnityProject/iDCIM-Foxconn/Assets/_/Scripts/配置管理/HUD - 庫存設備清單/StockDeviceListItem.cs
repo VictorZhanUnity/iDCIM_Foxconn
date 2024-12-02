@@ -16,7 +16,14 @@ public class StockDeviceListItem : MonoBehaviour
     [SerializeField] private StockDeviceSet _data;
     public StockDeviceSet data => _data;
 
-    [Header(">>> 點擊該資料項時Invoke")]
+    /// <summary>
+    /// 點擊該資料項時Invoke
+    /// </summary>
+    public UnityEvent<StockDeviceListItem> onSelectDeviceModel = new UnityEvent<StockDeviceListItem>();
+
+    /// <summary>
+    /// 當Drag產生暫時的設備時Invoke
+    /// </summary>
     public UnityEvent<StockDeviceListItem> onCreateTempDeviceModel = new UnityEvent<StockDeviceListItem>();
 
     /// <summary>
@@ -68,12 +75,12 @@ public class StockDeviceListItem : MonoBehaviour
         imgBorder.color = targetColor;
     }
 
-
     private void OnEnable()
     {
         toggle.onValueChanged.AddListener((isOn) =>
         {
             dragController.enabled = isOn;
+            onSelectDeviceModel.Invoke(this);
             ChangeColor(isOn);
         });
 

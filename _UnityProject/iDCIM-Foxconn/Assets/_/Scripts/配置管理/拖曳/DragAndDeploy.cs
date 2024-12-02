@@ -83,33 +83,12 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     {
                         targetPos = renderer.bounds.center;
                     }
-                    // 創建替換物件B
-                    // Transform model = Instantiate(createModel, hit.transform.position - targetPos - offset, hit.transform.rotation);
-                    //Transform model = Instantiate(createModel, hit.transform.position - targetPos, hit.transform.rotation);
-                    //model.parent = hit.transform.parent;
-
-                    /*  if (model != null) Destroy(model.gameObject);
-                      model = Instantiate(createModel, hit.transform);
-                      //  model.position = hit.transform.position;
-
-                      Vector3 center = Vector3.zero;
-                      if (hit.transform.TryGetComponent<Renderer>(out Renderer renderer1))
-                      {
-                          center = renderer1.bounds.center;
-                      }
-
-                      Debug.Log($"targetPos: {targetPos}/center: {center}");
-                      model.localPosition = Vector3.zero;
-                      model.rotation = Quaternion.Euler(Vector3.zero);*/
-
-                    //hit.transform.SetAsLastSibling();
 
                     //取得對像RackSpacer
                     rackSpacer = hit.transform.parent.GetComponent<RackSpacer>();
                     rackSpacer.CreateTempDevice(item.data.model);
                     // Destroy(hit.collider.gameObject); // 刪除目標物件A
 
-                    //Invoke {建立的模型, 對像RackSpacer}
                     onCreateTempDevice.Invoke(rackSpacer);
                 }
             }

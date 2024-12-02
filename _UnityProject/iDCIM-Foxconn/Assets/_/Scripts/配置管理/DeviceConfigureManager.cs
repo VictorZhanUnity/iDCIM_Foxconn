@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static DeviceConfigure_DataHandler;
@@ -13,6 +14,8 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
 
     [Header(">>> [組件] HUD - 庫存設備清單")]
     [SerializeField] private Comp_StockDeviceList stockDeviceList;
+    [Header(">>> [組件] HUD - 庫存設備清單")]
+    [SerializeField] private Comp_ServerRackFilter serverRackFilter;
 
     [Header(">>> [組件] 視窗 - 上架設備輸入資訊")]
     [SerializeField] private Panel_StockDeviceUploadInfo deviceUploadInfoPanel;
@@ -36,7 +39,9 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
         stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
         deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
+        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
     }
+
 
     private void OnDisable()
     {
