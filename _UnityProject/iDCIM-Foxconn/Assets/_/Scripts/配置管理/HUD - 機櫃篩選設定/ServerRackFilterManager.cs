@@ -1,24 +1,68 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using VictorDev.Common;
+using Random = UnityEngine.Random;
 
 public class ServerRackFilterManager : MonoBehaviour
 {
-    public iDCIM_ModuleManager deviceConfigureManager;
+    [Header(">>> Dotweenè¨­å®š")]
+    [SerializeField] private float minScale = 0.001f;
+    [SerializeField] private float duration = 0.3f;
+    [SerializeField] private int alpha = 100;
+    [SerializeField] private Ease easeOut = Ease.OutBack;
+    [SerializeField] private Ease easeIn = Ease.InQuad;
 
-    [ContextMenu("- Åã¥Ü¦X¾Aªº¾÷Âd")]
+    public Color rackGood, rackNormal, rackBad;
+
+    private Color originalRackColor = ColorHandler.HexToColor(0x181818, 1);
+
+    [ContextMenu("- é¡¯ç¤ºåˆé©çš„æ©Ÿæ«ƒ")]
     public void ShowFilterResult()
     {
-        DeviceModelManager.RackDataList.ForEach(data => ChangeHeight(data.model));
+        DeviceModelManager.RackDataList.ForEach(data =>
+        {
+            ChangeRackStyle(data.model);
+        });
     }
-    private void ChangeHeight(Transform target)
+    /// <summary>
+    /// ä¾ç¯©é¸ç­‰ç´šéæ¿¾å¤–è§€
+    /// </summary>
+    private void ChangeRackStyle(Transform target)
     {
-        int index = Random.Range(0, 2);
-        target.DOScaleY(index == 0 ? 0.01f: 1, 0.3f).SetEase(Ease.OutQuad).SetDelay(Random.Range(0f, 0.3f)).SetAutoKill(true);
+        bool isScaleOut = Random.Range(0, 2) == 1;
+        target.DOScaleY(isScaleOut ? 1 : minScale, isScaleOut ? duration : duration * 0.5f).SetEase(isScaleOut ? easeOut : easeIn).SetDelay(Random.Range(0f, duration)).SetAutoKill(true);
+
+
+        int materialIndex = target.name.Contains("ATEN") ? 7 : 4;
+
+        Material[] mats = target.GetComponent<MeshRenderer>().materials;
+
+        for (int i = 0; i < mats.Length; i++)
+        {
+            Color color = mats[i].color;
+            if (i == materialIndex)
+            {
+                if (isScaleOut == false) color = originalRackColor;
+                else
+                {
+                    int index = Random.Range(0, 3);
+                    if (index == 0) color = rackGood;
+                    else if (index == 1) color = rackNormal;
+                    else if (index == 2) color = rackBad;
+                }
+            }
+
+            color.a = isScaleOut ? alpha / 255 : 1;
+            if (isScaleOut) MaterialHandler.SetTransparentMode(mats[i]);
+            else MaterialHandler.SetOpaqueMode(mats[i]);
+            mats[i].DOColor(color, duration).SetEase(isScaleOut ? easeOut : easeIn).SetAutoKill(true);
+        };
     }
 
+
     /// <summary>
-    /// ·í§ïÅÜ¤Ä¿ï¹LÂo¶µ¥Ø®É
+    /// ç•¶æ”¹è®Šå‹¾é¸éæ¿¾é …ç›®æ™‚
     /// </summary>
     private void OnFilterOptionChangeHandler()
     {

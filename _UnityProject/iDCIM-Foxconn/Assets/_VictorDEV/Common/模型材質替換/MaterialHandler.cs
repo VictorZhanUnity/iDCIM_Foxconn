@@ -179,6 +179,34 @@ namespace VictorDev.Common
             }
         }
 
-        private void OnValidate() => name = "MaterialHandler";
+
+        //===================================== NEW
+        /// <summary>
+        /// 将材质设置为透明模式
+        /// </summary>
+        public static void SetTransparentMode(Material targetMaterial)
+        {
+                targetMaterial.SetFloat("_Mode", 3); // 设置模式为 Transparent
+                targetMaterial.SetOverrideTag("RenderType", "Transparent");
+                targetMaterial.EnableKeyword("_ALPHABLEND_ON");
+                targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                targetMaterial.SetInt("_ZWrite", 0); // 关闭深度写入
+                targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 设置渲染队列为透明层
+        }
+
+        /// <summary>
+        /// 将材质设置为不透明模式
+        /// </summary>
+        public static void SetOpaqueMode(Material targetMaterial)
+        {
+                targetMaterial.SetFloat("_Mode", 0); // 设置模式为 Opaque
+                targetMaterial.SetOverrideTag("RenderType", "Opaque");
+                targetMaterial.DisableKeyword("_ALPHABLEND_ON");
+                targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                targetMaterial.SetInt("_ZWrite", 1); // 开启深度写入
+                targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Geometry; // 设置渲染队列为几何层
+        }
     }
 }
