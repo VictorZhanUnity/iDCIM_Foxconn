@@ -33,9 +33,10 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public string description;
 
     [Header(">>> 計算資源使用率")]
-    // 數量
+    // 使用數量
     public float _usageOfWatt = -1;
     public float usageOfWatt => (_usageOfWatt == -1) ? _usageOfWatt = containers.Sum(device => device.information.watt) : _usageOfWatt;
+
     public float _usageOfRU = -1;
     public float usageOfRU => (_usageOfRU == -1) ? _usageOfRU = containers.Sum(device => device.information.heightU) : _usageOfRU;
     public float _usageOfWeight = -1;
@@ -47,19 +48,13 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public float percentOfRU => (_percentOfRU == -1) ? _percentOfRU = usageOfRU / information.heightU : _percentOfRU;
     public float _percentOfWeight = -1;
     public float percentOfWeight => (_percentOfWeight == -1) ? _percentOfWeight = usageOfWeight / information.weight : _percentOfWeight;
+    /// 剩餘資源數量
+    public float reaminOfWatt => information.watt - usageOfWatt;
+    public float reaminOfWeight => information.weight - usageOfWeight;
+    public float reaminOfRU => information.heightU - usageOfRU;
 
     [Header(">>> 內容設備")]
     public List<Data_DeviceAsset> containers;
-
-     public void CaculateUsage()
-    {
-        Debug.Log($"{usageOfWatt}");
-        Debug.Log($"{usageOfRU}");
-        Debug.Log($"{usageOfWeight}");
-        Debug.Log($"{percentOfWatt}");
-        Debug.Log($"{percentOfRU}");
-        Debug.Log($"{percentOfWeight}");
-    }
 }
 /// <summary>
 /// [資料項] 設備資訊

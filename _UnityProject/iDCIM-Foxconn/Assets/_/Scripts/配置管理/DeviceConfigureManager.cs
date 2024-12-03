@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static DeviceConfigure_DataHandler;
@@ -32,6 +31,7 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
     }
     protected override void OnCloseHandler()
     {
+        serverRackFilter.ToClose();
     }
 
     private void OnEnable()

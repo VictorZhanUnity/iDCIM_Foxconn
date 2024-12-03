@@ -1,4 +1,6 @@
 ﻿using DG.Tweening;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using VictorDev.Common;
@@ -17,90 +19,121 @@ public class Comp_ServerRackFilter : MonoBehaviour
 
     public Color rackGood, rackNormal, rackBad;
 
+    /// <summary>
+    /// 機櫃原始顏色
+    /// </summary>
     private Color originalRackColor = ColorHandler.HexToColor(0x181818, 1);
+
+    /// <summary>
+    /// 目前所選的庫存設備項目
+    /// </summary>
+    private StockDeviceListItem currentStockItem { get; set; }
 
     [ContextMenu("- 顯示合適的機櫃")]
     public void ShowFilterResult()
     {
         DeviceModelManager.RackDataList.ForEach(data =>
         {
-            ChangeRackStyle(data.model);
+            bool isSuitable = (currentStockItem.data.deviceAsset.information.watt <= data.reaminOfWatt)
+            && (currentStockItem.data.deviceAsset.information.heightU <= data.reaminOfRU)
+            && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
+
+            ChangeRackHeight(data, isSuitable);
+            ChangeRackColor(data, isSuitable);
         });
     }
+
     /// <summary>
-    /// 依篩選等級過濾外觀
+    /// 依照是否符合條件而調整機櫃大小
     /// </summary>
-    private void ChangeRackStyle(Transform target)
+    private void ChangeRackHeight(Data_ServerRackAsset data, bool isSuitable)
     {
-        bool isScaleOut = Random.Range(0, 2) == 1;
-        target.DOScaleY(isScaleOut ? 1 : minScale, isScaleOut ? duration : duration * 0.5f).SetEase(isScaleOut ? easeOut : easeIn).SetDelay(Random.Range(0f, duration)).SetAutoKill(true);
+        DOTween.Kill(data.model);
 
-
-        int materialIndex = target.name.Contains("ATEN") ? 7 : 4;
-
-        Material[] mats = target.GetComponent<MeshRenderer>().materials;
+        data.model
+            .DOScaleY(isSuitable ? 1 : minScale, isSuitable ? duration : duration * 0.5f)
+            .SetEase(isSuitable ? easeOut : easeIn).SetDelay(Random.Range(0f, duration)).SetAutoKill(true);
+    }
+    /// <summary>
+    /// 依照是否符合條件而調整機櫃顏色
+    /// </summary>
+    private void ChangeRackColor(Data_ServerRackAsset data, bool isSuitable)
+    {
+        int rackMaterialIndex = data.model.name.Contains("ATEN") ? 7 : 4;
+        Material[] mats = data.model.GetComponent<MeshRenderer>().materials;
 
         for (int i = 0; i < mats.Length; i++)
         {
             Color color = mats[i].color;
-            if (i == materialIndex)
+            if (i == rackMaterialIndex) //當目前mat為機櫃外殼時處理
             {
-                if (isScaleOut == false) color = originalRackColor;
+                if (isSuitable == false) color = originalRackColor;
                 else
                 {
-                    int index = Random.Range(0, 3);
-                    if (index == 0) color = rackGood;
-                    else if (index == 1) color = rackNormal;
-                    else if (index == 2) color = rackBad;
+                    //根據filter選項來取得剩餘資源百分八
+                    List<float> filterPercentList = new List<float>();
+                    if (isFilterWatt) filterPercentList.Add(1 - data.percentOfWatt);
+                    if (isFilterWeight) filterPercentList.Add(1 - data.percentOfWeight);
+                    if (isFilterRuSpace) filterPercentList.Add(1 - data.percentOfRU);
 
-
+                    color = ColorHandler.GetColorFromPercentage(filterPercentList.Sum(value => value) / filterPercentList.Count);
                 }
             }
 
-            color.a = isScaleOut ? 0: 1;
-            if (isScaleOut) MaterialHandler.SetTransparentMode(mats[i]);
+            color.a = isSuitable ? 0 : 1;
+            if (isSuitable) MaterialHandler.SetTransparentMode(mats[i]);
             else MaterialHandler.SetOpaqueMode(mats[i]);
-            mats[i].DOColor(color, duration).SetEase(isScaleOut ? easeOut : easeIn).SetAutoKill(true);
+
+            DOTween.Kill(mats[i]);
+            mats[i].DOColor(color, duration).SetEase(isSuitable ? easeOut : easeIn).SetAutoKill(true);
         };
     }
-
-
-    /// <summary>
-    /// 當改變勾選過濾項目時
-    /// </summary>
-    private void OnFilterOptionChangeHandler()
-    {
-        ShowFilterResult();
-    }
-
-
 
     /// <summary>
     /// 進行機櫃條件過濾
     /// </summary>
     public void ToFilterRack(StockDeviceListItem target)
     {
+        currentStockItem = target.isOn ? target : null;
+        if (target.isOn) ShowFilterResult();
+        else RestoreAllRack();
+        ToShow();
     }
+
+    /// <summary>
+    /// 復原所有機櫃樣式
+    /// </summary>
+    private void RestoreAllRack()
+        => DeviceModelManager.RackDataList.ForEach(data =>
+        {
+            ChangeRackHeight(data, true);
+            ChangeRackColor(data, false);
+        });
 
     #region [>>> Show/Hide]
-    private void OnEnable()
+    public void ToShow()
     {
-        ToggleRemainRuSpace.onValueChanged.AddListener((isOn) => OnFilterOptionChangeHandler());
-        ToggleRemainWatt.onValueChanged.AddListener((isOn) => OnFilterOptionChangeHandler());
-        ToggleRemainWeight.onValueChanged.AddListener((isOn) => OnFilterOptionChangeHandler());
+        uiObject.gameObject.SetActive(true);
+        ToggleRemainRuSpace.onValueChanged.AddListener((isOn) => ShowFilterResult());
+        ToggleRemainWatt.onValueChanged.AddListener((isOn) => ShowFilterResult());
+        ToggleRemainWeight.onValueChanged.AddListener((isOn) => ShowFilterResult());
     }
 
-    private void OnDisable()
+    public void ToClose()
     {
+        uiObject.gameObject.SetActive(false);
         ToggleRemainRuSpace.onValueChanged.RemoveAllListeners();
         ToggleRemainWatt.onValueChanged.RemoveAllListeners();
         ToggleRemainWeight.onValueChanged.RemoveAllListeners();
+        RestoreAllRack();
     }
     #endregion
 
     #region [>>> Components]
+    private Transform _uiObject { get; set; }
+    private Transform uiObject => _uiObject ??= transform.GetChild(0);
     private Transform _VLayout { get; set; }
-    private Transform VLayout => _VLayout ??= transform.Find("Container").Find("VLayout");
+    private Transform VLayout => _VLayout ??= uiObject.transform.Find("Container").Find("VLayout");
     private Toggle _ToggleRemainRuSpace { get; set; }
     private Toggle ToggleRemainRuSpace => _ToggleRemainRuSpace ??= VLayout.Find("ToggleRemainRuSpace").GetComponent<Toggle>();
     private Toggle _ToggleRemainWatt { get; set; }

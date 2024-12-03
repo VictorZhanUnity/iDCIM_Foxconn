@@ -17,7 +17,7 @@ public class StockDeviceListItem : MonoBehaviour
     public StockDeviceSet data => _data;
 
     /// <summary>
-    /// 點擊該資料項時Invoke
+    /// 點擊該資料項時Invoke(On/Off)
     /// </summary>
     public UnityEvent<StockDeviceListItem> onSelectDeviceModel = new UnityEvent<StockDeviceListItem>();
 
