@@ -31,30 +31,46 @@ public class Comp_StockDeviceList : MonoBehaviour
 
         ObjectPoolManager.PushToPool<StockDeviceListItem>(scrollRect.content);
 
-        _data.ForEach(data =>
-        {
-            StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
-            item.ShowData(data);
-            item.toggleGroup = toggleGroup;
-            item.onSelectDeviceModel.AddListener(onSelectDeviceModel.Invoke);
-            item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke);
-            listItems.Add(item);
-        });
+        _data.ForEach(data => CreateStockDeviceItem(data));
         scrollRect.verticalNormalizedPosition = 1;
     }
+
+    private StockDeviceListItem CreateStockDeviceItem(StockDeviceSet data)
+    {
+        StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
+        item.ShowData(data);
+        item.toggleGroup = toggleGroup;
+        item.onSelectDeviceModel.AddListener(onSelectDeviceModel.Invoke);
+        item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke);
+        listItems.Add(item);
+        return item;
+    }
+
+
+    public void AddStockDevice(Data_DeviceAsset data)
+    {
+        StockDeviceSet stockData = new StockDeviceSet(data, data.model);
+        StockDeviceListItem item = CreateStockDeviceItem(stockData);
+        item.transform.SetAsFirstSibling();
+    }
+
 
     private void OnEnable()
     {
         listItems.ForEach(item => item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke));
         scrollRect.verticalNormalizedPosition = 1;
     }
-    private void OnDisable() => listItems.ForEach(item => item.onCreateTempDeviceModel.RemoveAllListeners());
 
+    private void OnDisable()
+    {
+        listItems.ForEach(item => item.onCreateTempDeviceModel.RemoveAllListeners());
+    }
     public void UpdateList(StockDeviceListItem removeItem)
     {
         listItems.Remove(removeItem);
         txtAmount.SetText($"共{listItems.Count}台");
     }
+
 
     #region[>>> Componenets]
     private ToggleGroup _toggleGroup { get; set; }

@@ -175,7 +175,7 @@ namespace VictorDev.CameraUtils
             right.Normalize();
 
             float turbo = Input.GetKey(KeyCode.LeftShift) ? 5f : 1f;
-
+            turbo = 1f;
 
             if (isMoveable == false) return;
             // WASD 控制前后左右移动

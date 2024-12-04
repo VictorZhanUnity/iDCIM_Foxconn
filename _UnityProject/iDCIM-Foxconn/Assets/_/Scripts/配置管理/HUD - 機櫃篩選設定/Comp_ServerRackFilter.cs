@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,9 +18,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
     [SerializeField] private Ease easeOut = Ease.OutBack;
     [SerializeField] private Ease easeIn = Ease.InQuad;
 
-    public Color rackGood, rackNormal, rackBad;
-
-    public RackSpacer rackSpacerPrefab;
+    public Color colorGood, colorNormal, colorBad;
 
     /// <summary>
     /// 機櫃原始顏色
@@ -40,26 +39,8 @@ public class Comp_ServerRackFilter : MonoBehaviour
             && (currentStockItem.data.deviceAsset.information.heightU <= data.reaminOfRU)
             && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
 
-            //移除RU空格
-            ObjectPoolManager.PushToPool<RackSpacer>(data.model);
-            BuildRackSpacer(data);
-
             ChangeRackHeight(data, isSuitable);
             ChangeRackColor(data, isSuitable);
-        });
-    }
-
-    /// <summary>
-    /// 建立RU空格
-    /// </summary>
-    private void BuildRackSpacer(Data_ServerRackAsset data)
-    {
-        float perRUposY = 0.0765f*0.6f;
-        data.availableRuSpace.ForEach(rackLocation =>
-        {
-            RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, data.model);
-            ruSpacer.RuIndex = rackLocation;
-            ruSpacer.transform.localPosition = new Vector3(0, perRUposY * rackLocation, 0);
         });
     }
 
@@ -96,7 +77,15 @@ public class Comp_ServerRackFilter : MonoBehaviour
                     if (isFilterWeight) filterUsagePercentList.Add(data.percentOfWeight);
                     if (isFilterRuSpace) filterUsagePercentList.Add(data.percentOfRU);
 
-                    color = ColorHandler.GetColorFromPercentage(filterUsagePercentList.Sum(value => value) / filterUsagePercentList.Count);
+                    float percentage = filterUsagePercentList.Sum(value => value) / filterUsagePercentList.Count;
+                    List<Tuple<float, Color>> levelColors = new List<Tuple<float, Color>>()
+                    {
+                        { new Tuple<float, Color> (0.6f, colorGood) } ,
+                        { new Tuple<float, Color> (0.8f, colorNormal) } ,
+                        { new Tuple<float, Color> (1f, colorBad) } ,
+
+                    };
+                    color = ColorHandler.GetColorFromPercentage(percentage, levelColors);
                 }
             }
 

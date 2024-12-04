@@ -92,7 +92,7 @@ namespace VictorDev.Common
         /// <para>+ percentaget為0~1之float值</para>
         /// <para>+ 顏色從綠色到紅色</para>
         /// </summary>
-        public static Color GetColorFromPercentage(float percentage, Color? colorStart = null, Color? colorEnd = null)
+        public static Color GetColorFromPercentage_OLD(float percentage, Color? colorStart = null, Color? colorEnd = null)
         {
             /*   if(colorStart == null) colorStart = green;
                if(colorEnd == null) colorEnd = red;*/

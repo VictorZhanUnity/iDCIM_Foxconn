@@ -23,7 +23,7 @@ namespace VictorDev.Common
         /// <summary>
         /// 當MouseExit模型物件時Invoke
         /// </summary>
-        public static UnityEvent onMouseExitObjectEvent { get; set; } = new UnityEvent();
+        public static UnityEvent<Transform> onMouseExitObjectEvent { get; set; } = new UnityEvent<Transform>();
 
         [Header(">>> 滑鼠事件之對像物件LayerMask設置")]
         [SerializeField] private LayerMask layerDefault;
@@ -109,7 +109,7 @@ namespace VictorDev.Common
                     LayerMaskHandler.SetGameObjectLayerToLayerMask(exitedObject, layerDefault);
                 }
             }
-            onMouseExitObjectEvent.Invoke();
+            onMouseExitObjectEvent.Invoke(exitedObject.transform);
         }
         /// <summary>
         /// MouseOver事件處理
@@ -148,17 +148,24 @@ namespace VictorDev.Common
         /// </summary>
         public static void ToSelectTarget(Transform target, bool isInvokeEvent = true)
         {
-            if(target.CompareTag("BuildContainer_Device")) return;
+            if (target.CompareTag("BuildContainer_Device")) return;
 
             //檢查對像是否已被選取
-            bool isAlreadySelected = target.GetChild(0) ? target.GetChild(0).gameObject.activeSelf : false;
+            bool isAlreadySelected = false;
+            if (target.childCount > 0)
+            {
+                isAlreadySelected = target.GetChild(0) != null ? target.GetChild(0).gameObject.activeSelf : false;
+            }
 
             if (isAlreadySelected) Instance.selectedObject.Remove(target.gameObject);
             else Instance.selectedObject.Add(target.gameObject);
+
+            if (Instance.currentSelectedObject != null) LayerMaskHandler.SetGameObjectLayerToLayerMask(Instance.currentSelectedObject.gameObject, Instance.layerDefault);
+
             Instance.currentSelectedObject = isAlreadySelected ? null : target;
 
             //設定對像狀態
-            target.GetChild(0)?.gameObject.SetActive(!isAlreadySelected);
+            //target.GetChild(0)?.gameObject.SetActive(!isAlreadySelected);
             LayerMaskHandler.SetGameObjectLayerToLayerMask(target.gameObject, isAlreadySelected ? Instance.layerDefault : Instance.layerMouseDown);
 
             if (isInvokeEvent)
@@ -186,7 +193,10 @@ namespace VictorDev.Common
         public static void CancellObjectSelected(Transform target, bool isInvokeEvent = true)
         {
             //設定對像狀態
-            target.GetChild(0)?.gameObject.SetActive(false);
+            if (target.childCount > 0)
+            {
+                target.GetChild(0).gameObject.SetActive(false);
+            }
             LayerMaskHandler.SetGameObjectLayerToLayerMask(target.gameObject, Instance.layerDefault);
             Instance.selectedObject.Remove(target.gameObject);
             if (isInvokeEvent) onDeselectObjectEvent.Invoke(target);

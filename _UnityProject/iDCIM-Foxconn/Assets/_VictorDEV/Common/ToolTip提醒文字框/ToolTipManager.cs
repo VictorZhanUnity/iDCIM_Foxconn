@@ -1,6 +1,8 @@
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using VictorDev.Common;
-using static VictorDev.RevitUtils.RevitHandler;
 
 public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
 {
@@ -11,6 +13,8 @@ public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
     [SerializeField] private RectTransform canvasRectTransform;
 
     private IToolTipPanel currentToolTip { get; set; }
+
+
 
     private void Start()
     {
@@ -70,4 +74,6 @@ public class ToolTipManager : SingletonMonoBehaviour<ToolTipManager>
 
         return new Vector2(clampedX + offset.x, clampedY + offset.y);
     }
+
+  
 }

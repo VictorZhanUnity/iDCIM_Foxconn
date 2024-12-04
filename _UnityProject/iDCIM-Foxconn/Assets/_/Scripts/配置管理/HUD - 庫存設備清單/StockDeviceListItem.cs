@@ -1,6 +1,5 @@
 using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -127,7 +126,11 @@ public class StockDeviceListItem : MonoBehaviour
 
         layoutElement.ignoreLayout = true;
         rectTrans.DOLocalMoveX(-300, 0.2f).SetEase(Ease.InQuad)
-            .OnComplete(() => ObjectPoolManager.PushToPool(this));
+            .OnComplete(() =>
+            {
+                this.isOn = false;
+                ObjectPoolManager.PushToPool(this);
+            });
     }
 
     #region [Components]

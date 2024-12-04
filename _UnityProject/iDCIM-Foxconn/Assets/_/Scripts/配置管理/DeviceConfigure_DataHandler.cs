@@ -38,7 +38,12 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
             {
                 string key = data.devicePath.Split(":")[1].Trim();
                 List<Transform> models = MaterialHandler.FindTargetObjects(key);
-                stockList.Add(new StockDeviceSet(data, models.Count > 0 ? models[0] : null));
+
+                if (models.Count > 0)
+                {
+                    //只將有模型的列入庫存列表
+                    stockList.Add(new StockDeviceSet(data, models[0]));
+                }
             });
             #endregion
 

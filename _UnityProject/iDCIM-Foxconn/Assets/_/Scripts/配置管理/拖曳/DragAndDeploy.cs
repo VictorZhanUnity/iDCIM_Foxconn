@@ -12,8 +12,8 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public Image dragImagePrefab;
     public Vector3 offset = new Vector3(0, 0, -0.075f);
-    private StockDeviceListItem _item { get; set; }
-    private StockDeviceListItem item => _item ??= GetComponent<StockDeviceListItem>();
+    private StockDeviceListItem _stockDeviceItem { get; set; }
+    private StockDeviceListItem stockDeviceItem => _stockDeviceItem ??= GetComponent<StockDeviceListItem>();
     private Canvas _canvas { get; set; }
     private Canvas canvas => _canvas ??= GameManager.mainCanvas;
 
@@ -27,7 +27,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         dragImage = Instantiate(dragImagePrefab, canvas.transform);
         dragImage.transform.SetAsLastSibling(); // 確保在UI最上層
         dragImage.raycastTarget = false; // 防止拖拽影響UI交互
-        dragImage.sprite = item.data.dragIcon;
+        dragImage.sprite = stockDeviceItem.data.dragIcon;
 
         // 添加半透明效果
         Color color = dragImage.color;
@@ -76,7 +76,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     //先取得對像模型的中心點位置
                     Vector3 targetPos = Vector3.zero;
 
-                    var createModel = item.data.model;
+                    var createModel = stockDeviceItem.data.model;
                     //  createModel = tempDevicePrefab;
 
                     if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
@@ -86,7 +86,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
                     //取得對像RackSpacer
                     rackSpacer = hit.transform.parent.GetComponent<RackSpacer>();
-                    rackSpacer.CreateTempDevice(item.data.model);
+                    rackSpacer.CreateTempDevice(stockDeviceItem.data.model);
                     // Destroy(hit.collider.gameObject); // 刪除目標物件A
 
                     onCreateTempDevice.Invoke(rackSpacer);

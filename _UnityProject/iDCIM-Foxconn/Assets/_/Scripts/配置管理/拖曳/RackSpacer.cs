@@ -55,7 +55,8 @@ public class RackSpacer : MonoBehaviour
         CancellTempDevice();
         tempDeviceModel = Instantiate(deviceModel, container);
         tempDeviceModel.localPosition = Vector3.zero;
-        tempDeviceModel.rotation = Quaternion.Euler(Vector3.zero);
+        tempDeviceModel.localRotation = Quaternion.Euler(0, 90, 0);
+        tempDeviceModel.gameObject.SetActive(true);
         tempDeviceModel.DOLocalMove(Vector3.zero, 0.3f).From(Vector3.left * 0.3f).SetEase(Ease.OutQuad).SetAutoKill(true);
     }
 }

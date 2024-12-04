@@ -10,15 +10,12 @@ using VictorDev.Net.WebAPI;
 /// </summary>
 public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
 {
-    [Header(">>> [開/關] 是否使用Resource JSON檔")]
-    [SerializeField] private bool isLocalJsonFile = false;
-
     [Header(">>> [資料項] 所有機櫃設備資料")]
     [SerializeField] private List<Data_ServerRackAsset> rackDataList;
     public static List<Data_ServerRackAsset> RackDataList => Instance.rackDataList;
 
     [Header(">>> [模型] 場景上各個設備模型")]
-    [SerializeField] List<Transform> rackModels;
+    [SerializeField] public List<Transform> rackModels;
     [SerializeField] List<Transform> switchModels;
     [SerializeField] List<Transform> routerModels;
     [SerializeField] List<Transform> serverModels;
@@ -33,6 +30,9 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     [Header(">>> 機房模型")]
     [SerializeField] private Transform serverRoomModel;
 
+    [Header(">>> [Prefab] 機櫃RU空格物件")]
+    public RackSpacer rackSpacerPrefab;
+
     private void Awake() => GetAllRackDevices();
 
     [ContextMenu("- [WebAPI] 取得所有機櫃設備資料")]
@@ -41,11 +41,9 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
         void onSuccessHandler(long responseCode, string jsonData)
         {
             #region [Demo設定]
-            rackDataList = isLocalJsonFile ?
-                JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(ResourceHandler.LoadStringFile("stockdevice"))
-                : JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
+            rackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
 
-            // 設定模型物件
+            // 比對場景上的模型，設定DeviceData裡的模型物件
             rackDataList.ForEach(data => data.model = rackModels.FirstOrDefault(model => model.name.Contains(data.deviceName)));
             rackDataList.SelectMany(rack => rack.containers).ToList().ForEach(data =>
             {
@@ -55,14 +53,8 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
                 if (data.model == null) data.model = serverModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
             });
 
-            // 比對場景模型與資料，不存在資料內的模型進行隱藏
-            List<Transform> allDeviceListFromData = rackDataList.SelectMany(rack => rack.containers).Select(data => data.model).ToList();
-            List<Transform> allDeviceList = switchModels.Concat(routerModels).Concat(serverModels).ToList();
-
-            allDeviceList.ForEach(model =>
-            {
-                model.gameObject.SetActive(allDeviceListFromData.Contains(model));
-            });
+            //擷取DeviceData裡Model不為null的資料項 (就是場景上無此設備模型)
+            rackDataList = rackDataList.Select(rack => new Data_ServerRackAsset().RefreshData(rack)).ToList();
             #endregion
 
             InitializedRackDevices();
@@ -117,7 +109,52 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     private void InitializedRackDevices()
     {
         ///
+    }
+
+    private static bool isCreateRuSpacer = false;
+    public static void ShowRackAvailableRuSpacer()
+    {
+        if (isCreateRuSpacer) Instance.rackDataList.ForEach(model => model.ShowAvailableRuSpacer());
+        else Instance.BuildRackAvailableRuSpacer();
+    }
+    public static void HideAvailableRuSpacer() => Instance.rackDataList.ForEach(model => model.HideAvailableRuSpacer());
 
 
+    /// <summary>
+    /// 建立每個機櫃RU空格物件
+    /// </summary>
+    private void BuildRackAvailableRuSpacer()
+    {
+        List<int> availableRackLocationList, occupyLlst;
+
+        rackDataList.ForEach(rack =>
+        {
+            availableRackLocationList = Enumerable.Range(1, 42).ToList();
+            occupyLlst = new List<int>();
+
+            //算出佔用的格數
+            rack.containers.ForEach(device =>
+            {
+                for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
+                {
+                    occupyLlst.Add(i);
+                }
+            });
+
+            //排除後取得可使用的RU層數
+            availableRackLocationList = availableRackLocationList.Except(occupyLlst).ToList();
+
+            //建立RuSpacer
+            availableRackLocationList.ForEach(locaion => CreateRuSpace(rack, locaion));
+        });
+    }
+
+    public static void CreateRuSpace(Data_ServerRackAsset dataRack, int ruIndex)
+    {
+        float perRUposY = 0.076f * 0.61f;
+        RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(Instance.rackSpacerPrefab, dataRack.model);
+        ruSpacer.RuIndex = ruIndex;
+        ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
+        dataRack.availableRackSpacerList.Add(ruSpacer);
     }
 }

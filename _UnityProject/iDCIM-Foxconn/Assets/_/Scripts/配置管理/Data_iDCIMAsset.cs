@@ -12,12 +12,12 @@ public class Data_iDCIMAsset : IToolTipPanel_Data
 {
     public string devicePath;
     public string deviceId;
-    public string system => devicePath.Split("+")[5];
 
     public string manufacturer;
     public string modelNumber;
     public InfoWithCOBie information;
 
+    public string system => devicePath.Split("+")[5];
     public string deviceName => devicePath.Split(':')[1].Trim();
 
     [Header(">>> 設備模型")]
@@ -32,11 +32,40 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public string rackId;
     public string description;
 
-    [Header(">>> 計算資源使用率")]
+    [Header(">>> 內容設備")]
+    public List<Data_DeviceAsset> containers;
+
+
+    /// <summary>
+    /// 可用的RU空間每種尺吋大小
+    /// </summary>
+    public List<int> eachSizeOfAvailableRU { get; set; } = new List<int>();
+
+    public Data_ServerRackAsset RefreshData(Data_ServerRackAsset source)
+    {
+        devicePath = source.devicePath;
+        deviceId = source.deviceId;
+        manufacturer = source.manufacturer;
+        modelNumber = source.modelNumber;
+        information = source.information;
+        rackId = source.rackId;
+        description = source.description;
+        model = source.model;
+        containers = source.containers.Where(dataDevice => dataDevice.model != null).ToList();
+        return this;
+    }
+
+    /// <summary>
+    /// 儲存建立的空白RU Spacer
+    /// </summary>
+    public List<RackSpacer> availableRackSpacerList { get; set; } = new List<RackSpacer>();
+    public void ShowAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(true));
+    public void HideAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(false));
+
+    #region [(">>> 計算資源使用率]
     // 使用數量
     public float _usageOfWatt = -1;
     public float usageOfWatt => (_usageOfWatt == -1) ? _usageOfWatt = containers.Sum(device => device.information.watt) : _usageOfWatt;
-
     public float _usageOfRU = -1;
     public float usageOfRU => (_usageOfRU == -1) ? _usageOfRU = containers.Sum(device => device.information.heightU) : _usageOfRU;
     public float _usageOfWeight = -1;
@@ -52,33 +81,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public float reaminOfWatt => information.watt - usageOfWatt;
     public float reaminOfWeight => information.weight - usageOfWeight;
     public float reaminOfRU => information.heightU - usageOfRU;
-
-    public List<int> _availableRuSpace = new List<int>();
-    public List<int> availableRuSpace
-    {
-        get
-        {
-            if (_availableRuSpace.Count == 0)
-            {
-                _availableRuSpace = Enumerable.Range(1, 42).ToList();
-
-                List<int> occupyLlst = new List<int>();
-
-                containers.ForEach(device =>
-                {
-                    for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
-                    {
-                        occupyLlst.Add(i);
-                    }
-                });
-                _availableRuSpace = _availableRuSpace.Except(occupyLlst).ToList();
-            }
-            return _availableRuSpace;
-        }
-    }
-
-    [Header(">>> 內容設備")]
-    public List<Data_DeviceAsset> containers;
+    #endregion
 }
 /// <summary>
 /// [資料項] 設備資訊

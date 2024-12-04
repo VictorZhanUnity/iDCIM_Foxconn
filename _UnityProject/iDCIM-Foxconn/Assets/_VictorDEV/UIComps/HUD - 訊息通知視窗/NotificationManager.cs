@@ -8,6 +8,8 @@ namespace VictorDev.Common
     /// </summary>
     public class NotificationManager : SingletonMonoBehaviour<NotificationManager>
     {
+        public NotifyListItem itemPrefab;
+
         private ScrollRect _scrollRect { get; set; }
         private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(0).GetComponent<ScrollRect>();
 
