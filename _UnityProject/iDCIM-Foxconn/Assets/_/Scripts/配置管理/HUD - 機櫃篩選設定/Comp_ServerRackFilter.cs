@@ -19,6 +19,8 @@ public class Comp_ServerRackFilter : MonoBehaviour
 
     public Color rackGood, rackNormal, rackBad;
 
+    public RackSpacer rackSpacerPrefab;
+
     /// <summary>
     /// 機櫃原始顏色
     /// </summary>
@@ -38,8 +40,26 @@ public class Comp_ServerRackFilter : MonoBehaviour
             && (currentStockItem.data.deviceAsset.information.heightU <= data.reaminOfRU)
             && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
 
+            //移除RU空格
+            ObjectPoolManager.PushToPool<RackSpacer>(data.model);
+            BuildRackSpacer(data);
+
             ChangeRackHeight(data, isSuitable);
             ChangeRackColor(data, isSuitable);
+        });
+    }
+
+    /// <summary>
+    /// 建立RU空格
+    /// </summary>
+    private void BuildRackSpacer(Data_ServerRackAsset data)
+    {
+        float perRUposY = 0.0765f*0.6f;
+        data.availableRuSpace.ForEach(rackLocation =>
+        {
+            RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, data.model);
+            ruSpacer.RuIndex = rackLocation;
+            ruSpacer.transform.localPosition = new Vector3(0, perRUposY * rackLocation, 0);
         });
     }
 
@@ -71,12 +91,12 @@ public class Comp_ServerRackFilter : MonoBehaviour
                 else
                 {
                     //根據filter選項來取得剩餘資源百分八
-                    List<float> filterPercentList = new List<float>();
-                    if (isFilterWatt) filterPercentList.Add(1 - data.percentOfWatt);
-                    if (isFilterWeight) filterPercentList.Add(1 - data.percentOfWeight);
-                    if (isFilterRuSpace) filterPercentList.Add(1 - data.percentOfRU);
+                    List<float> filterUsagePercentList = new List<float>();
+                    if (isFilterWatt) filterUsagePercentList.Add(data.percentOfWatt);
+                    if (isFilterWeight) filterUsagePercentList.Add(data.percentOfWeight);
+                    if (isFilterRuSpace) filterUsagePercentList.Add(data.percentOfRU);
 
-                    color = ColorHandler.GetColorFromPercentage(filterPercentList.Sum(value => value) / filterPercentList.Count);
+                    color = ColorHandler.GetColorFromPercentage(filterUsagePercentList.Sum(value => value) / filterUsagePercentList.Count);
                 }
             }
 

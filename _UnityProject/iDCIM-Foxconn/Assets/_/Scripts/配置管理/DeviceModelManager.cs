@@ -10,11 +10,14 @@ using VictorDev.Net.WebAPI;
 /// </summary>
 public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
 {
+    [Header(">>> [開/關] 是否使用Resource JSON檔")]
+    [SerializeField] private bool isLocalJsonFile = false;
+
     [Header(">>> [資料項] 所有機櫃設備資料")]
     [SerializeField] private List<Data_ServerRackAsset> rackDataList;
     public static List<Data_ServerRackAsset> RackDataList => Instance.rackDataList;
 
-    [Header(">>> [模型] 各個設備模型")]
+    [Header(">>> [模型] 場景上各個設備模型")]
     [SerializeField] List<Transform> rackModels;
     [SerializeField] List<Transform> switchModels;
     [SerializeField] List<Transform> routerModels;
@@ -37,8 +40,31 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     {
         void onSuccessHandler(long responseCode, string jsonData)
         {
-            rackDataList = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
+            #region [Demo設定]
+            rackDataList = isLocalJsonFile ?
+                JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(ResourceHandler.LoadStringFile("stockdevice"))
+                : JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
+
+            // 設定模型物件
             rackDataList.ForEach(data => data.model = rackModels.FirstOrDefault(model => model.name.Contains(data.deviceName)));
+            rackDataList.SelectMany(rack => rack.containers).ToList().ForEach(data =>
+            {
+                data.model = switchModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
+                if (data.model == null) data.model = switchModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
+                if (data.model == null) data.model = routerModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
+                if (data.model == null) data.model = serverModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
+            });
+
+            // 比對場景模型與資料，不存在資料內的模型進行隱藏
+            List<Transform> allDeviceListFromData = rackDataList.SelectMany(rack => rack.containers).Select(data => data.model).ToList();
+            List<Transform> allDeviceList = switchModels.Concat(routerModels).Concat(serverModels).ToList();
+
+            allDeviceList.ForEach(model =>
+            {
+                model.gameObject.SetActive(allDeviceListFromData.Contains(model));
+            });
+            #endregion
+
             InitializedRackDevices();
         }
         void onFailed(long responseCode, string msg)
@@ -48,7 +74,7 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
         WebAPI_Caller.SendRequest(request_GetAllRackDevices, onSuccessHandler, onFailed);
     }
 
-    [ContextMenu("- 將模型進行分類")]
+    [ContextMenu("- 將場景上的模型進行分類")]
     private void ClassfiyModelDatas()
     {
         rackModels = ObjectHandler.FindObjectsByKeywords(serverRoomModel, new List<string>() { "RACK", "ATEN" });

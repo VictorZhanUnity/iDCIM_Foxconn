@@ -53,6 +53,30 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public float reaminOfWeight => information.weight - usageOfWeight;
     public float reaminOfRU => information.heightU - usageOfRU;
 
+    public List<int> _availableRuSpace = new List<int>();
+    public List<int> availableRuSpace
+    {
+        get
+        {
+            if (_availableRuSpace.Count == 0)
+            {
+                _availableRuSpace = Enumerable.Range(1, 42).ToList();
+
+                List<int> occupyLlst = new List<int>();
+
+                containers.ForEach(device =>
+                {
+                    for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
+                    {
+                        occupyLlst.Add(i);
+                    }
+                });
+                _availableRuSpace = _availableRuSpace.Except(occupyLlst).ToList();
+            }
+            return _availableRuSpace;
+        }
+    }
+
     [Header(">>> 內容設備")]
     public List<Data_DeviceAsset> containers;
 }
