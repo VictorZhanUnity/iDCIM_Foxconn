@@ -35,7 +35,6 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     [Header(">>> 內容設備")]
     public List<Data_DeviceAsset> containers;
 
-
     /// <summary>
     /// 可用的RU空間每種尺吋大小
     /// </summary>
@@ -51,6 +50,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
         rackId = source.rackId;
         description = source.description;
         model = source.model;
+        //重新整理，擷取機櫃裡設備資料，Model不為null的資料項 (就是場景上無此設備模型)
         containers = source.containers.Where(dataDevice => dataDevice.model != null).ToList();
         return this;
     }
@@ -61,6 +61,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public List<RackSpacer> availableRackSpacerList { get; set; } = new List<RackSpacer>();
     public void ShowAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(true));
     public void HideAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(false));
+
 
     #region [(">>> 計算資源使用率]
     // 使用數量

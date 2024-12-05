@@ -46,14 +46,12 @@ public class Comp_StockDeviceList : MonoBehaviour
         return item;
     }
 
-
     public void AddStockDevice(Data_DeviceAsset data)
     {
         StockDeviceSet stockData = new StockDeviceSet(data, data.model);
         StockDeviceListItem item = CreateStockDeviceItem(stockData);
         item.transform.SetAsFirstSibling();
     }
-
 
     private void OnEnable()
     {

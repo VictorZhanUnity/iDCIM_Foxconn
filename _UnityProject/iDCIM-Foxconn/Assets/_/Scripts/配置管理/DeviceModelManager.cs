@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
@@ -53,7 +54,7 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
                 if (data.model == null) data.model = serverModels.FirstOrDefault(model => model.name.Contains(data.deviceName));
             });
 
-            //擷取DeviceData裡Model不為null的資料項 (就是場景上無此設備模型)
+            //重新整理，擷取機櫃裡設備資料，Model不為null的資料項 (就是場景上無此設備模型)
             rackDataList = rackDataList.Select(rack => new Data_ServerRackAsset().RefreshData(rack)).ToList();
             #endregion
 
@@ -108,56 +109,7 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     /// </summary>
     private void InitializedRackDevices()
     {
+        //待處理
     }
-
-    private static bool isCreateRuSpacer = false;
-    public static void ShowRackAvailableRuSpacer()
-    {
-        if (isCreateRuSpacer) Instance.rackDataList.ForEach(model => model.ShowAvailableRuSpacer());
-        else Instance.BuildRackAvailableRuSpacer();
-
-      //  if (isCreateRuSpacer == false) Instance.BuildRackAvailableRuSpacer();
-    }
-    public static void HideAvailableRuSpacer() => Instance.rackDataList.ForEach(model => model.HideAvailableRuSpacer());
-
-
-    /// <summary>
-    /// 建立每個機櫃RU空格物件
-    /// </summary>
-    private void BuildRackAvailableRuSpacer()
-    {
-        List<int> availableRackLocationList, occupyLlst;
-
-        rackDataList.ForEach(rack =>
-        {
-            availableRackLocationList = Enumerable.Range(1, 42).ToList();
-            occupyLlst = new List<int>();
-
-            //算出佔用的格數
-            rack.containers.ForEach(device =>
-            {
-                for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
-                {
-                    occupyLlst.Add(i);
-                }
-            });
-
-            //排除後取得可使用的RU層數
-            availableRackLocationList = availableRackLocationList.Except(occupyLlst).ToList();
-
-            //建立RuSpacer
-            availableRackLocationList.ForEach(locaion => CreateRuSpace(rack, locaion));
-        });
-        //HideAvailableRuSpacer();
-    }
-
-    public static void CreateRuSpace(Data_ServerRackAsset dataRack, int ruIndex)
-    {
-        float perRUposY = 0.076f * 0.61f;
-        RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(Instance.rackSpacerPrefab, dataRack.model);
-        ruSpacer.RuIndex = ruIndex;
-        ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
-        dataRack.availableRackSpacerList.Add(ruSpacer);
-
-    }
+    public static void HideAllRackAvailableRuSpacer() => Instance.rackDataList.ForEach(model => model.HideAvailableRuSpacer());
 }

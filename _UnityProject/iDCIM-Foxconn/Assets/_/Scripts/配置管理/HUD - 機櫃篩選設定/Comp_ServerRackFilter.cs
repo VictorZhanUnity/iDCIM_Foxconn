@@ -39,8 +39,10 @@ public class Comp_ServerRackFilter : MonoBehaviour
             && (currentStockItem.data.deviceAsset.information.heightU <= data.reaminOfRU)
             && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
 
+            if (isSuitable) data.ShowAvailableRuSpacer();
+            else data.HideAvailableRuSpacer();
+
             ChangeRackHeight(data, isSuitable);
-            
             ChangeRackColor(data, isSuitable);
         });
     }
@@ -118,6 +120,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);
+            data.HideAvailableRuSpacer();
         });
 
     #region [>>> Show/Hide]
