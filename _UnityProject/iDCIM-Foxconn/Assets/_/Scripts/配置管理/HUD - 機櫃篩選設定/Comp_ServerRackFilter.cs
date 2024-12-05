@@ -40,6 +40,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
             && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
 
             ChangeRackHeight(data, isSuitable);
+            
             ChangeRackColor(data, isSuitable);
         });
     }

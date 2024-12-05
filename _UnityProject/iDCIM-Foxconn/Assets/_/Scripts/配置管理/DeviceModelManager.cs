@@ -108,7 +108,6 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     /// </summary>
     private void InitializedRackDevices()
     {
-        ///
     }
 
     private static bool isCreateRuSpacer = false;
@@ -116,6 +115,8 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
     {
         if (isCreateRuSpacer) Instance.rackDataList.ForEach(model => model.ShowAvailableRuSpacer());
         else Instance.BuildRackAvailableRuSpacer();
+
+      //  if (isCreateRuSpacer == false) Instance.BuildRackAvailableRuSpacer();
     }
     public static void HideAvailableRuSpacer() => Instance.rackDataList.ForEach(model => model.HideAvailableRuSpacer());
 
@@ -147,6 +148,7 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
             //建立RuSpacer
             availableRackLocationList.ForEach(locaion => CreateRuSpace(rack, locaion));
         });
+        //HideAvailableRuSpacer();
     }
 
     public static void CreateRuSpace(Data_ServerRackAsset dataRack, int ruIndex)
@@ -156,5 +158,6 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
         ruSpacer.RuIndex = ruIndex;
         ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
         dataRack.availableRackSpacerList.Add(ruSpacer);
+
     }
 }
