@@ -40,6 +40,7 @@ public class Comp_StockDeviceList : MonoBehaviour
         StockDeviceListItem item = ObjectPoolManager.GetInstanceFromQueuePool(listItemPrefab, scrollRect.content);
         item.ShowData(data);
         item.toggleGroup = toggleGroup;
+        item.isOn = false;
         item.onSelectDeviceModel.AddListener(onSelectDeviceModel.Invoke);
         item.onCreateTempDeviceModel.AddListener(onCreateTempDeviceModel.Invoke);
         listItems.Add(item);
@@ -61,14 +62,17 @@ public class Comp_StockDeviceList : MonoBehaviour
 
     private void OnDisable()
     {
-        listItems.ForEach(item => item.onCreateTempDeviceModel.RemoveAllListeners());
+        listItems.ForEach(item =>
+        {
+            item.onCreateTempDeviceModel.RemoveAllListeners();
+            item.isOn = false;
+        });
     }
     public void UpdateList(StockDeviceListItem removeItem)
     {
         listItems.Remove(removeItem);
         txtAmount.SetText($"共{listItems.Count}台");
     }
-
 
     #region[>>> Componenets]
     private ToggleGroup _toggleGroup { get; set; }

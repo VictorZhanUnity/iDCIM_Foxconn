@@ -130,6 +130,7 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         float perRUposY = 0.076f * 0.61f;
         RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, dataRack.model);
         ruSpacer.RuIndex = ruIndex;
+        ruSpacer.dataRack = dataRack;
         ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
         dataRack.availableRackSpacerList.Add(ruSpacer);
         ruSpacer.gameObject.SetActive(false);

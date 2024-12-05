@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class RackSpacer : MonoBehaviour
 {
+    public Data_ServerRackAsset dataRack;
+
     public int RuIndex
     {
         get => int.Parse(txtRuIndex.text);
@@ -19,12 +21,10 @@ public class RackSpacer : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        //txtRuIndex.gameObject.SetActive(true);
         container.gameObject.SetActive(true);
     }
     private void OnMouseExit()
     {
-        //txtRuIndex.gameObject.SetActive(container.childCount > 1);
         container.gameObject.SetActive(container.childCount > 1);
     }
 
@@ -35,7 +35,7 @@ public class RackSpacer : MonoBehaviour
     {
         if (tempDeviceModel != null)
         {
-            tempDeviceModel.transform.parent.gameObject.SetActive (false);
+            tempDeviceModel.transform.parent.gameObject.SetActive(false);
             Destroy(tempDeviceModel.gameObject);
             tempDeviceModel = null;
         }
@@ -47,6 +47,7 @@ public class RackSpacer : MonoBehaviour
     {
         tempDeviceModel.transform.parent = parentRack;
         Destroy(this.gameObject);
+        dataRack.availableRackSpacerList.Remove(this);
     }
 
     /// <summary>
