@@ -27,7 +27,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         dragImage = Instantiate(dragImagePrefab, canvas.transform);
         dragImage.transform.SetAsLastSibling(); // 確保在UI最上層
         dragImage.raycastTarget = false; // 防止拖拽影響UI交互
-        dragImage.sprite = stockDeviceItem.data.dragIcon;
+        //dragImage.sprite = stockDeviceItem.data.dragIcon;
 
         // 添加半透明效果
         Color color = dragImage.color;
@@ -48,11 +48,10 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (dragImage != null)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                eventData.position,
-                eventData.pressEventCamera,
-                out Vector2 localPoint
-            );
+            canvas.transform as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector2 localPoint);
             dragImage.rectTransform.localPosition = localPoint;
         }
     }
@@ -66,30 +65,31 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (dragImage != null)
         {
-            // 檢測是否拖拽到目標物件A
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            //檢測鼠標沒有在UI物件上
+            if (EventSystem.current.IsPointerOverGameObject() == false)
             {
-                // 檢查命中的物件是否是目標物件A
-                if (hit.collider.CompareTag(containerTag))
+                // 檢測是否拖拽到目標物件A
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    //先取得對像模型的中心點位置
-                    Vector3 targetPos = Vector3.zero;
-
-                    var createModel = stockDeviceItem.data.model;
-                    //  createModel = tempDevicePrefab;
-
-                    if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
+                    // 檢查命中的物件是否是目標物件A
+                    if (hit.collider.CompareTag(containerTag))
                     {
-                        targetPos = renderer.bounds.center;
+                        //先取得對像模型的中心點位置
+                        Vector3 targetPos = Vector3.zero;
+
+                        Transform createModel = stockDeviceItem.data.model;
+                        if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
+                        {
+                            targetPos = renderer.bounds.center;
+                        }
+
+                        //取得對像RackSpacer
+                        rackSpacer = hit.transform.GetComponent<RackSpacer>();
+                        rackSpacer.CreateTempDevice(stockDeviceItem.data.model);
+
+                        onCreateTempDevice.Invoke(rackSpacer);
                     }
-
-                    //取得對像RackSpacer
-                    rackSpacer = hit.transform.parent.GetComponent<RackSpacer>();
-                    rackSpacer.CreateTempDevice(stockDeviceItem.data.model);
-                    // Destroy(hit.collider.gameObject); // 刪除目標物件A
-
-                    onCreateTempDevice.Invoke(rackSpacer);
                 }
             }
             Destroy(dragImage.gameObject); // 清理拖拽Image

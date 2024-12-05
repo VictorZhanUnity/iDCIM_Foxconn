@@ -7,16 +7,6 @@ using UnityEngine;
 /// </summary>
 public class RackSpacer : MonoBehaviour
 {
-    #region [Component]
-    private Transform _parentRack { get; set; }
-    public Transform parentRack => _parentRack ??= transform.parent;
-    private TextMeshPro _txtRuIndex { get; set; }
-    private TextMeshPro txtRuIndex => _txtRuIndex ??= transform.GetChild(0).GetComponent<TextMeshPro>();
-    private Transform _container { get; set; }
-    private Transform container => _container ??= transform.Find("Container");
-    private Transform tempDeviceModel { get; set; }
-    #endregion
-
     public int RuIndex
     {
         get => int.Parse(txtRuIndex.text);
@@ -27,6 +17,17 @@ public class RackSpacer : MonoBehaviour
         }
     }
 
+    private void OnMouseEnter()
+    {
+        //txtRuIndex.gameObject.SetActive(true);
+        container.gameObject.SetActive(true);
+    }
+    private void OnMouseExit()
+    {
+        //txtRuIndex.gameObject.SetActive(container.childCount > 1);
+        container.gameObject.SetActive(container.childCount > 1);
+    }
+
     /// <summary>
     /// 取消上架設備
     /// </summary>
@@ -34,6 +35,7 @@ public class RackSpacer : MonoBehaviour
     {
         if (tempDeviceModel != null)
         {
+            tempDeviceModel.transform.parent.gameObject.SetActive (false);
             Destroy(tempDeviceModel.gameObject);
             tempDeviceModel = null;
         }
@@ -59,4 +61,14 @@ public class RackSpacer : MonoBehaviour
         tempDeviceModel.gameObject.SetActive(true);
         tempDeviceModel.DOLocalMove(Vector3.zero, 0.3f).From(Vector3.left * 0.3f).SetEase(Ease.OutQuad).SetAutoKill(true);
     }
+
+    #region [Component]
+    private Transform _parentRack { get; set; }
+    public Transform parentRack => _parentRack ??= transform.parent;
+    private Transform _container { get; set; }
+    private Transform container => _container ??= transform.Find("Container");
+    private TextMeshPro _txtRuIndex { get; set; }
+    private TextMeshPro txtRuIndex => _txtRuIndex ??= container.GetChild(0).GetComponent<TextMeshPro>();
+    private Transform tempDeviceModel { get; set; }
+    #endregion
 }

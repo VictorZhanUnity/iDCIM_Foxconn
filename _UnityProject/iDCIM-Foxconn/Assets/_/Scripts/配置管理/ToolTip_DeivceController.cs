@@ -13,8 +13,6 @@ public class ToolTip_DeivceController : MonoBehaviour
 
     public void ShowData(Transform model)
     {
-        Debug.Log($"OnClickDeviceHandler: {model.name}");
-
         dataDevice = DeviceModelManager.RackDataList.SelectMany(rack => rack.containers).FirstOrDefault(device => model.name.Contains(device.deviceName));
         gameObject.SetActive(true);
     }
