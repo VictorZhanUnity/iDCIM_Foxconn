@@ -111,9 +111,16 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         //算出佔用的格數
         dataRack.containers.ForEach(device =>
         {
+            int counter = 0;
             for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
             {
                 occupyLlst.Add(i);
+                counter++;
+            }
+            //計算每個RU空格的尺吋大小
+            if (dataRack.eachSizeOfAvailableRU.Contains(counter) == false)
+            {
+                dataRack.eachSizeOfAvailableRU.Add(counter);
             }
         });
 

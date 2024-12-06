@@ -38,7 +38,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     /// <summary>
     /// 可用的RU空間每種尺吋大小
     /// </summary>
-    public List<int> eachSizeOfAvailableRU { get; set; } = new List<int>();
+    public List<int> eachSizeOfAvailableRU = new List<int>();
 
     public Data_ServerRackAsset RefreshData(Data_ServerRackAsset source)
     {
@@ -62,6 +62,32 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public void ShowAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(true));
     public void HideAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(false));
 
+    /// <summary>
+    /// 移除空格的RU層物件
+    /// <para>+ ruIndex：第幾個RU層</para>
+    /// <para>+ heightU：設備高度U</para>
+    /// </summary>
+    public void RemoveAvailableRackSpacer(int ruIndex, float heightU)
+    {
+        List<RackSpacer> result = new List<RackSpacer>();
+        for (int i = ruIndex; i < ruIndex + heightU; ++i)
+        {
+            result.Add(availableRackSpacerList.FirstOrDefault(rackSpacer => rackSpacer.RuIndex == i));
+            GameObject.Destroy(result[i].gameObject);
+        }
+        availableRackSpacerList = availableRackSpacerList.Except(result).ToList();
+    }
+
+    /// <summary>
+    ///顯示RU層數
+    /// </summary>
+    public List<RackSpacer> ShowRackSpacer(int ruIndex, int heightU)
+    {
+        int endRuIndex = ruIndex + heightU;
+        List<RackSpacer> result = availableRackSpacerList.Where(rackSpacer => rackSpacer.RuIndex >= ruIndex && rackSpacer.RuIndex < endRuIndex).ToList();
+        result.ForEach(rack => rack.isForceToShow = true);
+        return result;
+    }
 
     #region [(">>> 計算資源使用率]
     // 使用數量
@@ -93,6 +119,28 @@ public class Data_DeviceAsset : Data_iDCIMAsset, INotifyData
     public string containerId;
     public int rackLocation;
     public int state;
+
+    private Data_ServerRackAsset _rack { get; set; }
+    /* public Data_ServerRackAsset rack => _rack ??= DeviceModelManager.RackDataList
+        .FirstOrDefault(rack => rack.containers.FirstOrDefault(device => device.deviceName == this.deviceName) != null)*/
+
+    public Data_ServerRackAsset rack
+    {
+        get
+        {
+            DeviceModelManager.RackDataList.ForEach(rack =>
+            {
+                rack.containers.ForEach(device =>
+                {
+                    if (device.deviceName == this.deviceName)
+                    {
+                        _rack = rack;
+                    }
+                });
+            });
+            return _rack;
+        }
+    }
 }
 
 /// <summary>
@@ -104,7 +152,7 @@ public class Information
     public float length;
     public float width;
     public float height;
-    public float heightU;
+    public int heightU;
     public float watt;
     public float weight;
 }

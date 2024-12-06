@@ -1,4 +1,6 @@
 using DG.Tweening;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,6 +17,8 @@ public class StockDeviceListItem : MonoBehaviour
     [SerializeField] private StockDeviceSet _data;
     public StockDeviceSet data => _data;
 
+    public Transform createTempDeviceModel { get; set; }
+
     /// <summary>
     /// 點擊該資料項時Invoke(On/Off)
     /// </summary>
@@ -22,21 +26,30 @@ public class StockDeviceListItem : MonoBehaviour
 
     /// <summary>
     /// 當Drag產生暫時的設備時Invoke
-    /// </summary>
+    /// </summary>a
     public UnityEvent<StockDeviceListItem> onCreateTempDeviceModel = new UnityEvent<StockDeviceListItem>();
 
     /// <summary>
     /// 目前指向哪一個RackSpacer
     /// </summary>
-    private RackSpacer selectRackSpacer { get; set; }
+    private List<RackSpacer> occupyRackSpacer { get; set; } = new List<RackSpacer>();
     /// <summary>
     /// 設備所佔目標機櫃名稱
     /// </summary>
-    public string TargetRackName => selectRackSpacer.parentRack.name;
+    public string TargetRackName => occupyRackSpacer[0].parentRack.name;
     /// <summary>
     /// 設備所佔目標機櫃U層數
     /// </summary>
-    public string OccupyRuSpacer => $"U{selectRackSpacer.RuIndex} ~ U{selectRackSpacer.RuIndex + data.deviceAsset.information.heightU}";
+    public string OccupyRuSpacer
+    {
+        get
+        {
+            var data = occupyRackSpacer.OrderBy(rack => rack.RuIndex);
+            int startIndex = data.First().RuIndex;
+            int endIndex = data.Last().RuIndex;
+            return (startIndex == endIndex) ? $"U{startIndex}" : $"U{startIndex} ~ U{endIndex}";
+        }
+    }
 
     /// <summary>
     /// 開/關 Toggle
@@ -90,10 +103,21 @@ public class StockDeviceListItem : MonoBehaviour
     /// <summary>
     /// 當Drag產生暫時的設備時
     /// </summary>
-    private void OnCreateTempDeviceHandler(RackSpacer rackSpacer)
+    private void OnCreateTempDeviceHandler(StockDeviceListItem stockItem, RackSpacer rackSpacer)
     {
         CancellUploadDevice();
-        selectRackSpacer = rackSpacer;
+
+        Data_ServerRackAsset targetRack = rackSpacer.dataRack;
+        occupyRackSpacer = targetRack.ShowRackSpacer(rackSpacer.RuIndex, stockItem.data.deviceAsset.information.heightU);
+
+        //建立設備模型
+        createTempDeviceModel ??= Instantiate(data.deviceAsset.model);
+        createTempDeviceModel.transform.SetParent(rackSpacer.container, false);
+        createTempDeviceModel.localPosition = Vector3.zero;
+        createTempDeviceModel.localRotation = Quaternion.Euler(0, 90, 0);
+        createTempDeviceModel.gameObject.SetActive(true);
+        createTempDeviceModel.DOLocalMove(Vector3.zero, 0.3f).From(Vector3.left * 0.3f).SetEase(Ease.OutQuad).SetAutoKill(true);
+
         onCreateTempDeviceModel.Invoke(this);
     }
 
@@ -112,8 +136,13 @@ public class StockDeviceListItem : MonoBehaviour
     /// </summary>
     public void CancellUploadDevice()
     {
-        selectRackSpacer?.CancellTempDevice();
-        selectRackSpacer = null;
+        occupyRackSpacer.ForEach(rack => rack.isForceToShow = false);
+        occupyRackSpacer.Clear();
+        if (createTempDeviceModel != null)
+        {
+            createTempDeviceModel.gameObject.SetActive(false);
+            createTempDeviceModel.transform.parent = null;
+        }
     }
 
     /// <summary>
@@ -121,8 +150,8 @@ public class StockDeviceListItem : MonoBehaviour
     /// </summary>
     public void ConfirmUploadDevice()
     {
-        selectRackSpacer?.ConfirmUploadDevice();
-        selectRackSpacer = null;
+        occupyRackSpacer.ForEach(rack => rack.ConfirmUploadDevice());
+        occupyRackSpacer = null;
 
         layoutElement.ignoreLayout = true;
         rectTrans.DOLocalMoveX(-300, 0.2f).SetEase(Ease.InQuad)

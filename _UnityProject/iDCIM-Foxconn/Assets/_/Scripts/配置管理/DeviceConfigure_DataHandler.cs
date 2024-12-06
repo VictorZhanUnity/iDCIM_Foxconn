@@ -66,14 +66,12 @@ public class DeviceConfigure_DataHandler : MonoBehaviour
         public string modelNumber;
         [Header(">>> [ICON] - 選取後跟隨鼠標的ICON")]
         public Sprite dragIcon;
-        [Header(">>> [模型] - 用於替換的3D物件B")]
-        public Transform model;
 
         public Data_DeviceAsset deviceAsset;
         public StockDeviceSet(Data_DeviceAsset data, Transform model)
         {
             this.deviceAsset = data;
-            this.model = model;
+            data.model = model;
             modelNumber = data.modelNumber;
         }
     }

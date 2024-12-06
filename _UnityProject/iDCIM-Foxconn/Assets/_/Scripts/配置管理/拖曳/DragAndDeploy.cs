@@ -8,7 +8,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
 
     [Header(">>> [Event] 新建設備模型時Invoke {新增設備, 目標機櫃U層}")]
-    public UnityEvent<RackSpacer> onCreateTempDevice = new UnityEvent<RackSpacer>();
+    public UnityEvent<StockDeviceListItem, RackSpacer> onCreateTempDevice = new UnityEvent<StockDeviceListItem, RackSpacer>();
 
     public Image dragImagePrefab;
     public Vector3 offset = new Vector3(0, 0, -0.075f);
@@ -56,10 +56,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    private Transform model { get; set; }
-    private Transform hitContainer { get; set; }
-
-    public RackSpacer rackSpacer { get; private set; }
+    public LayerMask layerMask_RUSpacer;
 
     public void OnEndDrag(PointerEventData eventData)
     {
@@ -70,25 +67,17 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 // 檢測是否拖拽到目標物件A
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                // 檢查命中的物件是否是目標物件A
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask_RUSpacer))
                 {
-                    // 檢查命中的物件是否是目標物件A
-                    if (hit.collider.CompareTag(containerTag))
+                    //取得對像RackSpacer
+                    RackSpacer targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
+
+                    Debug.Log($"isAbleToUpload: {targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset)}");
+
+                    if (targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset))
                     {
-                        //先取得對像模型的中心點位置
-                        Vector3 targetPos = Vector3.zero;
-
-                        Transform createModel = stockDeviceItem.data.model;
-                        if (createModel.TryGetComponent<Renderer>(out Renderer renderer))
-                        {
-                            targetPos = renderer.bounds.center;
-                        }
-
-                        //取得對像RackSpacer
-                        rackSpacer = hit.transform.GetComponent<RackSpacer>();
-                        rackSpacer.CreateTempDevice(stockDeviceItem.data.model);
-
-                        onCreateTempDevice.Invoke(rackSpacer);
+                        onCreateTempDevice.Invoke(stockDeviceItem, targetRackSapcer);
                     }
                 }
             }

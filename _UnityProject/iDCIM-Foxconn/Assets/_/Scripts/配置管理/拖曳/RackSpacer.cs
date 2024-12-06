@@ -1,4 +1,5 @@
-using DG.Tweening;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class RackSpacer : MonoBehaviour
 {
-    public Data_ServerRackAsset dataRack;
+    public Data_ServerRackAsset dataRack { get; set; }
 
     public int RuIndex
     {
@@ -23,51 +24,48 @@ public class RackSpacer : MonoBehaviour
     {
         container.gameObject.SetActive(true);
     }
+    private bool _isForceToShow { get; set; } = false;
+    public bool isForceToShow
+    {
+        set
+        {
+            _isForceToShow = value;
+            if (_isForceToShow) OnMouseEnter();
+            else OnMouseExit();
+        }
+    }
+
     private void OnMouseExit()
     {
-        container.gameObject.SetActive(container.childCount > 1);
+        container.gameObject.SetActive(_isForceToShow);
     }
 
     /// <summary>
-    /// 取消上架設備
-    /// </summary>
-    public void CancellTempDevice()
-    {
-        if (tempDeviceModel != null)
-        {
-            tempDeviceModel.transform.parent.gameObject.SetActive(false);
-            Destroy(tempDeviceModel.gameObject);
-            tempDeviceModel = null;
-        }
-    }
-    /// <summary>
-    /// 確認上架設備，將設備模型移至機櫃物件底下，再刪除自身RackSpacer
+    /// 確認上架設備，將設備模型移至機櫃物件底下，再刪除RackSpacer
     /// </summary>  
     public void ConfirmUploadDevice()
     {
         tempDeviceModel.transform.parent = parentRack;
-        Destroy(this.gameObject);
-        dataRack.availableRackSpacerList.Remove(this);
+        dataRack.RemoveAvailableRackSpacer(RuIndex, currentDeviceData.information.heightU);
     }
 
     /// <summary>
-    /// 建立暫時的上架設備模型
+    /// 是否放的下設備大小
     /// </summary>
-    public void CreateTempDevice(Transform deviceModel)
+    public bool isAbleToUpload(Data_DeviceAsset deviceAsset)
     {
-        CancellTempDevice();
-        tempDeviceModel = Instantiate(deviceModel, container);
-        tempDeviceModel.localPosition = Vector3.zero;
-        tempDeviceModel.localRotation = Quaternion.Euler(0, 90, 0);
-        tempDeviceModel.gameObject.SetActive(true);
-        tempDeviceModel.DOLocalMove(Vector3.zero, 0.3f).From(Vector3.left * 0.3f).SetEase(Ease.OutQuad).SetAutoKill(true);
+        List<int> occupyRuIndex = Enumerable.Range(RuIndex, deviceAsset.information.heightU).ToList();
+        List<int> availableRuIndex = dataRack.availableRackSpacerList.Select(rackSpacer => rackSpacer.RuIndex).ToList();
+        return occupyRuIndex.All(occupy => availableRuIndex.Contains(occupy));
     }
+
+    private Data_DeviceAsset currentDeviceData { get; set; }
 
     #region [Component]
     private Transform _parentRack { get; set; }
     public Transform parentRack => _parentRack ??= transform.parent;
     private Transform _container { get; set; }
-    private Transform container => _container ??= transform.Find("Container");
+    public Transform container => _container ??= transform.Find("Container");
     private TextMeshPro _txtRuIndex { get; set; }
     private TextMeshPro txtRuIndex => _txtRuIndex ??= container.GetChild(0).GetComponent<TextMeshPro>();
     private Transform tempDeviceModel { get; set; }

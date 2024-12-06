@@ -35,9 +35,12 @@ public class Comp_ServerRackFilter : MonoBehaviour
     {
         DeviceModelManager.RackDataList.ForEach(data =>
         {
-            bool isSuitable = (currentStockItem.data.deviceAsset.information.watt <= data.reaminOfWatt)
-            && (currentStockItem.data.deviceAsset.information.heightU <= data.reaminOfRU)
-            && (currentStockItem.data.deviceAsset.information.weight <= data.reaminOfWeight);
+            var info = currentStockItem.data.deviceAsset.information;
+
+            bool isSuitable = (info.watt <= data.reaminOfWatt)
+            && data.eachSizeOfAvailableRU.Any(size => size >= info.heightU)
+            //  && (info.heightU <= data.reaminOfRU)
+            && (info.weight <= data.reaminOfWeight);
 
             if (isSuitable) data.ShowAvailableRuSpacer();
             else data.HideAvailableRuSpacer();
