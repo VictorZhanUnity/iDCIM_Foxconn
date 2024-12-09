@@ -38,7 +38,11 @@ public class CCTVManager : iDCIM_ModuleManager
         RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
         {
             Data_RTSP data = webApiHandler.GetDataByDevicePath(targetModel.name);
-            if (data != null) ShowData(data, targetModel);
+            if (data != null)
+            {
+                ShowData(data, targetModel);
+                targetModel.GetChild(0).gameObject.SetActive(true);
+            }
         });
         GetAllCCTVInfo();
     }
@@ -62,6 +66,7 @@ public class CCTVManager : iDCIM_ModuleManager
             {
                 target.ToClose();
                 target.onClickZoomButtn.RemoveAllListeners();
+                targetModel.GetChild(0).gameObject.SetActive(false);
             }
         }
     }
@@ -72,6 +77,7 @@ public class CCTVManager : iDCIM_ModuleManager
         {
             if (isOn) ShowData(landmark.data, landmark.targetModel);
             else OnCancellSelectHandler(result.targetModel);
+            landmark.targetModel.GetChild(0).gameObject.SetActive(isOn);
         }
     }
 

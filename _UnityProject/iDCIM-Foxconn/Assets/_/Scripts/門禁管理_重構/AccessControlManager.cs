@@ -27,26 +27,18 @@ public class AccessControlManager : iDCIM_ModuleManager
     /// <summary>
     ///  [資料處理] 門禁記錄資訊
     /// </summary>
-    private AccessRecord_DataHandler dataHandler { get; set; }
+    private AccessRecord_DataHandler _dataHandler { get; set; }
+    private AccessRecord_DataHandler dataHandler => _dataHandler ??= GetComponent<AccessRecord_DataHandler>();
 
-    private void Awake()
-    {
-        dataHandler = GetComponent<AccessRecord_DataHandler>();
-        dataHandler.onGetAccessRecordOfThisYear.AddListener(compTotalCount.ShowData);
-        dataHandler.onGetAccessRecordOfThisYear.AddListener(compCalendar.SetDatas);
-        compCalendar.onSelectedDateEvent.AddListener(chartDayCount.ShowData);
-        infoPanel.onClickCloseButton.AddListener((data) => RaycastHitManager.CancellObjectSelected(data.DevicePath));
-    }
+    /// <summary>
+    /// 顯示圖標
+    /// </summary>
+    private void ShowLandmarks()
+      => LandmarkManager_RE.AddLandMarks(landmarkPrefab, dataHandler.datas, modelList);
 
-    private void Start()
-    {
-        LandmarkManager_RE.onToggleOnEvent.AddListener(OnLandmarkToggleOnHandler);
-        RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
-        {
-            Data_AccessRecord data = dataHandler.GetDataByDevicePath(targetModel.name);
-            if(data != null) infoPanel.ShowData(data);
-        });
-    }
+    /// <summary>
+    /// 圖標被點選時
+    /// </summary>
     private void OnLandmarkToggleOnHandler(bool isOn, ILandmarkHandler result)
     {
         if (result is AccessDoor_LandMark landmark)
@@ -58,6 +50,7 @@ public class AccessControlManager : iDCIM_ModuleManager
 
     protected override void OnShowHandler()
     {
+        InitListener();
         void onFailed(long responseCode, string msg) { }
         void onSuccess(List<Data_AccessRecord> result)
         {
@@ -69,13 +62,36 @@ public class AccessControlManager : iDCIM_ModuleManager
     }
 
     protected override void OnCloseHandler()
-       => LandmarkManager_RE.RemoveLandmarks<AccessDoor_LandMark, Data_AccessRecord>();
+    {
+        RemoveListener();
+        LandmarkManager_RE.RemoveLandmarks<AccessDoor_LandMark, Data_AccessRecord>();
+    }
 
-    /// <summary>
-    /// 顯示圖標
-    /// </summary>
-    private void ShowLandmarks()
-      => LandmarkManager_RE.AddLandMarks(landmarkPrefab, dataHandler.datas, modelList);
+    private void InitListener()
+    {
+        dataHandler.onGetAccessRecordOfThisYear.AddListener(compTotalCount.ShowData);
+        dataHandler.onGetAccessRecordOfThisYear.AddListener(compCalendar.SetDatas);
+        compCalendar.onSelectedDateEvent.AddListener(chartDayCount.ShowData);
+        infoPanel.onClickCloseButton.AddListener((data) => RaycastHitManager.CancellObjectSelected(data.DevicePath));
+
+        LandmarkManager_RE.onToggleOnEvent.AddListener(OnLandmarkToggleOnHandler);
+        RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
+        {
+            Data_AccessRecord data = dataHandler.GetDataByDevicePath(targetModel.name);
+            if (data != null) infoPanel.ShowData(data);
+        });
+    }
+
+    private void RemoveListener()
+    {
+        dataHandler.onGetAccessRecordOfThisYear.RemoveAllListeners();
+        dataHandler.onGetAccessRecordOfThisYear.RemoveAllListeners();
+        compCalendar.onSelectedDateEvent.RemoveAllListeners();
+        infoPanel.onClickCloseButton.RemoveAllListeners();
+        LandmarkManager_RE.onToggleOnEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
+    }
+
 
     [ContextMenu("- [目前年份] 門禁記錄")] private void Test_GetYear() => dataHandler.GetAccessRecordsOfThisYear((result) => dataOfThisYear = result, null);
     [ContextMenu("- [目前月份] 門禁記錄")] private void Test_GetMonth() => dataHandler.GetAccessRecordsOfThisMonth((result) => dataOfThisYear = result, null);
