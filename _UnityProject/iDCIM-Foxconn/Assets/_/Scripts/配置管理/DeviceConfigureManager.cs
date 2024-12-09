@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using VictorDev.Common;
 using static DeviceConfigure_DataHandler;
@@ -25,45 +24,81 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
     [Header(">>> [組件] RU空格物件")]
     [SerializeField] private RackSpacer rackSpacerPrefab;
 
-    private bool isCreateRuSpacer { get; set; } = false;
-
     protected override void OnShowHandler()
     {
+        InitListener();
         GetAllStockDevice();
-
-        if(isCreateRuSpacer == false)
-        {
-            //每個機櫃建立RU空格層數
-            DeviceModelManager.RackDataList.ForEach(data => BuildRackAvailableRuSpacer(data));
-            isCreateRuSpacer = true;
-        }
     }
+
+    protected override void OnCloseHandler()
+    {
+        RemovetListener();
+        serverRackFilter.ToClose();
+        DeviceModelManager.HideAllRackAvailableRuSpacer();
+    }
+
+    /// <summary>
+    /// 取得所有庫存設備
+    /// </summary>
     private void GetAllStockDevice()
     {
         void onFailed(long responseCode, string msg) { }
         dataHandler.GetAllStockDevice((data) => dataList = data, onFailed);
     }
-    protected override void OnCloseHandler()
+
+    /// <summary>
+    /// 計算建立機櫃內的可用RU層，與建立RU層空格物件
+    /// </summary>
+    public void BuildRackAvailableRuSpacer(List<Data_ServerRackAsset> dataList)
     {
-        serverRackFilter.ToClose();
-        DeviceModelManager.HideAllRackAvailableRuSpacer();
+        List<int> availableRackUList;
+        List<int> occupyLlst;
+        dataList.ForEach(dataRack =>
+        {
+            availableRackUList = Enumerable.Range(1, 42).ToList();
+            occupyLlst = new List<int>();
+            //算出佔用的格數
+            dataRack.containers.ForEach(device =>
+            {
+                int counter = 0;
+                for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
+                {
+                    occupyLlst.Add(i);
+                    counter++;
+                }
+                //計算每個RU空格的尺吋大小
+                if (dataRack.eachSizeOfAvailableRU.Contains(counter) == false)
+                {
+                    dataRack.eachSizeOfAvailableRU.Add(counter);
+                }
+            });
+
+            //排除後取得可使用的RU層數
+            availableRackUList = availableRackUList.Except(occupyLlst).ToList();
+            //建立RuSpacer
+            availableRackUList.ForEach(locaion => CreateRuSpace(dataRack, locaion));
+        });
     }
-    private void OnEnable()
+    /// <summary>
+    /// 建立可用RU層物件
+    /// </summary>
+    public void CreateRuSpace(Data_ServerRackAsset dataRack, int ruIndex)
     {
-        dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
-        stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
-        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
-        deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
-
-        RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
-        RaycastHitManager.onDeselectObjectEvent.AddListener((target) => deviceController.ToClose());
-
-        deviceController.onClickMoveDeviceEvent.AddListener(OnClickMoveDeviceHandler);
-        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
+        float perRUposY = 0.076f * 0.61f;
+        RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, dataRack.model);
+        ruSpacer.RuIndex = ruIndex;
+        ruSpacer.dataRack = dataRack;
+        ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
+        dataRack.availableRackSpacerList.Add(ruSpacer);
+        ruSpacer.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// 點擊搬移設備時
+    /// </summary>
     private void OnClickMoveDeviceHandler(Data_DeviceAsset data)
     {
+        //待製作…
     }
 
     /// <summary>
@@ -88,6 +123,36 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         }
     }
 
+
+    #region [>>> 事件監聽]
+    private void InitListener()
+    {
+        DeviceModelManager.onGetAllRackDevices.AddListener(BuildRackAvailableRuSpacer);
+        dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
+        stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
+        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
+        deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
+
+        RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
+        RaycastHitManager.onDeselectObjectEvent.AddListener((target) => deviceController.ToClose());
+
+        deviceController.onClickMoveDeviceEvent.AddListener(OnClickMoveDeviceHandler);
+        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
+    }
+    private void RemovetListener()
+    {
+        dataHandler.onGetAllStockDevices.RemoveAllListeners();
+        stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
+        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
+        deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
+
+        RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
+        RaycastHitManager.onDeselectObjectEvent.AddListener((target) => deviceController.ToClose());
+
+        deviceController.onClickMoveDeviceEvent.AddListener(OnClickMoveDeviceHandler);
+        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
+    }
+    #endregion
     public NotifyListItem notifyPrefab;
 
     private void OnDisable()
@@ -99,48 +164,8 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
     }
 
-    /// <summary>
-    /// 計算建立機櫃內的可用RU層，與建立RU層物件
-    /// </summary>
-    public void BuildRackAvailableRuSpacer(Data_ServerRackAsset dataRack)
-    {
-        List<int> availableRackLocationList = Enumerable.Range(1, 42).ToList();
-        List<int> occupyLlst = new List<int>();
+  
 
-        //算出佔用的格數
-        dataRack.containers.ForEach(device =>
-        {
-            int counter = 0;
-            for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
-            {
-                occupyLlst.Add(i);
-                counter++;
-            }
-            //計算每個RU空格的尺吋大小
-            if (dataRack.eachSizeOfAvailableRU.Contains(counter) == false)
-            {
-                dataRack.eachSizeOfAvailableRU.Add(counter);
-            }
-        });
-
-        //排除後取得可使用的RU層數
-        availableRackLocationList = availableRackLocationList.Except(occupyLlst).ToList();
-        //建立RuSpacer
-        availableRackLocationList.ForEach(locaion => CreateRuSpace(dataRack, locaion));
-    }
-    /// <summary>
-    /// 建立可用RU層物件
-    /// </summary>
-    public void CreateRuSpace(Data_ServerRackAsset dataRack, int ruIndex)
-    {
-        float perRUposY = 0.076f * 0.61f;
-        RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, dataRack.model);
-        ruSpacer.RuIndex = ruIndex;
-        ruSpacer.dataRack = dataRack;
-        ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
-        dataRack.availableRackSpacerList.Add(ruSpacer);
-        ruSpacer.gameObject.SetActive(false);
-    }
 
 
     #region [>>> Components]

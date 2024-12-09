@@ -23,7 +23,7 @@ public class DeviceModelManager : SingletonMonoBehaviour<DeviceModelManager>
 
     [Space(20)]
     [Header(">>> [Event] 取得所有機櫃設備資料時Invoke")]
-    public UnityEvent<List<Data_ServerRackAsset>> onGetAllRackDevices = new UnityEvent<List<Data_ServerRackAsset>>();
+    public static UnityEvent<List<Data_ServerRackAsset>> onGetAllRackDevices = new UnityEvent<List<Data_ServerRackAsset>>();
 
     [Header(">>> [WebAPI] 取得所有機櫃設備資料")]
     [SerializeField] private WebAPI_Request request_GetAllRackDevices;
