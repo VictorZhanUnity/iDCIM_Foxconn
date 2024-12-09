@@ -53,6 +53,24 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             eventData.pressEventCamera,
             out Vector2 localPoint);
             dragImage.rectTransform.localPosition = localPoint;
+
+            //檢測鼠標沒有在UI物件上
+            if (EventSystem.current.IsPointerOverGameObject() == false)
+            {
+                // 檢測是否拖拽到目標物件A
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                // 檢查命中的物件是否是目標物件A
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask_RUSpacer))
+                {
+                    //取得對像RackSpacer
+                    RackSpacer targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
+
+                    if (targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset))
+                    {
+                        targetRackSapcer.dataRack.ShowRackSpacer(targetRackSapcer.RuIndex, stockDeviceItem.data.deviceAsset.information.heightU);
+                    }
+                }
+            }
         }
     }
 
@@ -72,9 +90,6 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     //取得對像RackSpacer
                     RackSpacer targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
-
-                    Debug.Log($"isAbleToUpload: {targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset)}");
-
                     if (targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset))
                     {
                         onCreateTempDevice.Invoke(stockDeviceItem, targetRackSapcer);

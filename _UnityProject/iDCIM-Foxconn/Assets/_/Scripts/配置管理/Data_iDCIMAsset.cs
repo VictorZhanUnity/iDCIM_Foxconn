@@ -62,20 +62,10 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public void ShowAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(true));
     public void HideAvailableRuSpacer() => availableRackSpacerList.ForEach(spacer => spacer.gameObject.SetActive(false));
 
-    /// <summary>
-    /// 移除空格的RU層物件
-    /// <para>+ ruIndex：第幾個RU層</para>
-    /// <para>+ heightU：設備高度U</para>
-    /// </summary>
-    public void RemoveAvailableRackSpacer(int ruIndex, float heightU)
+    public void RemoveAvailableRackSpacer(List<RackSpacer> rackSpacers)
     {
-        List<RackSpacer> result = new List<RackSpacer>();
-        for (int i = ruIndex; i < ruIndex + heightU; ++i)
-        {
-            result.Add(availableRackSpacerList.FirstOrDefault(rackSpacer => rackSpacer.RuIndex == i));
-            GameObject.Destroy(result[i].gameObject);
-        }
-        availableRackSpacerList = availableRackSpacerList.Except(result).ToList();
+        availableRackSpacerList = availableRackSpacerList.Except(rackSpacers).ToList();
+        rackSpacers.ForEach(rackSpacer => GameObject.Destroy(rackSpacer.gameObject));
     }
 
     /// <summary>
@@ -86,6 +76,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
         int endRuIndex = ruIndex + heightU;
         List<RackSpacer> result = availableRackSpacerList.Where(rackSpacer => rackSpacer.RuIndex >= ruIndex && rackSpacer.RuIndex < endRuIndex).ToList();
         result.ForEach(rack => rack.isForceToShow = true);
+        availableRackSpacerList.Except(result).ToList().ForEach(rackSpacer => rackSpacer.isForceToShow = false);
         return result;
     }
 

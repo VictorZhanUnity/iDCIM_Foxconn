@@ -93,6 +93,8 @@ public class StockDeviceListItem : MonoBehaviour
         {
             dragController.enabled = isOn;
             onSelectDeviceModel.Invoke(this);
+           if(createTempDeviceModel != null)  createTempDeviceModel.gameObject.SetActive(isOn);
+           occupyRackSpacer.ForEach(rackSpacer=> rackSpacer.isForceToShow = isOn);
             ChangeColor(isOn);
         });
 
@@ -150,8 +152,9 @@ public class StockDeviceListItem : MonoBehaviour
     /// </summary>
     public void ConfirmUploadDevice()
     {
-        occupyRackSpacer.ForEach(rack => rack.ConfirmUploadDevice());
-        occupyRackSpacer = null;
+        createTempDeviceModel.parent = occupyRackSpacer[0].transform.parent;
+        occupyRackSpacer[0].dataRack.RemoveAvailableRackSpacer(occupyRackSpacer);
+        occupyRackSpacer.Clear();
 
         layoutElement.ignoreLayout = true;
         rectTrans.DOLocalMoveX(-300, 0.2f).SetEase(Ease.InQuad)

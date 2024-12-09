@@ -48,7 +48,6 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         serverRackFilter.ToClose();
         DeviceModelManager.HideAllRackAvailableRuSpacer();
     }
-
     private void OnEnable()
     {
         dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);

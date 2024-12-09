@@ -41,15 +41,6 @@ public class RackSpacer : MonoBehaviour
     }
 
     /// <summary>
-    /// 確認上架設備，將設備模型移至機櫃物件底下，再刪除RackSpacer
-    /// </summary>  
-    public void ConfirmUploadDevice()
-    {
-        tempDeviceModel.transform.parent = parentRack;
-        dataRack.RemoveAvailableRackSpacer(RuIndex, currentDeviceData.information.heightU);
-    }
-
-    /// <summary>
     /// 是否放的下設備大小
     /// </summary>
     public bool isAbleToUpload(Data_DeviceAsset deviceAsset)
