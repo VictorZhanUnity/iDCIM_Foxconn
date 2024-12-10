@@ -10,7 +10,7 @@ public class Landmark : MonoBehaviour
     public float offsetHeight;
     [Header(">>> 目標對像")]
     public Transform targetObject;
-    public string deviceID => RevitHandler.GetDeviceID(targetObject.name);
+    public string deviceID => RevitHandler.GetDevicePath(targetObject.name);
 
     [Header(">>> 地標分類")]
     public LandmarkCategory category;

@@ -202,4 +202,9 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
             }
         }
     }
+
+    public override void OnInit(System.Action onInitComplete = null)
+    {
+        throw new System.NotImplementedException();
+    }
 }

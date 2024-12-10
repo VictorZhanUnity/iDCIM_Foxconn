@@ -32,7 +32,7 @@ public class UIManager_IAQ : MonoBehaviour
         //點選IAQ設備時，顯示其資訊面板
         deviceModelVisualizer.onSelectedEvent.AddListener((soData, listItem, modelName)=>
         {
-            iaqDevicePanel.ModelID = RevitHandler.GetDeviceID(modelName);
+            iaqDevicePanel.ModelID = RevitHandler.GetDevicePath(modelName);
         });
 
         iaqDevicePanel.onClickIAQIndex.AddListener(ShowIAQIndexHistoryPanel);

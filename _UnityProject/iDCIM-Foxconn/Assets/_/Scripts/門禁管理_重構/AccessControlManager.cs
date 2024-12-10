@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.Advanced;
@@ -96,4 +97,9 @@ public class AccessControlManager : iDCIM_ModuleManager
     [ContextMenu("- [目前年份] 門禁記錄")] private void Test_GetYear() => dataHandler.GetAccessRecordsOfThisYear((result) => dataOfThisYear = result, null);
     [ContextMenu("- [目前月份] 門禁記錄")] private void Test_GetMonth() => dataHandler.GetAccessRecordsOfThisMonth((result) => dataOfThisYear = result, null);
     [ContextMenu("- [今天] 門禁記錄")] private void Test_GetToday() => dataHandler.GetAccessRecordsOfToday((result) => dataOfThisYear = result, null);
+
+    public override void OnInit(Action onInitComplete = null)
+    {
+        throw new NotImplementedException();
+    }
 }

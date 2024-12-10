@@ -15,7 +15,7 @@ namespace VictorDev.RevitUtils
         /// <summary>
         /// 從模型名稱[] 裡取得deviceId
         /// </summary>
-        public static string GetDeviceID(string modelName)
+        public static string GetDevicePath(string modelName)
         {
             // 创建正则表达式来匹配方括号内的内容
             Regex regex = new Regex(@"\[(.*?)\]");
@@ -32,7 +32,7 @@ namespace VictorDev.RevitUtils
         /// 從模型上擷取DeviceName
         /// </summary>
         public static string GetDeviceNameFromModel(string modelName)
-            => RevitHandler.GetDeviceID(modelName).Split(":")[1].Trim();
+            => RevitHandler.GetDevicePath(modelName).Split(":")[1].Trim();
 
 
         /// <summary>

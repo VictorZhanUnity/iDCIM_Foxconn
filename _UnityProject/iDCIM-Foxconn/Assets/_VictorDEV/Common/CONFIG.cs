@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using VictorDev.Common;
+
 namespace VictorDev
 {
     public static class CONFIG
@@ -7,4 +12,7 @@ namespace VictorDev
         /// </summary>
         public enum EnumLanguage { en_US, zh_CN }
     }
+
+
+   
 }

@@ -25,7 +25,7 @@ namespace VictorDev.Common
                 // 更改文本内容
                 if (showText != null) target.SetText(showText);
                 // 然后将Text的透明度从0渐变为1（完全不透明）
-                target.DOFade(1f, duration);
+                target.DOFade(1f, duration).SetEase(Ease.OutQuad);
             }).SetDelay(Random.Range(isRandomDelay ? 0 : delay, delay));
         }
 

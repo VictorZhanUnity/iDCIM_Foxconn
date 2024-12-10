@@ -21,7 +21,7 @@ public class DeviceModelVisualizer : MonoBehaviour
     public UnityEvent<Transform> onClickEvent = new UnityEvent<Transform>();
 
     public List<Transform> ModelList => modelList;
-    public List<string> ModelDevicePathList => modelList.Select(model => RevitHandler.GetDeviceID(model.name)).ToList();
+    public List<string> ModelDevicePathList => modelList.Select(model => RevitHandler.GetDevicePath(model.name)).ToList();
     public List<string> ModelNameList => modelList.Select(model => model.name).ToList();
 
     /// <summary>

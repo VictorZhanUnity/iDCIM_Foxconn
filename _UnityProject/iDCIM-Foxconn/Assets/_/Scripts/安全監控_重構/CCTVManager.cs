@@ -163,6 +163,11 @@ public class CCTVManager : iDCIM_ModuleManager
     private void ShowLandmarks()
         => LandmarkManager_RE.AddLandMarks(landmarkPrefab, webApiHandler.datas, modelList);
 
+    public override void OnInit(Action onInitComplete = null)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// [WebAPI資料項] CCTV連線資訊
     /// </summary>

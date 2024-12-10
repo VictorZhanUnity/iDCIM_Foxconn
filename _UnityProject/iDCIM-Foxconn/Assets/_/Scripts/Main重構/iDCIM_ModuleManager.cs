@@ -2,16 +2,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
+using VictorDev.Managers;
 
 /// <summary>
 /// [iDCIM] 所有功能模組之父類別
 /// <para>+ 處理依據關鍵字搜尋卻顯示之物件</para>
 /// <para>+ 處理欲顯示之物件</para>
 /// </summary>
-public abstract class iDCIM_ModuleManager : MonoBehaviour
+public abstract class iDCIM_ModuleManager : Module
 {
     [Header(">>> [模型處理] 欲顯示的目標物件")]
-    [SerializeField] ModelDisplayConfiguration modelForDisplay;
+    [SerializeField] private ModelDisplayConfiguration modelForDisplay;
 
     /// <summary>
     /// 欲顯示的模型物件
@@ -42,19 +43,13 @@ public abstract class iDCIM_ModuleManager : MonoBehaviour
         }
     }
 
-    private Transform _container { get; set; }
     /// <summary>
     /// 顯示UI組件的容器
     /// </summary>
-    protected Transform container
-    {
-        get
-        {
-            _container ??= transform.GetChild(0);
-            return _container;
-        }
-    }
+    protected Transform container => _container ??= transform.GetChild(0);
+    private Transform _container { get; set; }
 
+    public bool IsOn { set => throw new System.NotImplementedException(); }
 
     private void ToShow()
     {
