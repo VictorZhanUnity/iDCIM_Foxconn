@@ -6,10 +6,10 @@ using UnityEngine;
 /// </summary>
 public abstract class BlackboxDataReceiver : MonoBehaviour, IIAQDataReceiver
 {
-    public abstract void ReceiveIAQData(List<Data_Blackbox> datas);
+    public abstract void ReceiveData(List<Data_Blackbox> datas);
 }
 
 public interface IIAQDataReceiver
 {
-    abstract void ReceiveIAQData(List<Data_Blackbox> datas);
+    abstract void ReceiveData(List<Data_Blackbox> datas);
 }

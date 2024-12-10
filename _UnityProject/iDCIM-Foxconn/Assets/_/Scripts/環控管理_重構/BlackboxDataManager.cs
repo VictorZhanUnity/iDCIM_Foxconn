@@ -78,7 +78,7 @@ public class BlackboxDataManager : ModulePage
         });
         datas = result;
 
-        receivers.ForEach(receiver => receiver.ReceiveIAQData(datas));
+        receivers.ForEach(receiver => receiver.ReceiveData(datas));
         DateTime updateDateTime = DateTime.Now;
         onUpdateTimeEvent?.Invoke(updateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
 
@@ -103,7 +103,18 @@ public class BlackboxDataManager : ModulePage
             data.datas.AddRange(keyPair.Value);
             result.Add(data);
         });
-        LandmarkManager_RE.AddLandMarks(landmarkPrefab, result, modelList);
+
+        
+     /*   List<IAQLandmark> landmarks = new List<IAQLandmark>();
+        result.ForEach(data =>
+        {
+            IAQLandmark item = ObjectPoolManager.GetInstanceFromQueuePool(landmarkPrefab, content.transform);
+            item.columnName = 
+            landmarks.Add(item);
+        });
+*/
+
+       // LandmarkManager_Ver3.CreateLandMarks(landmarkPrefab, result, modelList);
     }
 
     #endregion

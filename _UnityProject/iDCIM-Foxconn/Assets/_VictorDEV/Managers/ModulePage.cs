@@ -19,7 +19,7 @@ public abstract class ModulePage : Module
     public List<Transform> modelList => modelForDisplay.modelsList;
 
     [Header(">>> 頁面物件")]
-    [SerializeField] private GameObject content;
+    [SerializeField] protected GameObject content;
 
     private void Awake() => IsOn = false;
 

@@ -5,22 +5,31 @@ using UnityEngine;
 using VictorDev.Common;
 using VictorDev.RevitUtils;
 
-public class IAQLandmark : LandmarkHandler<Data_RTRH>
+public class IAQLandmark : IAQIndexDisplayer_RE
 {
-    [SerializeField] private TextMeshProUGUI txtIdNumber, txtValue_RT, txtValue_RH;
+    [SerializeField] private TextMeshProUGUI txtTagName, txtValue_RT, txtValue_RH;
 
-    protected override void OnShowDataHandler(Data_RTRH data)
+    #region [Value]
+    public string DevicePath => RevitHandler.GetDevicePath(datas[0].model.name);
+    public string tagName
     {
-        txtIdNumber.SetText(data.tagName);
-        DotweenHandler.ToBlink(txtValue_RT, data.valueRT.ToString("0.#"));
-        DotweenHandler.ToBlink(txtValue_RH, data.valueRH.ToString("0.#"));
+        get
+        {
+            string[] str = datas[0].tagName.Split("/");
+            return $"{str[0]}/{str[1]}";
+        }
     }
+    public float valueRT => SearchByKeyword("RT/Value").value;
+    public float valueRH => SearchByKeyword("RH/Value").value;
+    private Data_Blackbox SearchByKeyword(string keyword) => datas.FirstOrDefault(data => data.tagName.Contains(keyword));
+    #endregion
 
-    protected override void OnToggleOnHandler()
+    public override void ReceiveData(List<Data_Blackbox> datas)
     {
-    }
-    protected override void OnToggleOffHandler()
-    {
+        GroupData(datas);
+        txtTagName.SetText(tagName);
+        DotweenHandler.ToBlink(txtValue_RT, valueRT.ToString("0.#"));
+        DotweenHandler.ToBlink(txtValue_RH, valueRH.ToString("0.#"));
     }
 }
 

@@ -9,9 +9,9 @@ using VictorDev.iDCIM;
 /// </summary>
 public class IAQIndexDisplayer_RT : IAQIndexDisplayer_RE
 {
-    public override void ReceiveIAQData(List<Data_Blackbox> datas)
+    public override void ReceiveData(List<Data_Blackbox> datas)
     {
-        base.ReceiveIAQData(datas);
+        base.ReceiveData(datas);
         ColorSet colorSet = iDCIM_ColorSetting.ColorSet_RT.FirstOrDefault(setting => value >= setting.threshold);
         colorSet ??= iDCIM_ColorSetting.ColorSet_RT.Last();
         txtValue.DOColor(colorSet.color, 0.3f);
