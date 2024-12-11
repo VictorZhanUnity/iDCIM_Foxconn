@@ -65,7 +65,7 @@ public class AccessControlManager : iDCIM_ModuleManager
     protected override void OnCloseHandler()
     {
         RemoveListener();
-        LandmarkManager_RE.RemoveLandmarks<AccessDoor_LandMark, Data_AccessRecord>();
+    //   LandmarkManager_RE.RemoveLandmarks<AccessDoor_LandMark, Data_AccessRecord>();
     }
 
     private void InitListener()

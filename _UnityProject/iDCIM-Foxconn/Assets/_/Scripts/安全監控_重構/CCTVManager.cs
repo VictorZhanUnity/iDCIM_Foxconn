@@ -146,7 +146,7 @@ public class CCTVManager : iDCIM_ModuleManager
 
     protected override void OnCloseHandler()
     {
-        LandmarkManager_RE.RemoveLandmarks<CCTV_LandMark, Data_RTSP>();
+        //LandmarkManager_RE.RemoveLandmarks<CCTV_LandMark, Data_RTSP>();
     }
 
     [ContextMenu("- [WebAPI] 取得所有CCTV設備資訊")]

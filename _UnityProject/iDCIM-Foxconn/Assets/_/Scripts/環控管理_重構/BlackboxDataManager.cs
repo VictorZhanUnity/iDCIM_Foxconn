@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using VictorDev.Advanced;
 using VictorDev.Common;
+using VictorDev.Managers;
 
 /// <summary>
 /// 環控資料管理器
 /// </summary>
-public class BlackboxDataManager : ModulePage
+public class BlackboxDataManager : Module
 {
     [Header(">>> [資料項] - 目前環控資料")]
     [SerializeField] private List<Data_Blackbox> datas;
@@ -18,9 +18,12 @@ public class BlackboxDataManager : ModulePage
     [Header(">>> 接收到資料發送給各對像組件")]
     [SerializeField] private List<BlackboxDataReceiver> receivers;
 
-    [Header(">>> 其它環控Tag")]
+    [Header(">>> 接收到資料時Invoke")]
+    public UnityEvent<List<Data_Blackbox>> onGetBlockboxData = new UnityEvent<List<Data_Blackbox>>();
+
+    [Header(">>> Tag名稱列表")]
     [SerializeField]
-    private List<string> otherTags = new List<string>()
+    private List<string> tagNames = new List<string>()
     {
         "PUE"
     };
@@ -30,9 +33,6 @@ public class BlackboxDataManager : ModulePage
 
     [Header(">>> [Event] 更新時間")]
     public UnityEvent<string> onUpdateTimeEvent = new UnityEvent<string>();
-
-    [Header(">>> Landmark圖標Prefab")]
-    [SerializeField] private IAQLandmark landmarkPrefab;
 
     #region [Initialize]
     private Coroutine coroutine { get; set; }
@@ -47,42 +47,31 @@ public class BlackboxDataManager : ModulePage
             }
         }
         coroutine = StartCoroutine(GetData_Coroutine());
+        Debug.Log(">>> BlackboxDataManager OnInit");
         onInitComplete?.Invoke();
     }
 
+    /// <summary>
+    /// 新增Tag至列表上
+    /// </summary>
+    public void AddTags(List<string> tags) => tagNames.AddRange(tags);
+
     [ContextMenu("- 取得即時環控資料")]
-    public void GetIAQRealtimeData()
-    {
-        //設定感測器Tag
-        List<string> tagNames = modelList.Select(model => model.name.Split(",")[0]).ToList();
-        tagNames = tagNames.SelectMany(tag => tag.Contains("04") ? new[] { $"{tag}/Smoke/Status" }
-        : new[] { $"{tag}/RT/Value", $"{tag}/RT/Status", $"{tag}/RH/Value", $"{tag}/RH/Status" }).ToList();
-        //加入其它環控項目Tag
-        tagNames.AddRange(otherTags);
-        WebAPI_GetRealtimeData.GetRealtimeData(new WebAPI_GetRealtimeData.SendDataFormat(tagNames), OnRefreshDataHandler, null);
-    }
+    public void GetIAQRealtimeData() => WebAPI_GetRealtimeData.GetRealtimeData(new WebAPI_GetRealtimeData.SendDataFormat(tagNames), OnRefreshDataHandler, null);
     /// <summary>
     /// 取得即時資料時進行更新
     /// </summary>
     private void OnRefreshDataHandler(List<Data_Blackbox> result)
     {
-        List<string> modelNameList = modelList.Select(model => model.name).ToList();
-        result.ForEach(data =>
-        {
-            string[] str = data.tagName.Split("/");
-            if (str.Length > 1)
-            {
-                string tagName = $"{str[0]}/{str[1]}";
-                data.model = modelList.FirstOrDefault(model => model.name.Contains(tagName));
-            }
-        });
         datas = result;
 
+        //發送資料
         receivers.ForEach(receiver => receiver.ReceiveData(datas));
+        onGetBlockboxData?.Invoke(datas);
+
+        //更新時間
         DateTime updateDateTime = DateTime.Now;
         onUpdateTimeEvent?.Invoke(updateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
-
-        SetupLandmark();
     }
 
     /// <summary>
@@ -103,36 +92,9 @@ public class BlackboxDataManager : ModulePage
             data.datas.AddRange(keyPair.Value);
             result.Add(data);
         });
-
-        
-     /*   List<IAQLandmark> landmarks = new List<IAQLandmark>();
-        result.ForEach(data =>
-        {
-            IAQLandmark item = ObjectPoolManager.GetInstanceFromQueuePool(landmarkPrefab, content.transform);
-            item.columnName = 
-            landmarks.Add(item);
-        });
-*/
-
-       // LandmarkManager_Ver3.CreateLandMarks(landmarkPrefab, result, modelList);
     }
 
     #endregion
-
-    protected override void InitEventListener()
-    {
-    }
-
-    protected override void RemoveEventListener()
-    {
-    }
-
-    protected override void OnShowHandler()
-    {
-    }
-
-    protected override void OnCloseHandler()
-    {
-    }
     private void OnDestroy() => StopCoroutine(coroutine);
+
 }

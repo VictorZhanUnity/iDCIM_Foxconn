@@ -5,26 +5,49 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Common;
 
+/// <summary>
+/// 模型圖標管理器
+/// </summary>
 public class LandmarkManager_Ver3 : SingletonMonoBehaviour<LandmarkManager_Ver3>
 {
-    /// <summary>
-    /// 有ToggeOn為True時Invoke
-    /// </summary>
-    public static UnityEvent<bool, ILandmarkHandler> onToggleOnEvent = new UnityEvent<bool, ILandmarkHandler>();
+    [Header(">>>Toggle狀態變更時Invoke {isOn, 目標模型}")]
+    public static UnityEvent<bool, Transform> onToggleValueChanged = new UnityEvent<bool, Transform>();
 
-    [Header(">>>攝影機遠近之地標尺吋調整")]
-    [SerializeField] private float minScale = 0.8f; // 最小缩放比例
-    [SerializeField] private float maxScale = 1f; // 最大缩放比例
-    [SerializeField] private float maxDistance = 500f; // 最大距离
-    [SerializeField] private float minDistance = 10f; // 最小距离
+    [Header(">>>欲顯示的Landmark，在此用Update將3D座梳換算2D座標")]
+    [SerializeField] private List<Landmark_RE> landmarkForDisplay = new List<Landmark_RE>();
 
     /// <summary>
-    /// 目前顯示的landmark圖標，未來可以用is來判斷類別型態
+    /// 設定Toggle.isOn狀態
+    /// <para>+ targetModel: 依目標模型尋找Landmark Toggle</para>
+    /// <para>+ isOn: true/false</para>
+    /// <para>+ isInvokeEvent: 是否觸發Toggle事件</para>
     /// </summary>
-    public List<Landmark_RE> landmarkForDisplay = new List<Landmark_RE>();
- 
+    public static void SetLandmarkIsOn(Transform targetModel, bool isOn, bool isInvokeEvent = false)
+        => Instance.landmarkForDisplay.FirstOrDefault(landmark => landmark.targetModel == targetModel).SetToggleStatus(isOn, isInvokeEvent);
+
+    /// <summary>
+    /// 新增圖標
+    /// </summary>
+    public static void AddLandmarks(List<Landmark_RE> landmarks) => landmarks.ForEach(landmark => AddLandmark(landmark));
+    public static void AddLandmark(Landmark_RE landmark)
+    {
+        if (Instance.landmarkForDisplay.Contains(landmark) == false) Instance.landmarkForDisplay.Add(Instance.InitListener(landmark));
+    }
+
+    private Landmark_RE InitListener(Landmark_RE landmark)
+    {
+        landmark.onToggleValueChanged.RemoveAllListeners();
+        landmark.onToggleValueChanged.AddListener(onToggleValueChanged.Invoke);
+        landmark.toggleGroup = toggleGroup;
+        return landmark;
+    }
+
+    private void OnEnable() => landmarkForDisplay.ForEach(landmark => InitListener(landmark));
+    private void OnDisable() => landmarkForDisplay.ForEach(landmark => landmark.onToggleValueChanged.RemoveAllListeners());
+
     private void Update()
     {
+        //計算每個Landmark位置
         landmarkForDisplay.ForEach(landmark =>
         {
             // 更新每个Landmark的UI位置
@@ -46,6 +69,12 @@ public class LandmarkManager_Ver3 : SingletonMonoBehaviour<LandmarkManager_Ver3>
             landmarkForDisplay[i].rectTransform.SetSiblingIndex(i);
         }
     }
+
+    [Header(">>>攝影機遠近之地標尺吋調整")]
+    [SerializeField] private float minScale = 0.8f; // 最小缩放比例
+    [SerializeField] private float maxScale = 1f; // 最大缩放比例
+    [SerializeField] private float maxDistance = 500f; // 最大距离
+    [SerializeField] private float minDistance = 10f; // 最小距离
 
     #region [Components]
     private Camera _mainCamera { get; set; }
