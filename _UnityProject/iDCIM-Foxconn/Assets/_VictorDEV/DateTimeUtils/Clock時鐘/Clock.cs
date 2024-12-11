@@ -63,8 +63,9 @@ namespace VictorDev.DateTimeUtils
             if (isShowSec) format += $"{symbol}ss";
 
             DateTime dateTime = DateTime.Now;
-            dateTime = dateTime.AddHours(1); //往回推 for Demo
-            //dateTime = dateTime.AddDays(-50); //往回推 for Demo
+
+            int timeValue = 0;
+            dateTime = dateTime.AddHours(timeValue); //往回推 for Demo
 
             string time = dateTime.ToString(format, cultureInfo);
             string date = dateTime.ToString("yyyy/MM/dd", cultureInfo);
