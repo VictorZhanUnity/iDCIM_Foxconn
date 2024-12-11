@@ -23,7 +23,6 @@ public class IAQManager : ModulePage
         List<string> tagNames = modelList.Select(model => model.name.Split(",")[0]).ToList();
         tagNames = tagNames.SelectMany(tag => tag.Contains("04") ? new[] { $"{tag}/Smoke/Status" }
         : new[] { $"{tag}/RT/Value", $"{tag}/RT/Status", $"{tag}/RH/Value", $"{tag}/RH/Status" }).ToList();
-
         //加入環控項目Tag
         blackboxDataManager.AddTags(tagNames);
 
