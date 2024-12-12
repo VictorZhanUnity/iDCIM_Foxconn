@@ -26,7 +26,6 @@ public class Landmark_RE : MonoBehaviour
 
     private void OnEnable()
     {
-
         toggle.onValueChanged.AddListener((isOn) => onToggleValueChanged?.Invoke(isOn, targetModel));
     }
 

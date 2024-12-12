@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using VictorDev.Advanced;
 
 /// <summary>
-/// IAQ單項指數顯示器
+/// BlackBox資料數值顯示器
 /// </summary>
 public class BlackDataDisplayer : BlackboxDataReceiver
 {

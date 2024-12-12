@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Net.WebAPI;
-using static CCTVManager;
 using static AccessRecord_DataHandler.SendRawJSON;
 
 /// <summary>
@@ -82,7 +81,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
                 to = to.ToString(DateTimeHandler.FullDateTimeFormatWithT),
             }
         };
-        requestAccessRecord.SetRawJsonData(JsonConvert.SerializeObject(datas));
+        requestAccessRecord.SetRawJsonData(JsonConvert.SerializeObject(sendData));
 
         void onSuccessHandler(long responseCode, string jsonString)
         {

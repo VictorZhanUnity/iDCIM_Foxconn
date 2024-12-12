@@ -9,7 +9,7 @@ using VictorDev.Common;
 /// </summary>
 public class IAQManager : ModulePage
 {
-    [Header(">>> 欲顯示的 IAQ Landmark圖標")]
+    [Header(">>> 欲顯示的 Landmark圖標")]
     [SerializeField] private List<Landmark_RE> landmarkList;
 
     [Header(">>> 環控資料管理器")]
@@ -18,9 +18,7 @@ public class IAQManager : ModulePage
     public override void OnInit(Action onInitComplete = null)
     {
         LandmarkManager_Ver3.AddLandmarks(landmarkList);
-
         SetTagNames();
-
         Debug.Log(">>> IAQManager OnInit");
         onInitComplete?.Invoke();
     }
@@ -70,6 +68,4 @@ public class IAQManager : ModulePage
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
     }
-
-
 }
