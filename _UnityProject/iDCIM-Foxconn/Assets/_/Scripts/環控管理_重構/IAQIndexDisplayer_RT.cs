@@ -7,7 +7,7 @@ using VictorDev.iDCIM;
 /// <summary>
 /// IAQ單項指數顯示器
 /// </summary>
-public class IAQIndexDisplayer_RT : IAQIndexDisplayer_RE
+public class IAQIndexDisplayer_RT : BlackDataDisplayer
 {
     public override void ReceiveData(List<Data_Blackbox> datas)
     {

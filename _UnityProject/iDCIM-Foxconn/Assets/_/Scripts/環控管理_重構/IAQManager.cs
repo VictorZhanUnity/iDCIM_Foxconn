@@ -19,22 +19,28 @@ public class IAQManager : ModulePage
     {
         LandmarkManager_Ver3.AddLandmarks(landmarkList);
 
-        //設定感測器Tag
+        SetTagNames();
+
+        Debug.Log(">>> IAQManager OnInit");
+        onInitComplete?.Invoke();
+    }
+
+    /// <summary>
+    /// 設定感測器Tag
+    /// </summary>
+    private void SetTagNames()
+    {
         List<string> tagNames = modelList.Select(model => model.name.Split(",")[0]).ToList();
         tagNames = tagNames.SelectMany(tag => tag.Contains("04") ? new[] { $"{tag}/Smoke/Status" }
         : new[] { $"{tag}/RT/Value", $"{tag}/RT/Status", $"{tag}/RH/Value", $"{tag}/RH/Status" }).ToList();
         //加入環控項目Tag
         blackboxDataManager.AddTags(tagNames);
-
-        Debug.Log(">>> IAQManager OnInit");
-        onInitComplete?.Invoke();
     }
 
     protected override void InitEventListener()
     {
         RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
         RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
-
     }
     private void OnSelectObjectHandler(Transform target)
     {

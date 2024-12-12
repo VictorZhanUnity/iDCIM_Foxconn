@@ -3,14 +3,13 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
-using VictorDev.RevitUtils;
 
-public class IAQLandmarkDisplayer : IAQIndexDisplayer_RE
+public class IAQLandmarkDisplayer : BlackDataDisplayer
 {
     [SerializeField] private TextMeshProUGUI txtTagName, txtValue_RT, txtValue_RH;
 
     #region [Value]
-    public string tagName
+    public string DeviceName
     {
         get
         {
@@ -23,10 +22,12 @@ public class IAQLandmarkDisplayer : IAQIndexDisplayer_RE
     private Data_Blackbox SearchByKeyword(string keyword) => datas.FirstOrDefault(data => data.tagName.Contains(keyword));
     #endregion
 
-    public override void ReceiveData(List<Data_Blackbox> datas)
+    public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
-        GroupData(datas);
-        txtTagName.SetText(tagName);
+        GroupData(blackBoxData);
+        if (datas.Count == 0) return;
+
+        txtTagName.SetText(DeviceName);
         DotweenHandler.ToBlink(txtValue_RT, valueRT.ToString("0.#"));
         DotweenHandler.ToBlink(txtValue_RH, valueRH.ToString("0.#"));
     }

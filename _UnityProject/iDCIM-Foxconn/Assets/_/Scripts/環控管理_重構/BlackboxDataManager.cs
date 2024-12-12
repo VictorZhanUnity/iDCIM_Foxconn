@@ -58,18 +58,24 @@ public class BlackboxDataManager : Module
     {
         datas = result;
         //發送資料
-        receivers.ForEach(receiver => receiver.ReceiveData(datas));
+        receivers.ForEach(receiver => receiver?.ReceiveData(datas));
         onGetBlockboxData?.Invoke(datas);
         //更新時間
         DateTime updateDateTime = DateTime.Now;
         onUpdateTimeEvent?.Invoke(updateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));
     }
- 
+
 
     /// <summary>
     /// 新增Tag至列表上
     /// </summary>
-    public void AddTags(List<string> tags) => tagNames.AddRange(tags);
+    public void AddTags(List<string> tags)
+    {
+        tags.ForEach(tag =>
+        {
+            if (tagNames.Contains(tag) == false) tagNames.AddRange(tags);
+        });
+    }
 
     private void OnDestroy() => StopCoroutine(coroutine);
 
@@ -110,8 +116,8 @@ public class BlackboxDataManager : Module
                 List<string> result = new List<string>();
                 List<string> tagStatus = statusTag.Select(tag => string.Concat(tag, KeyName_Status)).ToList();
                 List<string> tagCityPower = cityPower.Select(tag => string.Concat(tag, KeyName_Status)).ToList();
-                tagCityPower.Add("UPS/Quantity/Status");
                 List<string> tagUPS = ups.Select(tag => string.Concat(tag, KeyName_Status)).ToList();
+                tagUPS.Add("UPS/PowerSupply/Status");
                 List<string> tagPDU = pdu.Select(tag => string.Concat(tag, KeyName_Status)).ToList();
                 result.AddRange(tagCityPower);
                 result.AddRange(tagUPS);
