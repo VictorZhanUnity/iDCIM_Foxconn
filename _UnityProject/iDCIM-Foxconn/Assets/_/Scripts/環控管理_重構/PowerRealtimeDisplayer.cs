@@ -11,10 +11,10 @@ using VictorDev.Common;
 public class PowerRealtimeDisplayer : BlackDataDisplayer
 {
     [Header(">>> 文字組件，組件名稱需為TagName")]
-    [SerializeField] private List<TextMeshProUGUI> txtCompList;
+    [SerializeField] protected List<TextMeshProUGUI> txtCompList;
 
     [Header(">>> 警報時文字組件的顏色")]
-    [SerializeField] private Color alarmColor = ColorHandler.HexToColor(0xFF8237);
+    [SerializeField] protected Color alarmColor = ColorHandler.HexToColor(0xFF8237);
 
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
@@ -25,7 +25,7 @@ public class PowerRealtimeDisplayer : BlackDataDisplayer
     /// <summary>
     /// 更新UI
     /// </summary>
-    private void UpdateUI()
+    protected virtual void UpdateUI()
     {
         //將資料依Status與Value進行分組
         List<Data_Blackbox> statusList = datas.Where(data => data.tagName.Contains("Status")).ToList();
