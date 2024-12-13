@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.Common;
 
 /// <summary>
@@ -8,36 +9,18 @@ using VictorDev.Common;
 /// </summary>
 public class AccessControlManager_Ver2 : ModulePage
 {
+    [Header(">>> [Event] 點選Landmark時Invoke")]
+    public UnityEvent<Transform> onClickLandmark = new UnityEvent<Transform>();
+    [Header(">>> [Event] 取選點選Landmark時Invoke")]
+    public UnityEvent<Transform> onCancellLandmark = new UnityEvent<Transform>();
+
     [Header(">>> 欲顯示的 Landmark圖標")]
     [SerializeField] private List<Landmark_RE> landmarkList;
-
-    public override void OnInit(Action onInitComplete = null)
+  
+    protected override void OnShowHandler()
     {
-        LandmarkManager_Ver3.AddLandmarks(landmarkList);
-        Debug.Log(">>> AccessControlManager_Ver2 OnInit");
-        onInitComplete?.Invoke();
+        landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
     }
-
-    protected override void InitEventListener()
-    {
-        RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
-        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
-    }
-    private void OnSelectObjectHandler(Transform target)
-    {
-        Debug.Log($"OnSelectObjectHandler: {target.name}");
-    }
-    private void OnDeselectObjectHandler(Transform target)
-    {
-        Debug.Log($"OnDeselectObjectHandler: {target.name}");
-    }
-
-    protected override void RemoveEventListener()
-    {
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
-        RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
-    }
-
     protected override void OnCloseHandler()
     {
         landmarkList.ForEach(landmark =>
@@ -46,8 +29,25 @@ public class AccessControlManager_Ver2 : ModulePage
             landmark.gameObject.SetActive(false);
         });
     }
-    protected override void OnShowHandler()
+
+    #region [Initialize]
+    public override void OnInit(Action onInitComplete = null)
     {
-        landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
+        LandmarkManager_Ver3.AddLandmarks(landmarkList);
+        Debug.Log(">>> AccessControlManager_Ver2 OnInit");
+        onInitComplete?.Invoke();
     }
+    protected override void InitEventListener()
+    {
+        RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
+        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
+    }
+    protected override void RemoveEventListener()
+    {
+        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
+    }
+    private void OnSelectObjectHandler(Transform target) => onClickLandmark?.Invoke(target);
+    private void OnDeselectObjectHandler(Transform target) => onCancellLandmark?.Invoke(target);
+    #endregion
 }
