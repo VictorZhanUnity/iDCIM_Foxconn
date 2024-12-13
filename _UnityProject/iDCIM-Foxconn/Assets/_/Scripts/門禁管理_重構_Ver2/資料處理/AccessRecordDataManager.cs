@@ -73,7 +73,7 @@ public class AccessRecordDataManager : Module
         onSuccessHandler(200, DataForDemo.AccessRecord);
 #else
         WebAPI_LoginManager.CheckToken(request);
-        WebAPI_Caller.SendRequest(requestAccessRecord, onSuccessHandler, onFailed);
+        WebAPI_Caller.SendRequest(request, onSuccessHandler, onFailed);
 #endif
     }
 

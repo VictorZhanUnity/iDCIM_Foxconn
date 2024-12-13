@@ -27,7 +27,7 @@ public class BlackDataDisplayer : BlackboxDataReceiver
     protected void GroupData(List<Data_Blackbox> blackBoxData)
     {
         datas = blackBoxData.Where(data => data.tagName.Contains(tagName)).ToList();
-        if(datas.Count > 0) value = datas.Average(data => data.value);
+        if(datas.Count > 0) value = datas.Average(data => data.value ?? 0) ;
     }
 
     private void OnEnable() => btn?.onClick.AddListener(() => onClickButtonEvent?.Invoke(this));

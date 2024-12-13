@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ using UnityEngine;
 public class Data_Blackbox 
 {
     public string tagName;
-    public float value;
+    public float? value { get; set; }
     public Alarm alarm;
 
     [Serializable]

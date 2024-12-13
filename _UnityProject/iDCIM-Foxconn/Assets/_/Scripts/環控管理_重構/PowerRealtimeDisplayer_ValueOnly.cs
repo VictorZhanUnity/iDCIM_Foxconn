@@ -17,7 +17,7 @@ public class PowerRealtimeDisplayer_ValueOnly : PowerRealtimeDisplayer
     {
         //將資料依Status與Value進行分組
         string keyword = firstTxt.name.Trim();
-        float value = datas.FirstOrDefault(data => data.tagName.Contains(keyword)).value;
+        float value = (datas.FirstOrDefault(data => data.tagName.Contains(keyword)).value ?? 2);
         //設定值
         DotweenHandler.ToBlink(firstTxt, value.ToString("0.##"), 0.1f, 0.2f, true);
     }

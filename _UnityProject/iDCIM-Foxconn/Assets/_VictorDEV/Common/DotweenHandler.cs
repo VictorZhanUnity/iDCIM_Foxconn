@@ -15,6 +15,7 @@ namespace VictorDev.Common
         /// <summary>
         /// 閃爍後顯示指定文字
         /// <para>+ showText：顯示指定文字</para>
+        /// <para>+ duration若太低，效果會不明顯</para>
         /// </summary>
         public static void ToBlink(TextMeshProUGUI target, string showText = null, float duration = 0.1f, float delay = 0, bool isRandomDelay = false)
         {

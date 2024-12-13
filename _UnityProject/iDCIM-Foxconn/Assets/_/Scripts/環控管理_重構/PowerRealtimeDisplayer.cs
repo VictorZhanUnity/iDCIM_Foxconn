@@ -4,7 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
-
+ 
 /// <summary>
 /// 市電、UPS、PDU電力顯示器
 /// </summary>
@@ -35,11 +35,14 @@ public class PowerRealtimeDisplayer : BlackDataDisplayer
         {
             string keyword = txt.name.Trim();
             bool isAlarm = statusList.FirstOrDefault(data => data.tagName.Contains(keyword)).alarm != null;
-            float value = valueList.FirstOrDefault(data => data.tagName.Contains(keyword)).value;
+            float value = (valueList.FirstOrDefault(data => data.tagName.Contains(keyword)).value ?? 2);
             //設定值
-            DotweenHandler.ToBlink(txt, value.ToString("0.##"), 0.1f, 0.2f, true);
-            //設定文字顏色(是否有警報)
-            txt.DOColor((isAlarm) ? alarmColor : Color.white, 0.3f).SetEase(Ease.OutQuad);
+            if(float.Parse(txt.text.Trim()) != value)
+            {
+                DotweenHandler.ToBlink(txt, value.ToString("0.##"), 0.05f, 0.2f, true);
+                //設定文字顏色(是否有警報)
+                txt.DOColor((isAlarm) ? alarmColor : Color.white, 0.1f).SetEase(Ease.OutQuad);
+            }
         });
     }
 }

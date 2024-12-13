@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.Common;
+using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
 
 public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
@@ -46,7 +47,7 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
         if (string.IsNullOrEmpty(LoginInfo.access_token))
         {
             Debug.Log($">>> [WebAPI] - 尚未登入取得Token!!");
-            Instance.Test_SignIn();
+            //Instance.Test_SignIn();
             return false;
         }
         request.token = LoginInfo.access_token;

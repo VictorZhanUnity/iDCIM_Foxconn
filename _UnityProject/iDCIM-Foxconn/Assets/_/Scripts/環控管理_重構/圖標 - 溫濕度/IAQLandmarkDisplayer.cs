@@ -17,8 +17,8 @@ public class IAQLandmarkDisplayer : BlackDataDisplayer
             return $"{str[0]}/{str[1]}";
         }
     }
-    public float valueRT => SearchByKeyword("RT/Value").value;
-    public float valueRH => SearchByKeyword("RH/Value").value;
+    public float valueRT => SearchByKeyword("RT/Value").value ?? 2;
+    public float valueRH => SearchByKeyword("RH/Value").value ?? 2;
     private Data_Blackbox SearchByKeyword(string keyword) => datas.FirstOrDefault(data => data.tagName.Contains(keyword));
     #endregion
 
@@ -26,7 +26,6 @@ public class IAQLandmarkDisplayer : BlackDataDisplayer
     {
         GroupData(blackBoxData);
         if (datas.Count == 0) return;
-
         txtTagName.SetText(DeviceName);
         DotweenHandler.ToBlink(txtValue_RT, valueRT.ToString("0.#"));
         DotweenHandler.ToBlink(txtValue_RH, valueRH.ToString("0.#"));
