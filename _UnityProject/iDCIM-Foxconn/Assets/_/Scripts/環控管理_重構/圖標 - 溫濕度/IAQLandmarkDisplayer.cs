@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -29,5 +30,14 @@ public class IAQLandmarkDisplayer : BlackDataDisplayer
         txtTagName.SetText(DeviceName);
         DotweenHandler.ToBlink(txtValue_RT, valueRT.ToString("0.#"));
         DotweenHandler.ToBlink(txtValue_RH, valueRH.ToString("0.#"));
+    }
+
+    private float originalPosY { get; set; }
+    private void Awake() => originalPosY = transform.localPosition.y;
+
+    private void OnEnable()
+    {
+        transform.DOLocalMoveY(originalPosY, 0.1f).From(100)
+            .SetEase(Ease.OutBack).SetDelay(Random.Range(0f, 0.3f));
     }
 }

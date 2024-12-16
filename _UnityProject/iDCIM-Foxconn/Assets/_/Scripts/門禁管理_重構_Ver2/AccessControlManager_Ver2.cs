@@ -16,10 +16,14 @@ public class AccessControlManager_Ver2 : ModulePage
 
     [Header(">>> 欲顯示的 Landmark圖標")]
     [SerializeField] private List<Landmark_RE> landmarkList;
-  
+
     protected override void OnShowHandler()
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
+
+        //預設點選
+        landmarkList[0].isOn = true;
+        onClickLandmark?.Invoke(landmarkList[0].targetModel);
     }
     protected override void OnCloseHandler()
     {

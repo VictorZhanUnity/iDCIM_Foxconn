@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
-using static Data_AccessRecord;
+using static Data_AccessRecord_Ver2;
 
 public class AccessRecord_TableRow : TableRow<User>
 {
@@ -16,10 +16,10 @@ public class AccessRecord_TableRow : TableRow<User>
 
     protected override void OnSetDataHandler(User data)
     {
-        isEmpty = data.UserName.ToLower().Contains("empty");
+        isEmpty = data.userName.ToLower().Contains("empty");
 
-        txtAccount.SetText(data.UserName);
-        txtAccessTime.SetText(data.GetDateAccessTime(DateTimeHandler.FullTimeFormat));
+        txtAccount.SetText(data.userName);
+        txtAccessTime.SetText(data.DateAccessTime.ToString(DateTimeHandler.FullTimeFormat));
 
         txtAccount.color = isEmpty ? emptyColor : originalTextColor;
         txtAccessTime.color = isEmpty ? emptyColor : originalTextColor;
@@ -39,9 +39,9 @@ public class AccessRecordDetail_TableRow : AccessRecord_TableRow
     {
         base.OnSetDataHandler(data);
 
-        txtAccessTime.SetText(data.GetDateAccessTime(DateTimeHandler.FullDateTimeFormat));
+        txtAccessTime.SetText(data.DateAccessTime.ToString(DateTimeHandler.FullDateTimeFormat));
 
-        txtGroupName.SetText(data.GroupName);
+        txtGroupName.SetText(data.groupName);
         txtGroupName.color = isEmpty ? emptyColor : originalTextColor;
     }
 

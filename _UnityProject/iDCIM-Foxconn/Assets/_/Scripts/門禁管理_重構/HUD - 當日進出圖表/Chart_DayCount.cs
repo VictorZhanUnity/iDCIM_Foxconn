@@ -4,8 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
-using static Data_AccessRecord;
-using Random = UnityEngine.Random;
+using static Data_AccessRecord_Ver2;
 
 /// <summary>
 /// [組件] 指定某日的進場人數Bar圖
@@ -28,7 +27,6 @@ public class Chart_DayCount : MonoBehaviour
     private void Start()
     {
         txtDateDisplay.SetText(DateTimeHandler.FullDateFormatWithWeekDay(DateTime.Today));
-        txtCount.SetText("0");
 
         chartHandler.SetYAxisRangeAndFormat(0, 10, numericFormat);
         chartHandler.SetTooltipFormat(numericFormat);
@@ -47,10 +45,25 @@ public class Chart_DayCount : MonoBehaviour
         string stringDate = DateTimeHandler.FullDateFormatWithWeekDay(selectedDate);
         string stringCount = pageData.users.Count.ToString() + "人";
 
-        DotweenHandler.ToBlink(txtDateDisplay, stringDate);
-        DotweenHandler.ToBlink(txtCount, stringCount, 0.1f, Random.Range(0.1f, 0.5f));
+        if (gameObject.activeSelf)
+        {
+            DotweenHandler.ToBlink(txtDateDisplay, stringDate);
+            DotweenHandler.ToBlink(txtCount, stringCount, 0.1f, 0.3f);
+        }
+        else
+        {
+            txtDateDisplay.SetText(stringDate);
+            txtCount.SetText(stringCount);
+        }
 
         AddDataToSeries();
+    }
+
+
+    private void OnEnable()
+    {
+        DotweenHandler.ToBlink(txtDateDisplay);
+        DotweenHandler.ToBlink(txtCount, txtCount.text, 0.1f, 0.3f);
     }
 
     /// <summary>

@@ -31,7 +31,7 @@ public class AccessDoor_InfoPanel : InfoPanel<Data_AccessRecord>
 
         List<User> filterData = data.pageData.users.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).OrderBy(data => data.DateAccessTime).ToList();
         filterData = filterData.Count > 0 ? filterData : new List<User>() { new User() };
-        recordTable.ShowData(filterData);
+      //  recordTable.ShowData(filterData);
     }
 
     protected override void OnCloseHandler(Data_AccessRecord data)

@@ -72,7 +72,6 @@ public class AccessControlManager : iDCIM_ModuleManager
     {
         dataHandler.onGetAccessRecordOfThisYear.AddListener(compTotalCount.ShowData);
         dataHandler.onGetAccessRecordOfThisYear.AddListener(compCalendar.SetDatas);
-        compCalendar.onSelectedDateEvent.AddListener(chartDayCount.ShowData);
         infoPanel.onClickCloseButton.AddListener((data) => RaycastHitManager.CancellObjectSelected(data.DevicePath));
 
         LandmarkManager_RE.onToggleOnEvent.AddListener(OnLandmarkToggleOnHandler);

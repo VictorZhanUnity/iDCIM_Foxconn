@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -24,8 +25,13 @@ public class Landmark_RE : MonoBehaviour
     [HideInInspector]
     public float distanceToCamera { get; set; } = 0;
 
+    private float originalPosY { get; set; }
+    private void Awake() => originalPosY = transform.localPosition.y;
+
     private void OnEnable()
     {
+        transform.DOLocalMoveY(originalPosY, 0.1f).From(100)
+            .SetEase(Ease.OutBack).SetDelay(Random.Range(0f, 0.3f));
         toggle.onValueChanged.AddListener((isOn) => onToggleValueChanged?.Invoke(isOn, targetModel));
     }
 

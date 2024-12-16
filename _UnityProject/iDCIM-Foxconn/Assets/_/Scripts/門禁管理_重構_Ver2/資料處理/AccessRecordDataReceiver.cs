@@ -11,5 +11,9 @@ public abstract class AccessRecordDataReceiver : MonoBehaviour, IAccessRecordDat
 
 public interface IAccessRecordDataReceiver
 {
+
+    /// <summary>
+    /// 接收資料
+    /// </summary>
     abstract void ReceiveData(List<Data_AccessRecord_Ver2> datas);
 }

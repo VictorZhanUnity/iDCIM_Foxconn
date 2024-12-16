@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Data_AccessRecord;
+using User = Data_AccessRecord_Ver2.User;
 
 /// <summary>
 /// [門禁管理] - 門禁記錄表格
@@ -11,7 +12,7 @@ public class AccessRecord_Table : TableScrollRect<User, AccessRecord_TableRow>
     protected override void onClickHeaderSortHandler(bool isDesc, string label)
     {
         List<TableRow<User>> filterList = headers[0].label.Contains(label)
-            ? rowList.OrderBy(row => row.data.UserName).ToList()
+            ? rowList.OrderBy(row => row.data.userName).ToList()
             : rowList.OrderBy(row => row.data.DateAccessTime).ToList();
 
         filterList.ForEach(row =>
