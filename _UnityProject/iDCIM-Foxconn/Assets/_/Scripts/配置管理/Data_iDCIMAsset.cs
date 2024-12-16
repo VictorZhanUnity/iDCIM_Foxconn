@@ -112,8 +112,6 @@ public class Data_DeviceAsset : Data_iDCIMAsset, INotifyData
     public int state;
 
     private Data_ServerRackAsset _rack { get; set; }
-    /* public Data_ServerRackAsset rack => _rack ??= DeviceModelManager.RackDataList
-        .FirstOrDefault(rack => rack.containers.FirstOrDefault(device => device.deviceName == this.deviceName) != null)*/
 
     public Data_ServerRackAsset rack
     {

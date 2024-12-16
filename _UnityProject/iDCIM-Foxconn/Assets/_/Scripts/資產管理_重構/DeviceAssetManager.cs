@@ -13,22 +13,18 @@ public class DeviceAssetManager : ModulePage
 
     protected override void InitEventListener()
     {
-        throw new NotImplementedException();
     }
 
     protected override void OnCloseHandler()
     {
-        throw new NotImplementedException();
     }
 
     protected override void OnShowHandler()
     {
-        throw new NotImplementedException();
     }
 
     protected override void RemoveEventListener()
     {
-        throw new NotImplementedException();
     }
 
     private void GetAllDeviceAssets()

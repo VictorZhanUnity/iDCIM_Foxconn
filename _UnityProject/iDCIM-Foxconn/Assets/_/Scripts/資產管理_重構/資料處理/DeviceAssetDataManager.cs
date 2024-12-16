@@ -8,10 +8,13 @@ using VictorDev.Net.WebAPI;
 
 public class DeviceAssetDataManager : Module
 {
-    [Header(">>> [資料項] - 目前查詢門禁資料")]
+    [Header(">>> [Receiver] - 資料接收器")]
+    [SerializeField] private List<DeviceAssetDataReceiver> receivers;
+
+    [Header(">>> [資料項] - 所有機櫃與設備")]
     [SerializeField] private List<Data_ServerRackAsset> datas;
 
-    [Header(">>> [WebAPI] - 查詢門禁記錄")]
+    [Header(">>> [WebAPI] - 所有機櫃與設備")]
     [SerializeField] private WebAPI_Request request;
 
     [Header(">>> 資產管理器")]
@@ -33,6 +36,7 @@ public class DeviceAssetDataManager : Module
 
         void onSuccessHandler(long responseCode, string jsonString)
         {
+            Debug.Log("DeviceAssetDataManager OnInit");
             datas = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonString);
             // 設置相對應模型
             datas.ForEach(rack =>
@@ -43,6 +47,8 @@ public class DeviceAssetDataManager : Module
             {
                 device.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(device.deviceName));
             });
+            //發送資料
+            receivers.ForEach(receiver => receiver.ReceiveData(datas));
             onInitComplete?.Invoke();
         }
     }
