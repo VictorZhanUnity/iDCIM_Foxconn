@@ -27,7 +27,7 @@ namespace VictorDev.DoTweenUtils
         private void OnEnable()=> ToShow();
         public void ToShow()
         {
-            targetTrans ??= transform;
+            if(targetTrans  == null) targetTrans = transform;
             originalPos ??= targetTrans.localPosition;
             originalScale ??= targetTrans.localScale;
             if (targetTrans.TryGetComponent(out CanvasGroup cg) == false)

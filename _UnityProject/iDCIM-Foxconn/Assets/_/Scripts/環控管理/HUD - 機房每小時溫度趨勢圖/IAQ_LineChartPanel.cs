@@ -16,7 +16,7 @@ public class IAQ_LineChartPanel : MonoBehaviour
     [SerializeField] private List<KeyValueData> historyData;
 
     [Space(20)]
-    [SerializeField] private UIManager_IAQ uiManager_IAQ;
+    [SerializeField] private IAQManager iaqManager;
     [SerializeField] private LineChart lineChart;
 
 
@@ -48,8 +48,7 @@ public class IAQ_LineChartPanel : MonoBehaviour
             //設置LineChart圖表
             Data_IAQ.SetChart(lineChart, avgValues, columnName, false);
         }
-        List<string> tagList = new List<string>();
-        uiManager_IAQ.deviceModelVisualizer.ModelDevicePathList.ForEach(name => tagList.Add(name + "/RT"));
+        List<string> tagList = iaqManager.modelList.Select(item => $"{item.name.Split(",")[0]}/{columnName}").ToList();
         WebAPIManager.GetIAQIndexHistory(tagList, startOfDay, endOfDay, onSuccess, onFailed);
     }
 
