@@ -8,7 +8,7 @@ using VictorDev.Common;
 /// <summary>
 /// 市電、UPS、PDU電力顯示器
 /// </summary>
-public class PowerRealtimeDisplayer : BlackDataDisplayer
+public class PowerRealtimeDisplayer : BlackboxDataDisplayer
 {
     [Header(">>> 文字組件，組件名稱需為TagName")]
     [SerializeField] protected List<TextMeshProUGUI> txtCompList;

@@ -8,7 +8,7 @@ using VictorDev.Advanced;
 /// <summary>
 /// BlackBox資料數值顯示器
 /// </summary>
-public class BlackDataDisplayer : BlackboxDataReceiver
+public class BlackboxDataDisplayer : BlackboxDataReceiver
 {
     [Header(">>> [資料項]")]
     [SerializeField] protected List<Data_Blackbox> datas;
@@ -17,7 +17,7 @@ public class BlackDataDisplayer : BlackboxDataReceiver
     public string tagName;
     public float value { get; private set; }
     [Header(">>> 點擊時Invoke")]
-    public UnityEvent<BlackDataDisplayer> onClickButtonEvent = new UnityEvent<BlackDataDisplayer>();
+    public UnityEvent<BlackboxDataDisplayer> onClickButtonEvent = new UnityEvent<BlackboxDataDisplayer>();
 
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
