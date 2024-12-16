@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
-using VictorDev.DoTweenUtils;
 using static Data_AccessRecord_Ver2;
 
 public class AccessDoor_InfoPanel_Ver2 : AccessRecordDataReceiver
@@ -26,12 +25,7 @@ public class AccessDoor_InfoPanel_Ver2 : AccessRecordDataReceiver
     }
 
     #region [Call by Inspector]
-    public void Show(Transform target) => doTweenFadeController.ToShow();
-    public void Close(Transform target) => doTweenFadeController.ToHide();
-    #endregion
-
-    #region[Components]
-    private DoTweenFadeController _doTweenFadeController { get; set; }
-    private DoTweenFadeController doTweenFadeController => _doTweenFadeController ??= GetComponent<DoTweenFadeController>();
+    public void Show(Transform target) => gameObject.SetActive(true);
+    public void Close(Transform target) => gameObject.SetActive(false);
     #endregion
 }
