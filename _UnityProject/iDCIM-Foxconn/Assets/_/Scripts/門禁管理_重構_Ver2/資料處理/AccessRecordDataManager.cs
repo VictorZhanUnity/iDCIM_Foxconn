@@ -23,10 +23,12 @@ public class AccessRecordDataManager : Module
     [Header(">>> [WebAPI] - 查詢門禁記錄")]
     [SerializeField] private WebAPI_Request request;
 
+    private Action onInitComplete { get; set; }
+
     public override void OnInit(Action onInitComplete = null)
     {
+        this.onInitComplete = onInitComplete;
         GetAccessRecordsOfThisYear();
-        onInitComplete?.Invoke();
     }
 
     [ContextMenu("- 取得今年度門禁記錄")]
@@ -42,6 +44,8 @@ public class AccessRecordDataManager : Module
             datas = result;
             receivers.ForEach(target => target.ReceiveData(datas));
             onGetAccessRecordOfThisYear?.Invoke(datas);
+
+            onInitComplete?.Invoke();
         }
         GetAccessRecordsFromTimeInterval(from, to, onSuccess, null);
     }
