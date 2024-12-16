@@ -45,7 +45,7 @@ public class Landmark_RE : MonoBehaviour
     {
         if (isInvokeEvent == false) OnDisable();
         toggle.isOn = isOn;
-        OnEnable();
+        //OnEnable();
     }
 
     #region [顯示特效設定]
