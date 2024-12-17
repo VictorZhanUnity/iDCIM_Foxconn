@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using Sequence = DG.Tweening.Sequence;
 
 namespace VictorDev.DoTweenUtils
@@ -10,7 +11,7 @@ namespace VictorDev.DoTweenUtils
     /// </summary>
     public class DotweenFade2DWithEnabled : MonoBehaviour
     {
-        #region [Componenets]
+        #region [Components]
         [SerializeField] private float duration = 0.2f;
         [SerializeField] private float dealy = 0.2f;
         [SerializeField] private Ease ease = Ease.OutQuad;
@@ -29,7 +30,17 @@ namespace VictorDev.DoTweenUtils
         public CanvasGroup canvasGroup => _canvasGroup ??= GetComponent<CanvasGroup>();
         #endregion
 
-        private void OnEnable() => ToShow();
+        [Header(">>> [Event] OnEabled時Invoke")]
+        public UnityEvent onEnabledEvent = new UnityEvent();
+        [Header(">>> [Event] OnDisabled時Invoke")]
+        public UnityEvent onDisabledEvent = new UnityEvent();
+
+        private void OnEnable()
+        {
+            onEnabledEvent?.Invoke();
+            ToShow();
+        }
+
         public void ToShow()
         {
             if (targetTrans == null) targetTrans = transform;
@@ -48,5 +59,6 @@ namespace VictorDev.DoTweenUtils
             if (isDoScale) tween.Join(targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(rndDelay));
             tween.Play();
         }
+        private void OnDisable() => onDisabledEvent?.Invoke();
     }
 }
