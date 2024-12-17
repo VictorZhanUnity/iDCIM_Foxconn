@@ -46,7 +46,7 @@ public class ServerRackInfoPanel : MonoBehaviour
     {
         listItem = target;
         data = (Data_ServerRackAsset)listItem.data;
-        rackRUList.ShowRULayout(target);
+      //  rackRUList.ShowRULayout(target);
         ShowData(data);
     }
 

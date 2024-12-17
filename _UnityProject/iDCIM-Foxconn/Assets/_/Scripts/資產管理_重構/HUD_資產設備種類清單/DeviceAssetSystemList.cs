@@ -13,10 +13,10 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
     [Header(">>> 點擊設備類型Toggle時Invoke")]
     public UnityEvent<List<Data_iDCIMAsset>> onClickDeviceSystem = new UnityEvent<List<Data_iDCIMAsset>>();
 
-    private List<Data_ServerRackAsset> rackList { get; set; }
-    private List<Data_DeviceAsset> serverList { get; set; }
-    private List<Data_DeviceAsset> switchList { get; set; }
-    private List<Data_DeviceAsset> routerList { get; set; }
+    public List<Data_ServerRackAsset> rackList;
+    public List<Data_DeviceAsset> serverList;
+    public List<Data_DeviceAsset> switchList;
+    public List<Data_DeviceAsset> routerList;
 
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
@@ -30,7 +30,7 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         //進行設備分類
         deviceList.ForEach(device =>
         {
-            if (device.system.Equals("DCR")) serverList.Add(device);
+            if (device.system.Contains("DCS")) serverList.Add(device);
             else if (device.devicePath.Contains("Switch")) switchList.Add(device);
             else if (device.devicePath.Contains("Router")) routerList.Add(device);
         });

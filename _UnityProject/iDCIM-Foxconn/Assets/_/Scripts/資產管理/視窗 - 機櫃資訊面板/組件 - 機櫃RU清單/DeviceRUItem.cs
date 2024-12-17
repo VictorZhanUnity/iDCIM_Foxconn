@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static VictorDev.RevitUtils.RevitHandler;
 
 /// <summary>
 /// [清單項目] 機櫃RU清單下的資料項目
@@ -21,6 +20,8 @@ public class DeviceRUItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtLabel;
     [SerializeField] private Toggle toggle;
     [SerializeField] private RectTransform rectTrans;
+
+    public bool isOn { set => toggle.isOn = value; }
 
     public void SetToggleWithoutNotify(bool isOn)
     {
@@ -56,7 +57,7 @@ public class DeviceRUItem : MonoBehaviour
 
         //位置
         Vector2 pos = rectTrans.localPosition;
-        pos.y = (_data.rackLocation-1) * 30 + 3;
+        pos.y = (_data.rackLocation - 1) * 30 + 3;
         rectTrans.localPosition = pos;
     }
 }

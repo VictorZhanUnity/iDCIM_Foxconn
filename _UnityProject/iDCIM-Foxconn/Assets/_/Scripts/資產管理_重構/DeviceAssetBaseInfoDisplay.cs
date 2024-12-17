@@ -12,12 +12,9 @@ public class DeviceAssetBaseInfoDisplay : MonoBehaviour
     [Header(">>> [目前資料項]")]
     [SerializeField] private Data_iDCIMAsset data;
 
-    [Header(">>> UI組件")]
-    [SerializeField] private ListItem_COBie listItemPrefab;
-
-    public Color colorDCR;
-    public Color colorDCN;
-    public Color colorDCS;
+    private Color colorDCR = ColorHandler.HexToColor(0x0DA433);
+    private Color colorDCN = ColorHandler.HexToColor(0xFE993E);
+    private Color colorDCS = ColorHandler.HexToColor(0xB74F43);
 
     public void ShowData(Data_iDCIMAsset data)
     {
@@ -25,12 +22,22 @@ public class DeviceAssetBaseInfoDisplay : MonoBehaviour
         UpdateUI();
     }
 
+    private void DotweenText(TextMeshProUGUI targetTxt, string txt)
+    {
+        bool isTxtNull = string.IsNullOrEmpty(txt);
+        string strValue = isTxtNull ? "--- EMPTY ---" : txt;
+        Color color = isTxtNull ? ColorHandler.HexToColor(0x555555) : Color.white;
+        float delay = Random.Range(0f, 0.2f);
+        DotweenHandler.ToBlink(targetTxt, strValue, 0.2f, delay);
+        targetTxt.DOColor(color, 0.1f).SetDelay(delay).OnComplete(() => targetTxt.fontStyle = isTxtNull ? FontStyles.Italic : FontStyles.Normal);
+    }
+
     private void UpdateUI()
     {
-        DotweenHandler.ToBlink(txtDeviceName, data.deviceName, 0.1f, 0.2f, true);
-        DotweenHandler.ToBlink(txtSystem, data.system, 0.1f, 0.2f, true);
-        DotweenHandler.ToBlink(txtManufacturer, data.manufacturer, 0.1f, 0.2f, true);
-        DotweenHandler.ToBlink(txtModelNumber, data.modelNumber, 0.1f, 0.2f, true);
+        DotweenText(txtDeviceName, data.deviceName);
+        DotweenText(txtSystem, data.system);
+        DotweenText(txtManufacturer, data.information.type_manufacturer);
+        DotweenText(txtModelNumber, data.information.type_modelNumber);
 
         Color tagColor = Color.white;
         switch (data.system)
@@ -45,7 +52,7 @@ public class DeviceAssetBaseInfoDisplay : MonoBehaviour
                 tagColor = colorDCN;
                 break;
         }
-        imgSystemTag.DOColor(colorDCR, 0.1f).SetEase(Ease.OutQuad);
+        imgSystemTag.DOColor(tagColor, 0.1f).SetEase(Ease.OutQuad);
     }
 
     #region [Components]

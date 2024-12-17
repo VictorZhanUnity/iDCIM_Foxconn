@@ -43,6 +43,8 @@ namespace VictorDev.DoTweenUtils
 
         public void ToShow()
         {
+            DOTween.Kill(targetTrans);
+
             if (targetTrans == null) targetTrans = transform;
             originalPos ??= targetTrans.localPosition;
             originalScale ??= targetTrans.localScale;
@@ -54,10 +56,10 @@ namespace VictorDev.DoTweenUtils
             float rndDelay = Random.Range(0, dealy);
             cg.DOFade(1, duration).From(0).SetEase(ease).SetDelay(rndDelay);
 
-            Sequence tween = DOTween.Sequence();
-            if (isDoMove) tween.Join(targetTrans.DOLocalMove(originalPos ?? Vector3.zero, duration).From(fromPos).SetEase(ease).SetDelay(rndDelay));
-            if (isDoScale) tween.Join(targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(rndDelay));
-            tween.Play();
+            if (isDoMove) targetTrans.DOLocalMove(originalPos ?? Vector3.zero, duration).From(fromPos).SetEase(ease).SetDelay(rndDelay);
+            if (isDoScale) targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(rndDelay);
+
+            gameObject.SetActive(true);
         }
         private void OnDisable() => onDisabledEvent?.Invoke();
     }

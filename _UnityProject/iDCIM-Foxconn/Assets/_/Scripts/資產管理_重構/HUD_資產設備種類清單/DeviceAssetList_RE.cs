@@ -11,8 +11,8 @@ public class DeviceAssetList_RE : MonoBehaviour
 {
     [Header(">>> 點擊 機櫃資料項 時Invoke")]
     public UnityEvent<ListItem_Device_RE> onClickItem_Rack = new UnityEvent<ListItem_Device_RE>();
-    [Header(">>> 點擊 設定資料項 時Invoke")]
-    public UnityEvent<ListItem_Device_RE> onClickItem_Device = new UnityEvent<ListItem_Device_RE>();
+    [Header(">>> 點擊 設備資料項 時Invoke")]
+    public UnityEvent<Data_DeviceAsset> onClickItem_Device = new UnityEvent<Data_DeviceAsset>();
 
     [Header(">>> [Prefab] 列表項目")]
     [SerializeField] private ListItem_Device_RE ltemPrefab;
@@ -63,7 +63,7 @@ public class DeviceAssetList_RE : MonoBehaviour
     private void OnItemClickHandler(ListItem_Device_RE target)
     {
         if (target.data is Data_ServerRackAsset) onClickItem_Rack?.Invoke(target);
-        else if (target.data is Data_DeviceAsset) onClickItem_Device?.Invoke(target);
+        else if (target.data is Data_DeviceAsset dataDevice) onClickItem_Device?.Invoke(dataDevice);
     }
 
     /// <summary>
@@ -82,7 +82,6 @@ public class DeviceAssetList_RE : MonoBehaviour
     #region [Components]
     private ScrollRect _scrollRect { get; set; }
     private ScrollRect scrollRect => _scrollRect ??= transform.Find("Container").GetChild(1).GetComponent<ScrollRect>();
-
     private ToggleGroup _toggleGroup { get; set; }
     private ToggleGroup toggleGroup => _toggleGroup ??= transform.GetComponent<ToggleGroup>();
     #endregion
