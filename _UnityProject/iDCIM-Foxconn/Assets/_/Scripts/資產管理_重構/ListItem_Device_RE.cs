@@ -12,13 +12,10 @@ public class ListItem_Device_RE : MonoBehaviour
     [SerializeField] private Data_iDCIMAsset _data;
     public Data_iDCIMAsset data => _data;
 
-    [Header(">>> 點擊該資料項時Invoke")]
-    public UnityEvent<ListItem_Device_RE> onClickItemEvent = new UnityEvent<ListItem_Device_RE>();
-
-    [Header(">>> UI組件")]
-    [SerializeField] private Toggle toggle;
-    [SerializeField] private TextMeshProUGUI txtDevicePathName, txtWatt, txtWeight, txtHeightU;
-    public Data_DeviceAsset dataDevice;
+    /// <summary>
+    /// 點擊該資料項時Invoke
+    /// </summary>
+    public UnityEvent<ListItem_Device_RE> onClickItemEvent { get; set; } = new UnityEvent<ListItem_Device_RE>();
 
     /// <summary>
     /// 開/關 Toggle
@@ -34,7 +31,7 @@ public class ListItem_Device_RE : MonoBehaviour
 
     private void UpdateUI(Data_iDCIMAsset data)
     {
-        txtDevicePathName.SetText(data.deviceName);
+        txtDeviceName.SetText(data.deviceName);
         txtWatt.SetText(data.information.watt.ToString());
         txtWeight.SetText(data.information.weight.ToString());
         txtHeightU.SetText(data.information.heightU.ToString());
@@ -46,12 +43,32 @@ public class ListItem_Device_RE : MonoBehaviour
         toggle.isOn = isOn;
         OnEnable();
     }
-    private void OnEnable()
+
+    #region [Event Listener]
+    private void OnEnable() => InitListener();
+    private void OnDisable() => RemoveListener();
+    private void InitListener()
     {
         toggle.onValueChanged.AddListener((isOn) =>
         {
             if (isOn) onClickItemEvent.Invoke(this);
         });
     }
-    private void OnDisable() => toggle.onValueChanged.RemoveAllListeners();
+    private void RemoveListener() => toggle.onValueChanged.RemoveAllListeners();
+    #endregion
+
+    #region [Components]
+    private Toggle _toggle { get; set; }
+    private Toggle toggle => _toggle ??= GetComponent<Toggle>();
+    private Transform _hLayout { get; set; }
+    private Transform hLayout => _hLayout ??= transform.Find("Container").Find("HLayout");
+    private TextMeshProUGUI _txtDeviceName { get; set; }
+    private TextMeshProUGUI txtDeviceName => _txtDeviceName ??= hLayout.parent.Find("txtDeviceName").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtWatt { get; set; }
+    private TextMeshProUGUI txtWatt => _txtWatt ??= hLayout.Find("txtWatt").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtWeight { get; set; }
+    private TextMeshProUGUI txtWeight => _txtWeight ??= hLayout.Find("txtWeight").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtHeightU { get; set; }
+    private TextMeshProUGUI txtHeightU => _txtHeightU ??= hLayout.Find("txtHeightU").GetComponent<TextMeshProUGUI>();
+    #endregion
 }

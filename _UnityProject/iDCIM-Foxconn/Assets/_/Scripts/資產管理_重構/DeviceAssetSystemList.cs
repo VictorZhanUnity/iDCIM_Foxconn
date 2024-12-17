@@ -5,30 +5,29 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+/// <summary>
+/// 資產設備種類列表
+/// </summary>
 public class DeviceAssetSystemList : DeviceAssetDataReceiver
 {
-    [Header(">>> 點擊Server機櫃Toggle時Invoke")]
-    public UnityEvent<List<Data_ServerRackAsset>> onClickDeviceSystem_Rack = new UnityEvent<List<Data_ServerRackAsset>>();
-    [Header(">>> 點擊設備Toggle時Invoke")]
-    public UnityEvent<List<Data_DeviceAsset>> onClickDeviceSystem_Device = new UnityEvent<List<Data_DeviceAsset>>();
+    [Header(">>> 點擊設備類型Toggle時Invoke")]
+    public UnityEvent<List<Data_iDCIMAsset>> onClickDeviceSystem = new UnityEvent<List<Data_iDCIMAsset>>();
 
-    [Header(">>> 組件")]
-    [SerializeField] private TextMeshProUGUI txtNumOfRack, txtNumOfServer, txtNumOfSwitch, txtNumOfRouter;
-    [SerializeField] private Toggle toggleRack, toggleServer, toggleSwitch, toggleRouter;
-
-    public List<Data_ServerRackAsset> rackList;
-    private List<Data_DeviceAsset> deviceList;
-    public List<Data_DeviceAsset> serverList, switchList, routerList;
+    private List<Data_ServerRackAsset> rackList { get; set; }
+    private List<Data_DeviceAsset> serverList { get; set; }
+    private List<Data_DeviceAsset> switchList { get; set; }
+    private List<Data_DeviceAsset> routerList { get; set; }
 
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
         rackList = datas;
-        deviceList = rackList.SelectMany(rack => rack.containers).ToList();
+        List<Data_DeviceAsset> deviceList = rackList.SelectMany(rack => rack.containers).ToList();
 
         serverList = new List<Data_DeviceAsset>();
         switchList = new List<Data_DeviceAsset>();
         routerList = new List<Data_DeviceAsset>();
 
+        //進行設備分類
         deviceList.ForEach(device =>
         {
             if (device.system.Equals("DCR")) serverList.Add(device);
@@ -39,7 +38,7 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         void SetStringFormat(TextMeshProUGUI txt, int count, Toggle toggle)
         {
             txt.SetText($"共{count.ToString()}台");
-            toggle.gameObject.SetActive(count > 0);
+            toggle.gameObject.SetActive(count > 0); //若數量為0，則隱藏該項目
         }
         SetStringFormat(txtNumOfRack, rackList.Count, toggleRack);
         SetStringFormat(txtNumOfServer, serverList.Count, toggleServer);
@@ -47,19 +46,20 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         SetStringFormat(txtNumOfRouter, routerList.Count, toggleRouter);
     }
 
+    #region [Event Listener]
     private void OnEnable()
     {
-        toggleRack.onValueChanged.AddListener((isOn) =>
+        void OnToggleChanged(bool isOn, List<Data_iDCIMAsset> data)
         {
-            if (isOn) onClickDeviceSystem_Rack?.Invoke(rackList);
-        });
-        void OnToggle(bool isOn, List<Data_DeviceAsset> data)
-        {
-            if (isOn) onClickDeviceSystem_Device?.Invoke(data);
+            if (isOn) onClickDeviceSystem?.Invoke(data);
         }
-        toggleServer.onValueChanged.AddListener((isOn) => OnToggle(isOn, serverList));
-        toggleSwitch.onValueChanged.AddListener((isOn) => OnToggle(isOn, switchList));
-        toggleRouter.onValueChanged.AddListener((isOn) => OnToggle(isOn, routerList));
+        toggleRack.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, rackList.Cast<Data_iDCIMAsset>().ToList()));
+        toggleServer.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, serverList.Cast<Data_iDCIMAsset>().ToList()));
+        toggleSwitch.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, switchList.Cast<Data_iDCIMAsset>().ToList()));
+        toggleRouter.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, routerList.Cast<Data_iDCIMAsset>().ToList()));
+
+        //預設機櫃為點選狀態
+        toggleRack.isOn = true;
     }
     private void OnDisable()
     {
@@ -68,4 +68,26 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         toggleSwitch.onValueChanged.RemoveAllListeners();
         toggleRouter.onValueChanged.RemoveAllListeners();
     }
+    #endregion
+
+    #region [Components]
+    private Transform _vLayout { get; set; }
+    private Transform vLayout => _vLayout ??= transform.Find("VLayout");
+    private Toggle _toggleRack { get; set; }
+    private Toggle toggleRack => _toggleRack ??= vLayout.GetChild(0).GetComponent<Toggle>();
+    private Toggle _toggleServer { get; set; }
+    private Toggle toggleServer => _toggleServer ??= vLayout.GetChild(1).GetComponent<Toggle>();
+    private Toggle _toggleSwitch { get; set; }
+    private Toggle toggleSwitch => _toggleSwitch ??= vLayout.GetChild(2).GetComponent<Toggle>();
+    private Toggle _toggleRouter { get; set; }
+    private Toggle toggleRouter => _toggleRouter ??= vLayout.GetChild(3).GetComponent<Toggle>();
+    private TextMeshProUGUI _txtNumOfRack { get; set; }
+    private TextMeshProUGUI txtNumOfRack => _txtNumOfRack ??= toggleRack.transform.Find("txt數量").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtNumOfServer { get; set; }
+    private TextMeshProUGUI txtNumOfServer => _txtNumOfServer ??= toggleServer.transform.Find("txt數量").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtNumOfSwitch { get; set; }
+    private TextMeshProUGUI txtNumOfSwitch => _txtNumOfSwitch ??= toggleSwitch.transform.Find("txt數量").GetComponent<TextMeshProUGUI>();
+    private TextMeshProUGUI _txtNumOfRouter { get; set; }
+    private TextMeshProUGUI txtNumOfRouter => _txtNumOfRouter ??= toggleRouter.transform.Find("txt數量").GetComponent<TextMeshProUGUI>();
+    #endregion
 }
