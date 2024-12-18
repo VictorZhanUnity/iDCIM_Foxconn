@@ -51,8 +51,8 @@ public class IAQManager : ModulePage
 
     protected override void RemoveEventListener()
     {
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
-        RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(OnSelectObjectHandler);
+        RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectObjectHandler);
     }
 
     protected override void OnCloseHandler()

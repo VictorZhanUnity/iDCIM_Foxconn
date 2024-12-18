@@ -38,7 +38,7 @@ public class DeviceAssetManager : ModulePage
 
     protected override void RemoveEventListener()
     {
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(OnClickModelHandler);
     }
     protected override void OnShowHandler() => InitEventListener();
     protected override void OnCloseHandler() => RemoveEventListener();

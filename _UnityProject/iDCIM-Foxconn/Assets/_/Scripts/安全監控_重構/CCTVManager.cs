@@ -52,22 +52,22 @@ public class CCTVManager : iDCIM_ModuleManager
         //檢查是否已開啟
         if (currentPanel != null)
         {
-            if (targetModel.name.Contains(currentPanel.data.DevicePath))
+           /* if (targetModel.name.Contains(currentPanel.data.DevicePath))
             {
                 currentPanel.ToClose();
                 currentPanel.onClickZoomButtn.RemoveAllListeners();
                 return;
-            }
+            }*/
         }
         else
         {
-            CCTV_InfoPanel target = openedPanels.FirstOrDefault(panel => targetModel.name.Contains(panel.data.DevicePath));
+         /*   CCTV_InfoPanel target = openedPanels.FirstOrDefault(panel => targetModel.name.Contains(panel.data.DevicePath));
             if (target != null)
             {
                 target.ToClose();
                 target.onClickZoomButtn.RemoveAllListeners();
                 targetModel.GetChild(0).gameObject.SetActive(false);
-            }
+            }*/
         }
     }
 
@@ -89,21 +89,21 @@ public class CCTVManager : iDCIM_ModuleManager
         //檢查是否已開啟
         if (currentPanel != null)
         {
-            if (currentPanel.data == data)
+          /*  if (currentPanel.data == data)
             {
                 currentPanel.ToBlink();
                 return;
-            }
+            }*/
             currentPanel.onClickZoomButtn.RemoveAllListeners();
             currentPanel.ToClose();
         }
-
+/*
         var existPanel = openedPanels.FirstOrDefault(panel => panel.data == data);
         if (existPanel != null)
         {
             existPanel.ToBlink();
             return;
-        }
+        }*/
 
         //  var infoPanel = ObjectPoolManager.GetInstanceFromQueuePool(infoPanelPrefab, containerForCCTVPanel);
         CCTV_InfoPanel infoPanel = Instantiate(infoPanelPrefab, containerForCCTVPanel);
@@ -116,7 +116,7 @@ public class CCTVManager : iDCIM_ModuleManager
         infoPanel.lineSegment2.SetSiblingIndex(infoPanel.transform.GetSiblingIndex() - 1);
 
         infoPanel.containerForDrag = containerForCCTVPanel;
-        infoPanel.ShowData(data);
+   //     infoPanel.ShowData(data);
         infoPanel.onClickZoomButtn.AddListener(OnZoomHandler);
         infoPanel.onClickCloseButton.AddListener((data) =>
         {
@@ -124,7 +124,7 @@ public class CCTVManager : iDCIM_ModuleManager
             infoPanel.onClickCloseButton.RemoveAllListeners();
             openedPanels.Remove(infoPanel);
             //取消模型的選取狀態
-            Transform targetModel = modelList.FirstOrDefault(model => model.name.Contains(data.devicePath));
+          //  Transform targetModel = modelList.FirstOrDefault(model => model.name.Contains(data.devicePath));
             if (targetModel != null) RaycastHitManager.CancellObjectSelected(targetModel);
         });
 

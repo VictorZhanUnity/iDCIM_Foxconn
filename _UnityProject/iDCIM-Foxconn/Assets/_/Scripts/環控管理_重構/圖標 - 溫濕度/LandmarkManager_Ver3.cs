@@ -28,17 +28,20 @@ public class LandmarkManager_Ver3 : SingletonMonoBehaviour<LandmarkManager_Ver3>
     /// <summary>
     /// 新增圖標
     /// </summary>
-    public static void AddLandmarks(List<Landmark_RE> landmarks) => landmarks.ForEach(landmark => AddLandmark(landmark));
-    public static void AddLandmark(Landmark_RE landmark)
+    public static void AddLandmarks(List<Landmark_RE> landmarks, bool isSetToggleGroup = true) => landmarks.ForEach(landmark => AddLandmark(landmark, isSetToggleGroup));
+    public static void AddLandmark(Landmark_RE landmark, bool isSetToggleGroup = true)
     {
-        if (Instance.landmarkForDisplay.Contains(landmark) == false) Instance.landmarkForDisplay.Add(Instance.InitListener(landmark));
+        if (Instance.landmarkForDisplay.Contains(landmark) == false)
+        {
+            if (isSetToggleGroup) landmark.toggleGroup = Instance.toggleGroup;
+            Instance.landmarkForDisplay.Add(Instance.InitListener(landmark));
+        }
     }
 
     private Landmark_RE InitListener(Landmark_RE landmark)
     {
         landmark.onToggleValueChanged.RemoveAllListeners();
         landmark.onToggleValueChanged.AddListener(onToggleValueChanged.Invoke);
-        landmark.toggleGroup = toggleGroup;
         return landmark;
     }
 

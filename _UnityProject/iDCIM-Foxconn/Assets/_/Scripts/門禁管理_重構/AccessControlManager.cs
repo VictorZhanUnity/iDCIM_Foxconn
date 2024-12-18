@@ -75,12 +75,14 @@ public class AccessControlManager : iDCIM_ModuleManager
         infoPanel.onClickCloseButton.AddListener((data) => RaycastHitManager.CancellObjectSelected(data.DevicePath));
 
         LandmarkManager_RE.onToggleOnEvent.AddListener(OnLandmarkToggleOnHandler);
-        RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) =>
-        {
-            Data_AccessRecord data = dataHandler.GetDataByDevicePath(targetModel.name);
-            if (data != null) infoPanel.ShowData(data);
-        });
+        RaycastHitManager.onSelectObjectEvent.AddListener(onSelectObjectEvent);
     }
+    private void onSelectObjectEvent(Transform targetModel)
+    {
+        Data_AccessRecord data = dataHandler.GetDataByDevicePath(targetModel.name);
+        if (data != null) infoPanel.ShowData(data);
+    }
+
 
     private void RemoveListener()
     {
@@ -89,7 +91,7 @@ public class AccessControlManager : iDCIM_ModuleManager
         compCalendar.onSelectedDateEvent.RemoveAllListeners();
         infoPanel.onClickCloseButton.RemoveAllListeners();
         LandmarkManager_RE.onToggleOnEvent.RemoveAllListeners();
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(onSelectObjectEvent);
     }
 
 

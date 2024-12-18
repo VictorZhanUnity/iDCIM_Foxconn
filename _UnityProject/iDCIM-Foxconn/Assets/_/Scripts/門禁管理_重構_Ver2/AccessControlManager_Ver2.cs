@@ -48,10 +48,17 @@ public class AccessControlManager_Ver2 : ModulePage
     }
     protected override void RemoveEventListener()
     {
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
-        RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(OnSelectObjectHandler);
+        RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectObjectHandler);
     }
-    private void OnSelectObjectHandler(Transform target) => onClickLandmark?.Invoke(target);
-    private void OnDeselectObjectHandler(Transform target) => onCancellLandmark?.Invoke(target);
+    private void OnSelectObjectHandler(Transform target)
+    {
+        if (target.name.Contains("CCTV") == false) onClickLandmark?.Invoke(target);
+    }
+
+    private void OnDeselectObjectHandler(Transform target)
+    {
+        if (target.name.Contains("CCTV") == false) onCancellLandmark?.Invoke(target);
+    }
     #endregion
 }

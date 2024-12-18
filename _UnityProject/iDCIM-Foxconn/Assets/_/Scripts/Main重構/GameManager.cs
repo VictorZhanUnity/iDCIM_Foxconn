@@ -26,7 +26,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             if (isOn) RaycastHitManager.ToSelectTarget(targetModel);
             else RaycastHitManager.CancellObjectSelected(targetModel);
         });
-        void func(Transform targetModel, bool isOn) => LandmarkManager_Ver3.SetLandmarkIsOn(targetModel, isOn);
+        void func(Transform targetModel, bool isOn)
+        {
+            LandmarkManager_Ver3.SetLandmarkIsOn(targetModel, isOn);
+        }
+
         RaycastHitManager.onSelectObjectEvent.AddListener((targetModel) => func(targetModel, true));
         RaycastHitManager.onDeselectObjectEvent.AddListener((targetModel) => func(targetModel, false));
     }

@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.RTSP;
 
-public class CCTV_InfoPanel : InfoPanel<Data_RTSP>
+public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
 {
     [Space(20)]
     [Header(">>> ÂIÀ»¥þ¿Ã¹õ«ö¶s®ÉInvoke")]
@@ -48,21 +48,23 @@ public class CCTV_InfoPanel : InfoPanel<Data_RTSP>
         lineSegment2.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
     }
 
-    protected override void OnShowDataHandler(Data_RTSP data)
+    protected override void OnShowDataHandler(SoData_RTSP_Channel data)
     {
-        txtDeviceName.SetText(data.name);
-        txtDevicePath.SetText(data.devicePath);
-        txtIdNumber.SetText(data.idNumber);
-        txtDescription.SetText(data.deviceInformation.description);
-        txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);
-
-        rtspScreen.Play(data.deviceInformation.rtsp_connection_string);
+    txtDeviceName.SetText(data.name);
+        /*  txtDevicePath.SetText(data.devicePath);
+      txtIdNumber.SetText(data.idNumber);
+      txtDescription.SetText(data.deviceInformation.description);
+      txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);
+*/
+        rtspScreen.Play(data.RTSP_URL);
     }
 
-    protected override void OnCloseHandler(Data_RTSP data)
+    public UnityEvent<CCTV_InfoPanel> onCloseEvent = new UnityEvent<CCTV_InfoPanel>();
+    protected override void OnCloseHandler(SoData_RTSP_Channel data)
     {
         //ObjectPoolManager.PushToPool(this);
         rtspScreen.Stop();
+        onCloseEvent?.Invoke(this);
 #if UNITY_EDITOR
         DestroyImmediate(gameObject);
 #else

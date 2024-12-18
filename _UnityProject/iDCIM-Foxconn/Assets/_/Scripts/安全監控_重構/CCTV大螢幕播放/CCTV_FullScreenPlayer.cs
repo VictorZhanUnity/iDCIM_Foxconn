@@ -2,11 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VictorDev.DoTweenUtils;
+using VictorDev.RTSP;
 
 public class CCTV_FullScreenPlayer : MonoBehaviour
 {
     [Header(">>> [資料項]")]
-    [SerializeField] private Data_RTSP data;
+    [SerializeField] private SoData_RTSP_Channel data;
 
     [Header(">>> 組件")]
     [SerializeField] private GameObject canvasObj;
@@ -33,11 +34,11 @@ public class CCTV_FullScreenPlayer : MonoBehaviour
         currentCCTVPanel = panel;
         data = panel.data;
 
-        txtDeviceName.SetText(data.name);
+    /*    txtDeviceName.SetText(data.name);
         txtDevicePath.SetText(data.devicePath);
         txtIdNumber.SetText(data.idNumber);
         txtDescription.SetText(data.deviceInformation.description);
-        txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);
+        txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);*/
 
         panel.RtspScreen.AddRenderingTarget(rawImgScreen.gameObject);
 

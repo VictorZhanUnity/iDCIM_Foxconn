@@ -23,7 +23,7 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
     }
 
     /// <summary>
-    /// 更新UI
+    /// 更新UI 
     /// </summary>
     protected virtual void UpdateUI()
     {

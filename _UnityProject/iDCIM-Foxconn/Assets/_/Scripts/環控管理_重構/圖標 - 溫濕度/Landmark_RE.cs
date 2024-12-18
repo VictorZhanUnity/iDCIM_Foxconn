@@ -31,11 +31,13 @@ public class Landmark_RE : MonoBehaviour
 
     private void OnEnable()
     {
-        toggle.onValueChanged.AddListener((isOn) => onToggleValueChanged?.Invoke(isOn, targetModel));
+        InitListener();
         ShowEffect();
     }
+    private void InitListener() => toggle.onValueChanged.AddListener((isOn) => onToggleValueChanged?.Invoke(isOn, targetModel));
+    private void RemoveListener() => toggle.onValueChanged.RemoveAllListeners();
 
-    private void OnDisable() => toggle.onValueChanged.RemoveAllListeners();
+    private void OnDisable() => RemoveListener();
 
     /// <summary>
     /// 設定Toggle.isOn狀態
@@ -43,9 +45,9 @@ public class Landmark_RE : MonoBehaviour
     /// </summary>
     public void SetToggleStatus(bool isOn, bool isInvokeEvent = false)
     {
-        if (isInvokeEvent == false) OnDisable();
+        if (isInvokeEvent == false) RemoveListener();
         toggle.isOn = isOn;
-        //OnEnable();
+        if (isInvokeEvent == false) InitListener();
     }
 
     #region [顯示特效設定]

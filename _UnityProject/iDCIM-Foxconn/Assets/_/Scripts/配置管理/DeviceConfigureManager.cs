@@ -147,11 +147,12 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
 
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
-        RaycastHitManager.onDeselectObjectEvent.AddListener((target) => deviceController.ToClose());
+        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectDeviceHandler);
 
         deviceController.onClickMoveDeviceEvent.AddListener(OnClickMoveDeviceHandler);
         deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
     }
+    private void OnDeselectDeviceHandler(Transform target) => deviceController.ToClose();
     #endregion
     public NotifyListItem notifyPrefab;
 
@@ -160,8 +161,8 @@ public class DeviceConfigureManager : iDCIM_ModuleManager
         dataHandler.onGetAllStockDevices.RemoveAllListeners();
         stockDeviceList.onCreateTempDeviceModel.RemoveAllListeners();
 
-        RaycastHitManager.onSelectObjectEvent.RemoveAllListeners();
-        RaycastHitManager.onDeselectObjectEvent.RemoveAllListeners();
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(OnClickDeviceHandler);
+        RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectDeviceHandler);
     }
 
   

@@ -128,7 +128,7 @@ namespace VictorDev.CameraUtils
             target.position = Vector3.SmoothDamp(target.position, targetPosition, ref targetVelocity, moveSmoothTime);
 
             // 鼠标滚轮调整距离
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            float scroll = (EventSystem.current.IsPointerOverGameObject())? 0:  Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0) smoothTime = originalSmoothTime;
             currentDistance = Mathf.Clamp(currentDistance - scroll * scrollSpeed, distanceMin, distanceMax);
 
