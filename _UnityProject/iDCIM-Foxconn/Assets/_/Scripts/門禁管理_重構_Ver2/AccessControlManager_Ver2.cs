@@ -58,7 +58,10 @@ public class AccessControlManager_Ver2 : ModulePage
 
     private void OnDeselectObjectHandler(Transform target)
     {
-        if (target.name.Contains("CCTV") == false) onCancellLandmark?.Invoke(target);
+        if (target.name.Contains("CCTV") == false)
+        {
+            onCancellLandmark?.Invoke(target);
+        }
     }
     #endregion
 }

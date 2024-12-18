@@ -57,6 +57,7 @@ public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
       txtRTSP_URL.SetText(data.deviceInformation.rtsp_connection_string);
 */
         rtspScreen.Play(data.RTSP_URL);
+        txtRTSP_URL.SetText(data.RTSP_URL);
     }
 
     public UnityEvent<CCTV_InfoPanel> onCloseEvent = new UnityEvent<CCTV_InfoPanel>();

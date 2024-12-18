@@ -105,11 +105,15 @@ public class CCTV_Manager_Ver3 : ModulePage
         currentPanel.onCloseEvent.AddListener((panel) => landmarkList.FirstOrDefault(landmark => landmark.targetModel == panel.targetModel).SetToggleStatus(false));
     }
 
-
     #region [>>> Initialize] 
     public override void OnInit(Action onInitComplete = null)
     {
         LandmarkManager_Ver3.AddLandmarks(landmarkList, false);
+
+        //為了在其它頁面亦可以被點選，所以在OnInit時監聽事件
+        RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
+        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
+
         Debug.Log(">>> CCTV_Manager_Ver3 OnInit");
         onInitComplete?.Invoke();
     }
@@ -128,11 +132,11 @@ public class CCTV_Manager_Ver3 : ModulePage
 
     protected override void InitEventListener()
     {
-        RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
-        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
+        //為了在其它頁面亦可以被點選，所以在OnInit時監聽事件
     }
     protected override void RemoveEventListener()
     {
+        //為了在其它模組頁面時，亦可以點選，所以不移除Listener
         /*RaycastHitManager.onSelectObjectEvent.RemoveListener(OnSelectObjectHandler);
         RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectObjectHandler);*/
     }

@@ -64,7 +64,7 @@ namespace VictorDev.DateTimeUtils
 
             DateTime dateTime = DateTime.Now;
 
-            int timeValue = 0;
+            float timeValue = 0f;
             dateTime = dateTime.AddHours(timeValue); //往回推 for Demo
 
             string time = dateTime.ToString(format, cultureInfo);
