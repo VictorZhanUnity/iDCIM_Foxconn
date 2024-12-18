@@ -29,6 +29,8 @@ public class ServerRackInfoPanel_RE : MonoBehaviour
 
     private List<DeviceRUItem> ruItemList { get; set; } = new List<DeviceRUItem>();
 
+    
+
     public void InvokeRackData()
     {
         HideToBackground();
@@ -50,6 +52,8 @@ public class ServerRackInfoPanel_RE : MonoBehaviour
     {
         deviceBaseInfo.ShowData(dataRack);
         data = (Data_ServerRackAsset)dataRack;
+
+        RaycastHitManager.ToSelectTarget(data.model, false);
 
         SetupRUList();
         UpdateUI();
@@ -140,7 +144,7 @@ public class ServerRackInfoPanel_RE : MonoBehaviour
         canvasGroup.DOFade(alpha, duration).OnUpdate(() => canvasGroup.interactable = canvasGroup.blocksRaycasts = canvasGroup.alpha == 1).SetEase(Ease.OutQuad);
         transform.DOMove(originalPos + offsetPos, duration).SetEase(Ease.OutQuad);
         transform.DOScale(scaleValue, duration).SetEase(Ease.OutQuad);
-    }
+    } 
     #endregion
 
     #region [Components]

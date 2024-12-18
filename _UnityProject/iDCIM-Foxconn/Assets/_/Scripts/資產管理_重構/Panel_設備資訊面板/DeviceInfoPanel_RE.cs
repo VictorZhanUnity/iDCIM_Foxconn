@@ -24,6 +24,7 @@ public class DeviceInfoPanel_RE : MonoBehaviour
     {
         dataAsset = data;
         deviceBaseInfo.ShowData(dataAsset);
+        RaycastHitManager.ToSelectTarget(data.model, false);
 
         if (data is Data_DeviceAsset dataDevice)
         {
