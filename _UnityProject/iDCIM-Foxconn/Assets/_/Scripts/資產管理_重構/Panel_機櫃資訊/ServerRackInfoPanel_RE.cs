@@ -36,13 +36,20 @@ public class ServerRackInfoPanel_RE : MonoBehaviour
     }
 
     /// <summary>
-    /// 顯示資料
+    /// 顯示資料 (From列表點選)
     /// </summary>
     public void ShowData(ListItem_Device_RE target)
     {
         selectedListItem = target;
-        deviceBaseInfo.ShowData(selectedListItem.data);
-        data = (Data_ServerRackAsset)selectedListItem.data;
+        ShowData(selectedListItem.data);
+    }
+    /// <summary>
+    /// 顯示資料 (From模型點選)
+    /// </summary>
+    public void ShowData(Data_iDCIMAsset dataRack)
+    {
+        deviceBaseInfo.ShowData(dataRack);
+        data = (Data_ServerRackAsset)dataRack;
 
         SetupRUList();
         UpdateUI();
@@ -50,6 +57,7 @@ public class ServerRackInfoPanel_RE : MonoBehaviour
         dotween.ToShow();
         ShowToFront();
     }
+
 
     /// <summary>
     /// 設定RU設備列表，RU設備座標為listItem自已處理換算

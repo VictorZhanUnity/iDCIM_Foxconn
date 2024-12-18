@@ -23,7 +23,7 @@ public class LandmarkManager_Ver3 : SingletonMonoBehaviour<LandmarkManager_Ver3>
     /// <para>+ isInvokeEvent: 是否觸發Toggle事件</para>
     /// </summary>
     public static void SetLandmarkIsOn(Transform targetModel, bool isOn, bool isInvokeEvent = false)
-        => Instance.landmarkForDisplay.FirstOrDefault(landmark => landmark.targetModel == targetModel).SetToggleStatus(isOn, isInvokeEvent);
+        => Instance.landmarkForDisplay.FirstOrDefault(landmark => landmark.targetModel == targetModel)?.SetToggleStatus(isOn, isInvokeEvent);
 
     /// <summary>
     /// 新增圖標

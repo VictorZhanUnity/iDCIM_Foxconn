@@ -1,11 +1,13 @@
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VictorDev.Common;
 using VictorDev.DoTweenUtils;
 
 
 /// <summary>
-/// [資產管理] 設備資訊視窗(設備 or 機櫃)
+/// 視窗 - 設備資訊面板(設備 or 機櫃)
 /// </summary>
 public class DeviceInfoPanel_RE : MonoBehaviour
 {
@@ -22,6 +24,13 @@ public class DeviceInfoPanel_RE : MonoBehaviour
     {
         dataAsset = data;
         deviceBaseInfo.ShowData(dataAsset);
+
+        if (data is Data_DeviceAsset dataDevice)
+        {
+            txtRuLocation.gameObject.SetActive(dataDevice.rackLocation != 0);
+            DotweenHandler.ToBlink(txtRuLocation, $"U{dataDevice.rackLocation.ToString()}");
+        }
+        else txtRuLocation.gameObject.SetActive(false);
 
         icon_DCR.gameObject.SetActive(icon_DCR.name.Contains(data.system));
         icon_DCN.gameObject.SetActive(icon_DCN.name.Contains(data.system));
@@ -55,12 +64,16 @@ public class DeviceInfoPanel_RE : MonoBehaviour
     private DotweenFade2DWithEnabled dotween => _dotween ??= transform.GetComponent<DotweenFade2DWithEnabled>();
     private Transform _container { get; set; }
     private Transform container => _container ??= transform.Find("Container");
+    private Transform _header { get; set; }
+    private Transform header => _header ??= container.Find("Header");
+    private TextMeshProUGUI _txtRuLocation { get; set; }
+    private TextMeshProUGUI txtRuLocation => _txtRuLocation ??= header.Find("txtRuLocation").GetComponent<TextMeshProUGUI>();
     private Image _icon_DCR { get; set; }
-    private Image icon_DCR => _icon_DCR ??= container.Find("Header").Find("imgICON_DCR").GetComponent<Image>();
+    private Image icon_DCR => _icon_DCR ??= header.Find("imgICON_DCR").GetComponent<Image>();
     private Image _icon_DCS { get; set; }
-    private Image icon_DCS => _icon_DCS ??= container.Find("Header").Find("imgICON_DCS").GetComponent<Image>();
+    private Image icon_DCS => _icon_DCS ??= header.Find("imgICON_DCS").GetComponent<Image>();
     private Image _icon_DCN { get; set; }
-    private Image icon_DCN => _icon_DCN ??= _icon_DCR.transform.parent.Find("imgICON_DCN").GetComponent<Image>();
+    private Image icon_DCN => _icon_DCN ??= header.Find("imgICON_DCN").GetComponent<Image>();
     private DeviceAssetBaseInfoDisplay _deviceBaseInfo { get; set; }
     private DeviceAssetBaseInfoDisplay deviceBaseInfo => _deviceBaseInfo ??= container.Find("組件 - 設備基本資訊").GetComponent<DeviceAssetBaseInfoDisplay>();
     private ScrollRect _scrollRect { get; set; }

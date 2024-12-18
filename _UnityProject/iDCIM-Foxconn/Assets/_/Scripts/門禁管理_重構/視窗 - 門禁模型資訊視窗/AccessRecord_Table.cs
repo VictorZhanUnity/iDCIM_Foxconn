@@ -28,10 +28,10 @@ public class AccessRecord_Table : TableScrollRect<User, AccessRecord_TableRow>
     }
     protected override void OnShowDataHandler(List<User> data)
     {
-        if (data.Count == 0)
+     /*   if (data.Count == 0)
         {
             AccessRecord_TableRow rowItem = Instantiate(rowPrefab, scrollRect.content);
             rowItem.SetData(new User());
-        }
+        }*/
     }
 }
