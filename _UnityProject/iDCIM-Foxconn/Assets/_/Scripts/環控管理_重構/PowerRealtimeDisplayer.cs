@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using VictorDev.Common;
- 
+
 /// <summary>
 /// 市電、UPS、PDU電力顯示器
 /// </summary>
@@ -13,8 +14,17 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
     [Header(">>> 文字組件，組件名稱需為TagName")]
     [SerializeField] protected List<TextMeshProUGUI> txtCompList;
 
-    [Header(">>> 警報時文字組件的顏色")]
-    [SerializeField] protected Color alarmColor = ColorHandler.HexToColor(0xFF8237);
+    /// <summary>
+    /// 警報時文字組件的顏色
+    /// </summary>
+    protected Color alarmTextColor => ColorHandler.HexToColor(0xFF3636);
+    /// <summary>
+    /// 警報時背景漸層的顏色
+    /// </summary>
+    protected Color alarmGradientColor => ColorHandler.HexToColor(0x640000, 100 / 255f);
+    protected Color normalGradientColor { get; set; }
+
+    private void Awake() => normalGradientColor = imgGradientBkg.color;
 
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
@@ -31,19 +41,29 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
         List<Data_Blackbox> statusList = datas.Where(data => data.tagName.Contains("Status")).ToList();
         List<Data_Blackbox> valueList = datas.Where(data => data.tagName.Contains("Value")).ToList();
 
+        bool isHaveAlarm = false;
         txtCompList.ForEach(txt =>
         {
             string keyword = txt.name.Trim();
             bool isAlarm = statusList.FirstOrDefault(data => data.tagName.Contains(keyword)).alarm != null;
+            if (isAlarm) isHaveAlarm = true;
+
             float value = (valueList.FirstOrDefault(data => data.tagName.Contains(keyword)).value ?? 2);
             //設定值
-            if(float.Parse(txt.text.Trim()) != value)
+            if (float.Parse(txt.text.Trim()) != value)
             {
                 DotweenHandler.ToBlink(txt, value.ToString("0.##"), 0.05f, 0.2f, true);
                 //設定文字顏色(是否有警報)
-                txt.DOColor((isAlarm) ? alarmColor : Color.white, 0.1f).SetEase(Ease.OutQuad);
+                txt.DOColor((isAlarm) ? alarmTextColor : Color.white, 0.2f).SetEase(Ease.OutQuad);
             }
         });
+        imgGradientBkg.DOColor(isHaveAlarm ? alarmGradientColor : normalGradientColor, 0.2f).SetEase(Ease.OutQuad);
     }
+
+
+    #region [Components] 
+    private Image _imgGradientBkg { get; set; }
+    private Image imgGradientBkg => _imgGradientBkg ??= transform.GetChild(0).GetComponent<Image>();
+    #endregion
 }
 
