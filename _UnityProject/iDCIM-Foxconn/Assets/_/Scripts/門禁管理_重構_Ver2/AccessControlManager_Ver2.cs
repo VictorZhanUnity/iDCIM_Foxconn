@@ -22,8 +22,12 @@ public class AccessControlManager_Ver2 : ModulePage
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
 
         //預設點選
-        landmarkList[0].isOn = true;
-        onClickLandmark?.Invoke(landmarkList[0].targetModel);
+        AccessDoorLandmarkDisplayer defaultSelected = landmarkList[0].GetComponent<AccessDoorLandmarkDisplayer>();
+        if (defaultSelected.TodayList.Count > 0)
+        {
+            landmarkList[0].isOn = true;
+            onClickLandmark?.Invoke(landmarkList[0].targetModel);
+        }
     }
     protected override void OnCloseHandler()
     {

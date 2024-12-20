@@ -10,6 +10,8 @@ public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
     [Header(">>> [資料項] 今日門禁記錄")]
     [SerializeField] private List<User> todayList;
 
+    public List<User> TodayList => todayList;
+
     public override void ReceiveData(List<Data_AccessRecord_Ver2> datas)
     {
         todayList = datas.SelectMany(data => data.pageData.users)

@@ -2,7 +2,6 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using Sequence = DG.Tweening.Sequence;
 
 namespace VictorDev.DoTweenUtils
 {
@@ -13,13 +12,14 @@ namespace VictorDev.DoTweenUtils
     {
         #region [Components]
         [SerializeField] private float duration = 0.2f;
-        [SerializeField] private float dealy = 0.2f;
+        private bool isRandomDelay = true;
+        [SerializeField] private float delay = 0.2f;
         [SerializeField] private Ease ease = Ease.OutQuad;
         [Header(">>> 是否移動")]
         [SerializeField] private bool isDoMove = true;
         [SerializeField] private Vector3 fromPosValue = Vector3.zero;
         [Header(">>> 是否縮放")]
-        [SerializeField] private bool isDoScale = true;
+        [SerializeField] private bool isDoScale = false;
         [SerializeField] private float fromScaleValue = 1f;
 
         [Header(">>> 動畫目標對像(若為空則自動指向本身")]
@@ -53,11 +53,11 @@ namespace VictorDev.DoTweenUtils
                 cg = targetTrans.AddComponent<CanvasGroup>();
             }
             Vector3 fromPos = (originalPos ?? Vector3.zero) + fromPosValue;
-            float rndDelay = Random.Range(0, dealy);
-            cg.DOFade(1, duration).From(0).SetEase(ease).SetDelay(rndDelay);
+            float targetDelay = isRandomDelay ? Random.Range(0, delay) : delay;
+            cg.DOFade(1, duration).From(0).SetEase(ease).SetDelay(targetDelay);
 
-            if (isDoMove) targetTrans.DOLocalMove(originalPos ?? Vector3.zero, duration).From(fromPos).SetEase(ease).SetDelay(rndDelay);
-            if (isDoScale) targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(rndDelay);
+            if (isDoMove) targetTrans.DOLocalMove(originalPos ?? Vector3.zero, duration).From(fromPos).SetEase(ease).SetDelay(targetDelay);
+            if (isDoScale) targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(targetDelay);
 
             gameObject.SetActive(true);
         }

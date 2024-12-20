@@ -24,8 +24,6 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
     protected Color alarmGradientColor => ColorHandler.HexToColor(0x640000, 100 / 255f);
     protected Color normalGradientColor { get; set; }
 
-    private void Awake() => normalGradientColor = imgGradientBkg.color;
-
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
         base.ReceiveData(blackBoxData);
@@ -41,13 +39,10 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
         List<Data_Blackbox> statusList = datas.Where(data => data.tagName.Contains("Status")).ToList();
         List<Data_Blackbox> valueList = datas.Where(data => data.tagName.Contains("Value")).ToList();
 
-        bool isHaveAlarm = false;
         txtCompList.ForEach(txt =>
         {
             string keyword = txt.name.Trim();
             bool isAlarm = statusList.FirstOrDefault(data => data.tagName.Contains(keyword)).alarm != null;
-            if (isAlarm) isHaveAlarm = true;
-
             float value = (valueList.FirstOrDefault(data => data.tagName.Contains(keyword)).value ?? 2);
             //設定值
             if (float.Parse(txt.text.Trim()) != value)
@@ -57,13 +52,6 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
                 txt.DOColor((isAlarm) ? alarmTextColor : Color.white, 0.2f).SetEase(Ease.OutQuad);
             }
         });
-        imgGradientBkg.DOColor(isHaveAlarm ? alarmGradientColor : normalGradientColor, 0.2f).SetEase(Ease.OutQuad);
     }
-
-
-    #region [Components] 
-    private Image _imgGradientBkg { get; set; }
-    private Image imgGradientBkg => _imgGradientBkg ??= transform.GetChild(0).GetComponent<Image>();
-    #endregion
 }
 

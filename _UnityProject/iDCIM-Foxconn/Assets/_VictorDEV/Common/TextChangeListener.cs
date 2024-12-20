@@ -8,7 +8,7 @@ namespace VictorDev.Advanced
     {
         public UnityEvent<string> onTextChanged = new UnityEvent<string>();
         public UnityEvent<float> onTextChanged_Float = new UnityEvent<float>();
-        public UnityEvent<float> onTextChanged_Percent = new UnityEvent<float>();
+        public UnityEvent<float> onTextChanged_Percent01 = new UnityEvent<float>();
 
         private TextMeshProUGUI _txt { get; set; }
         private TextMeshProUGUI txt => _txt ??= GetComponent<TextMeshProUGUI>();
@@ -24,7 +24,7 @@ namespace VictorDev.Advanced
                 if (float.TryParse(previousTxt, out float value))
                 {
                     onTextChanged_Float?.Invoke(value);
-                    onTextChanged_Percent?.Invoke(value / 100);
+                    onTextChanged_Percent01?.Invoke(value / 100);
                 }
             }
         }
