@@ -35,7 +35,6 @@ namespace VictorDev.RTSP
         private void OnValidate()
         {
             URL = URL.Trim();
-            Debug.Log($">>> RTSP位址：{RTSP_URL}");
         }
     }
 }
