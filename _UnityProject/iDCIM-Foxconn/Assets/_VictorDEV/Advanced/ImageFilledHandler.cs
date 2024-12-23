@@ -9,7 +9,7 @@ namespace VictorDev.Advanced
 {
     public class ImageFilledHandler : Image
     {
-        [Header(">>>顏色排序(依百分比從小到大)")]
+        [Header(">>>顏色排序(依百分比從小到大, 若無顏色則不進行變化)")]
         [SerializeField]
         private List<Color> colorLevels = new List<Color>()
     {
@@ -24,9 +24,12 @@ namespace VictorDev.Advanced
         /// </summary>
         public void DoTween_FillAmount(float percent01)
         {
-
             this.DOFillAmount(percent01, duration).SetEase(Ease.OutQuad);
-            this.DOColor(GetColorByPercent(percent01), duration).SetEase(Ease.OutQuad);
+
+            if (colorLevels.Count > 0)
+            {
+                this.DOColor(GetColorByPercent(percent01), duration).SetEase(Ease.OutQuad);
+            }
         }
 
         private Color GetColorByPercent(float percent)

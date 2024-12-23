@@ -1,0 +1,50 @@
+using DG.Tweening;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using VictorDev.Common;
+
+public class ColorBlinker : MonoBehaviour
+{
+    [Header(">>>正常時顏色")]
+    [SerializeField] private Color normalColor = ColorHandler.HexToColor(0x74FF5A);
+
+    [Header(">>>告警時閃爍顏色")]
+    [SerializeField] public Color alarmColor1 = ColorHandler.HexToColor(0xFFAFAF); 
+    [SerializeField] public Color alarmColor2 = Color.red;
+
+    [Header(">>> 目標組件(Image/TextMeshProUGUI)，若null則抓本身的組件")]
+    [SerializeField] private Graphic target;
+
+    public float duration = 0.5f;
+    public Ease ease = Ease.InOutSine;
+
+    private Tween blink { get; set; }
+
+    private void Awake()
+    {
+        if (target == null)
+        {
+            if (target.TryGetComponent(out Image img)) target = img;
+            else if (target.TryGetComponent(out TextMeshProUGUI txt)) target = txt;
+        }
+        ToNormal();
+    }
+
+    public void SetBlinkStatus(bool isBlink)
+    {
+        if (isBlink) ToBlink();
+        else ToNormal();
+    }
+    public void ToBlink()
+    {
+        blink?.Kill();
+        blink = ColorHandler.ToBlink(target, alarmColor1, alarmColor2, duration, ease);
+    }
+
+    public void ToNormal()
+    {
+        blink?.Kill();
+        blink = target.DOColor(normalColor, duration).SetEase(Ease.OutQuad);
+    }
+}

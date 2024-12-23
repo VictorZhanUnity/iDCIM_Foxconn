@@ -3,8 +3,8 @@ using UnityEngine;
 namespace VictorDev.Common
 {
     /// <summary>
-    /// ³æ¨Ò¼Ò¦¡¡A¥istatic©I¥s¡A¥i±¾¸ü©óGameObject¤W
-    /// <para>°»´úInstance¬O§_¦s¦b¨Ã¦Û°Ê·s«Ø©ó³õ´º¤W</para>
+    /// å–®ä¾‹æ¨¡å¼ï¼Œå¯staticå‘¼å«ï¼Œå¯æ›è¼‰æ–¼GameObjectä¸Š
+    /// <para>åµæ¸¬Instanceæ˜¯å¦å­˜åœ¨ä¸¦è‡ªå‹•æ–°å»ºæ–¼å ´æ™¯ä¸Š</para>
     /// </summary>
     public class SingletonMonoBehaviour<T> : MonoBehaviour where T : Component, new()
     {

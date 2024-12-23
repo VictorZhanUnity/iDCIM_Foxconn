@@ -166,5 +166,15 @@ namespace VictorDev.Common
                 .Select(threshold => threshold.Item2)  // 取得對應的顏色
                 .FirstOrDefault();  // 若找不到，返回預設顏色（此處會返回Level第一個顏色）
         }
+
+        public static Tween ToBlink<T>(T target, Color color1, Color color2, float duration = 1f, Ease ease = Ease.InOutQuad) where T : Graphic
+        {
+            target.DOKill();
+            target.color = color1;
+            // 設置 Image 的顏色在 color1 和 color2 之間循環變化
+            return  target.DOColor(color2, duration)
+                .SetLoops(-1, LoopType.Yoyo) // 無限循環，Yoyo 模式（往返）
+                .SetEase(ease); // 平滑的過渡效果
+        }
     }
 }
