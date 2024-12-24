@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,8 +14,11 @@ public class Table : MonoBehaviour
     {
         titleBarList.ForEach(titleBar =>
         {
-            titleBar.toggleGroup = toggleGroup;
-            titleBar.onSortKeyEvent.AddListener(onSortKeyEvent.Invoke);
+            if (titleBar != null)
+            {
+                titleBar.toggleGroup = toggleGroup;
+                titleBar.onSortKeyEvent.AddListener(onSortKeyEvent.Invoke);
+            }
         });
     }
 }

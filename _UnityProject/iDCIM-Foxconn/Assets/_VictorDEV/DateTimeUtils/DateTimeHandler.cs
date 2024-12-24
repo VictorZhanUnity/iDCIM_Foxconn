@@ -110,5 +110,14 @@ namespace VictorDev.Common
                 return result;
             }
         }
+
+        private static CultureInfo cultureInfo_ENG { get; set; }
+        private static CultureInfo cultureInfo_ZH { get; set; }
+
+        public static CultureInfo GetCulture(bool isEng = true)
+        {
+            if (isEng) return cultureInfo_ENG ??= new CultureInfo("en-US");
+            else return cultureInfo_ZH ??= new CultureInfo("enzh-CN");
+        }
     }
 }

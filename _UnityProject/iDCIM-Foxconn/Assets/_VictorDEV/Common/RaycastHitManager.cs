@@ -12,36 +12,17 @@ namespace VictorDev.Common
         [SerializeField] private List<MonoBehaviour> _iRayCastReceiverList;
         private List<IRaycastHitReceiver> iRayCastReceiverList { get; set; }
 
-        private void Awake()
-        {
-            CheckListWithReceiver();
-            InitListener();
-        }
+        private void Awake() => InitListener();
         private void InitListener()
         {
-            iRayCastReceiverList = _iRayCastReceiverList.Cast<IRaycastHitReceiver>().ToList();
+            iRayCastReceiverList = ObjectHandler.CheckTypoOfList<IRaycastHitReceiver>(_iRayCastReceiverList);
             onSelectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnSelectObjectHandler(target)));
             onMouseOverObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseOverObjectEvent(target)));
             onMouseExitObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseExitObjectEvent(target)));
             onDeselectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnDeselectObjectHandler(target)));
         }
 
-        private void OnValidate() => CheckListWithReceiver();
-        /// <summary>
-        /// 檢查列表對像是否為接收器(實現IRaycastHitReceiver)
-        /// </summary>
-        private void CheckListWithReceiver()
-        {
-            for (int i = 0; i < _iRayCastReceiverList.Count; i++)
-            {
-                MonoBehaviour target = _iRayCastReceiverList[i];
-                if (target != null && target is not IRaycastHitReceiver)
-                {
-                    Debug.Log($">>> [RaycastHitManager] - {target.name}未實現IRaycastHitReceiver!! 已排除於List外");
-                    _iRayCastReceiverList.RemoveAt(i);
-                }
-            }
-        }
+        private void OnValidate() => iRayCastReceiverList = ObjectHandler.CheckTypoOfList<IRaycastHitReceiver>(_iRayCastReceiverList);
 
         /// <summary>
         /// 當點擊模型物件時Invoke

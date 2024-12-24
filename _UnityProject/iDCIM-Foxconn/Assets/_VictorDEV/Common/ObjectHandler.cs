@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace VictorDev.Common
 {
@@ -97,12 +99,35 @@ namespace VictorDev.Common
             var sortedChildren = target.Cast<Transform>()
                                              .OrderByDescending(child => child.position.y)
                                              .ToList();
-
             // 更新 Sibling Index
             for (int i = 0; i < sortedChildren.Count; i++)
             {
                 sortedChildren[i].SetSiblingIndex(i);
             }
+        }
+
+        /// <summary>
+        /// 檢查List裡面是否有實作T類別，將不符合的從List裡移除
+        /// </summary>
+        public static List<T> CheckTypoOfList<T>(List<MonoBehaviour> list) where T : class
+        {
+            #region 取得上一層呼叫的資訊
+            StackTrace stackTrace = new StackTrace();
+            StackFrame frame = stackTrace.GetFrame(1);
+            var method = frame.GetMethod();
+            #endregion
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                MonoBehaviour target = list[i];
+                if (target != null && target is not T item)
+                {
+                    Debug.Log($">>> [接收器：{method.DeclaringType?.Name}] - 物件：{{{target.name}}} 並沒有實作{typeof(T).Name}, 已從列表移除.");
+                    list.Remove(target);
+                }
+            }
+
+            return list.OfType<T>().ToList();
         }
     }
 }

@@ -1,15 +1,21 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using VictorDev.Common;
 
 namespace VictorDev.DateTimeUtils
 {
-    [RequireComponent(typeof(TextMeshProUGUI))]
     public class Clock : MonoBehaviour
     {
+        [Header(">>>接收器{現在時間}")]
+        [SerializeField] private List<MonoBehaviour> _iClockReceiver;
+        private List<IClockReceiver> iClockReceiver { get; set; }
+
         [Header(">>> 是否為24小時制")]
         [SerializeField] private bool is24Hrs = true;
 
@@ -43,6 +49,8 @@ namespace VictorDev.DateTimeUtils
             }
         }
 
+        private void Awake() => iClockReceiver = _iClockReceiver.OfType<IClockReceiver>().ToList();
+
         private void Start()
         {
             IEnumerator enumerator()
@@ -62,21 +70,24 @@ namespace VictorDev.DateTimeUtils
             string format = (is24Hrs) ? $"HH{symbol}mm" : $"tt hh{symbol}mm";
             if (isShowSec) format += $"{symbol}ss";
 
-            DateTime dateTime = DateTime.Now;
+            DateTime dateNow = DateTime.Now;
 
             float timeValue = 0f;
-            dateTime = dateTime.AddHours(timeValue); //往回推 for Demo
+            dateNow = dateNow.AddHours(timeValue); //往回推 for Demo
 
-            string time = dateTime.ToString(format, cultureInfo);
-            string date = dateTime.ToString("yyyy/MM/dd", cultureInfo);
-            string day = dateTime.ToString("ddd", cultureInfo);
+            string time = dateNow.ToString(format, cultureInfo);
+            string date = dateNow.ToString("yyyy/MM/dd", cultureInfo);
+            string day = dateNow.ToString("ddd", cultureInfo);
 
             txtTime.SetText(time);
             onSetDateEvent?.Invoke(date);
             onSetDayEvent?.Invoke(day);
+
+            iClockReceiver?.ForEach(receiver => receiver?.OnReceive(dateNow));
             jumper = !jumper;
         }
 
+        [ContextMenu("- 更新Receiver")]
         private void OnValidate()
         {
             txtTime ??= GetComponent<TextMeshProUGUI>();
@@ -85,7 +96,15 @@ namespace VictorDev.DateTimeUtils
                 cultureInfo = new CultureInfo(langFormat);
                 UpdateClock();
             }
+
+            iClockReceiver = ObjectHandler.CheckTypoOfList<IClockReceiver>(_iClockReceiver);
         }
+
         private enum enumLang { 中文, 英文 }
+
+        public interface IClockReceiver
+        {
+            void OnReceive(DateTime dateNow);
+        }
     }
 }
