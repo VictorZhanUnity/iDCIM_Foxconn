@@ -5,7 +5,7 @@ using UnityEngine;
 using VictorDev.Common;
 using VictorDev.RTSP;
 
-public class CCTV_Manager_Ver3 : ModulePage
+public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
 {
     [Header(">>> 欲顯示的 Landmark圖標")]
     [SerializeField] private List<Landmark_RE> landmarkList;
@@ -27,27 +27,43 @@ public class CCTV_Manager_Ver3 : ModulePage
     public RectTransform linePrefab;
     #endregion
 
-    private void OnSelectObjectHandler(Transform target)
+    public void OnSelectObjectHandler(Transform target)
     {
-        Landmark_RE landmark = landmarkList.FirstOrDefault(landmark => landmark.targetModel == target);
-        if (landmark != null)
+        if (IsTargetInList(target, out Landmark_RE landmark))
         {
             CCTVLandmarkDisplay landmarkDisplay = landmark.GetComponent<CCTVLandmarkDisplay>();
             ShowData(landmarkDisplay.rtspChannel, landmark.targetModel);
+
+            target.GetChild(0).gameObject.SetActive(true);
         }
     }
-    private void OnDeselectObjectHandler(Transform target)
+    public void OnDeselectObjectHandler(Transform target)
     {
-        if (currentPanel != null && target == currentPanel.targetModel)
+        if (IsTargetInList(target, out Landmark_RE landmark))
         {
-            currentPanel.ToClose();
-            currentPanel = null;
-        }
-        else
-        {
-            openedPanels.FirstOrDefault(panel => panel.targetModel == target)?.ToClose();
+            if (currentPanel != null && target == currentPanel.targetModel)
+            {
+                currentPanel.ToClose();
+                currentPanel = null;
+            }
+            else
+            {
+                openedPanels.FirstOrDefault(panel => panel.targetModel == target)?.ToClose();
+            }
+            target.GetChild(0).gameObject.SetActive(false);
         }
     }
+    /// <summary>
+    /// 確認點擊對像是否為此管理器列表上的對像
+    /// </summary>
+    private bool IsTargetInList(Transform target, out Landmark_RE landmark)
+    {
+        landmark = landmarkList.FirstOrDefault(landmark => landmark.targetModel == target);
+        return landmark != null;
+    }
+
+    public void OnMouseOverObjectEvent(Transform target) { }
+    public void OnMouseExitObjectEvent(Transform target) { }
 
     /// <summary>
     /// 創建CCTV獨立視窗
@@ -93,6 +109,7 @@ public class CCTV_Manager_Ver3 : ModulePage
             infoPanel.onClickZoomButtn.RemoveAllListeners();
             infoPanel.onClickCloseButton.RemoveAllListeners();
             openedPanels.Remove(infoPanel);
+            OnDeselectObjectHandler(infoPanel.targetModel);
         });
 
         infoPanel.onDraggedEvent.AddListener(() =>
@@ -109,11 +126,6 @@ public class CCTV_Manager_Ver3 : ModulePage
     public override void OnInit(Action onInitComplete = null)
     {
         LandmarkManager_Ver3.AddLandmarks(landmarkList, false);
-
-        //為了在其它頁面亦可以被點選，所以在OnInit時監聽事件
-        RaycastHitManager.onSelectObjectEvent.AddListener(OnSelectObjectHandler);
-        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectObjectHandler);
-
         Debug.Log(">>> CCTV_Manager_Ver3 OnInit");
         onInitComplete?.Invoke();
     }
@@ -125,7 +137,7 @@ public class CCTV_Manager_Ver3 : ModulePage
     {
         landmarkList.ForEach(landmark =>
         {
-      //      landmark.isOn = false;
+            //      landmark.isOn = false;
             landmark.gameObject.SetActive(false);
         });
     }
@@ -140,5 +152,7 @@ public class CCTV_Manager_Ver3 : ModulePage
         /*RaycastHitManager.onSelectObjectEvent.RemoveListener(OnSelectObjectHandler);
         RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectObjectHandler);*/
     }
+
+
     #endregion
 }

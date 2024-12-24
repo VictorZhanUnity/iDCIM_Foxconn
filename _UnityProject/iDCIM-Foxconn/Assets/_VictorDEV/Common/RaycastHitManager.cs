@@ -8,6 +8,41 @@ namespace VictorDev.Common
 {
     public class RaycastHitManager : SingletonMonoBehaviour<RaycastHitManager>
     {
+        [Header(">>> IRaycastHitReceiver接收器列表")]
+        [SerializeField] private List<MonoBehaviour> _iRayCastReceiverList;
+        private List<IRaycastHitReceiver> iRayCastReceiverList { get; set; }
+
+        private void Awake()
+        {
+            CheckListWithReceiver();
+            InitListener();
+        }
+        private void InitListener()
+        {
+            iRayCastReceiverList = _iRayCastReceiverList.Cast<IRaycastHitReceiver>().ToList();
+            onSelectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnSelectObjectHandler(target)));
+            onMouseOverObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseOverObjectEvent(target)));
+            onMouseExitObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseExitObjectEvent(target)));
+            onDeselectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnDeselectObjectHandler(target)));
+        }
+
+        private void OnValidate() => CheckListWithReceiver();
+        /// <summary>
+        /// 檢查列表對像是否為接收器(實現IRaycastHitReceiver)
+        /// </summary>
+        private void CheckListWithReceiver()
+        {
+            for (int i = 0; i < _iRayCastReceiverList.Count; i++)
+            {
+                MonoBehaviour target = _iRayCastReceiverList[i];
+                if (target != null && target is not IRaycastHitReceiver)
+                {
+                    Debug.Log($">>> [RaycastHitManager] - {target.name}未實現IRaycastHitReceiver!! 已排除於List外");
+                    _iRayCastReceiverList.RemoveAt(i);
+                }
+            }
+        }
+
         /// <summary>
         /// 當點擊模型物件時Invoke
         /// </summary>
@@ -232,5 +267,13 @@ namespace VictorDev.Common
             }
             return result;
         }
+    }
+
+    public interface IRaycastHitReceiver
+    {
+        void OnSelectObjectHandler(Transform target);
+        void OnDeselectObjectHandler(Transform target);
+        void OnMouseOverObjectEvent(Transform target);
+        void OnMouseExitObjectEvent(Transform target);
     }
 }
