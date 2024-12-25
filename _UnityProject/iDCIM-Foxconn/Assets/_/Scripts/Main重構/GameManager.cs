@@ -11,7 +11,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private void Awake()
     {
         Setup_RaycastAndLandmark();
-
     }
 
     /// <summary>
