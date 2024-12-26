@@ -6,6 +6,7 @@ using UnityEngine;
 using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
 using VictorDev.RevitUtils;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 資產管理 - 資料載入
@@ -51,15 +52,35 @@ public class DeviceAssetDataManager : Module
     public void ParseJson(string jsonData)
     {
         dataRack = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
+
         // 設置相對應模型
         dataRack.ForEach(rack =>
         {
             rack.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(rack.deviceName));
+
+#if true
+            // Demo - 隨機移除機櫃裡的某些設備
+            List<Data_DeviceAsset> toHideDevices = new List<Data_DeviceAsset>();
+            for (int i = 0; rack.containers.Count > i; i++)
+            {
+                bool isToRemove = Random.Range(0, 11) < 8;
+                if (isToRemove)
+                {
+                    deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(rack.containers[i].deviceName)).gameObject.SetActive(false);
+                    toHideDevices.Add(rack.containers[i]);
+                }
+            }
+            rack.containers = rack.containers.Except(toHideDevices).ToList();
+#endif
         });
+
         dataRack.SelectMany(rack => rack.containers).ToList().ForEach(device =>
         {
             device.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(device.deviceName));
         });
+
+        //發送資料
+        receivers.ForEach(receiver => receiver.ReceiveData(dataRack));
     }
     /// <summary>
     /// 依據模型名稱尋找相對應的資料項

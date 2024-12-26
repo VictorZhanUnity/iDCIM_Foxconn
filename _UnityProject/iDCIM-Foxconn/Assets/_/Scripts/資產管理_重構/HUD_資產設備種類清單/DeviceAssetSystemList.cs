@@ -17,14 +17,14 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
     public List<Data_DeviceAsset> serverList;
     public List<Data_DeviceAsset> switchList;
     public List<Data_DeviceAsset> routerList;
-    
+
     /// <summary>
     /// 設定設備列表
     /// </summary>
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
         rackList = datas; //DCR - 機櫃列表
-        ReceiveData(rackList.SelectMany(rack => rack.containers).ToList()); 
+        ReceiveData(rackList.SelectMany(rack => rack.containers).ToList());
     }
     public override void ReceiveData(List<Data_DeviceAsset> datas)
     {
@@ -65,7 +65,8 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         toggleRouter.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, routerList.Cast<Data_iDCIMAsset>().ToList()));
 
         //預設機櫃為點選狀態
-        toggleRack.isOn = true;
+        if (toggleRack.gameObject.activeSelf) toggleRack.isOn = true;
+        else toggleServer.isOn = true;
     }
     private void OnDisable()
     {
