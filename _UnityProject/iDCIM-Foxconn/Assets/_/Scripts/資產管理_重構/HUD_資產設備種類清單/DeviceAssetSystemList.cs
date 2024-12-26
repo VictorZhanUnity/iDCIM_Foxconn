@@ -17,15 +17,18 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
     public List<Data_DeviceAsset> serverList;
     public List<Data_DeviceAsset> switchList;
     public List<Data_DeviceAsset> routerList;
-
+    
+    /// <summary>
+    /// 設定設備列表
+    /// </summary>
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
-        rackList = datas;
-        List<Data_DeviceAsset> deviceList = rackList.SelectMany(rack => rack.containers).ToList();
+        rackList = datas; //DCR - 機櫃列表
+        List<Data_DeviceAsset> deviceList = rackList.SelectMany(rack => rack.containers).ToList(); 
 
-        serverList = new List<Data_DeviceAsset>();
-        switchList = new List<Data_DeviceAsset>();
-        routerList = new List<Data_DeviceAsset>();
+        serverList = new List<Data_DeviceAsset>(); //DCS - server列表
+        switchList = new List<Data_DeviceAsset>(); //DCN - switch列表
+        routerList = new List<Data_DeviceAsset>(); //DCN - router列表
 
         //進行設備分類
         deviceList.ForEach(device =>

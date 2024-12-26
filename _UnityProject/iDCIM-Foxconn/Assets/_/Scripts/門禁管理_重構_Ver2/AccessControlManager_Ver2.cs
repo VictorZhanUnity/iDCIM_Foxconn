@@ -21,6 +21,8 @@ public class AccessControlManager_Ver2 : ModulePage
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
 
+        Debug.Log("OnShowHandler");
+
         //預設點選
         AccessDoorLandmarkDisplayer defaultSelected = landmarkList[0].GetComponent<AccessDoorLandmarkDisplayer>();
         if (defaultSelected.TodayList.Count > 0)

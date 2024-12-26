@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using VictorDev.Common;
 
+/// <summary>
+/// 設備配置管理器
+/// </summary>
 public class DeviceAssetManager : ModulePage
 {
     [Header(">>> 視窗 - 機櫃資訊面板 ")]

@@ -8,28 +8,28 @@ using VictorDev.Managers;
 using static WebAPI_LoginManager;
 
 /// <summary>
-/// ±b±Kµn¤JºŞ²z¾¹
+/// å¸³å¯†ç™»å…¥ç®¡ç†å™¨
 /// </summary>
 public class LoginManager : Module
 {
-    [Header(">>> [Event] µn¤J¦¨¥\«áInvoke")]
+    [Header(">>> [Event] ç™»å…¥æˆåŠŸå¾ŒInvoke")]
     public UnityEvent onLoginSuccessed = new UnityEvent();
 
-    [Header(">>> [Event] ¶i¦æµn¥X®ÉInvoke")]
+    [Header(">>> [Event] é€²è¡Œç™»å‡ºæ™‚Invoke")]
     public UnityEvent onLogout = new UnityEvent();
 
-    [Header(">>> [Event] µn¤J¥¢±Ñ«áInvoke")]
+    [Header(">>> [Event] ç™»å…¥å¤±æ•—å¾ŒInvoke")]
     public UnityEvent onLoginFailed = new UnityEvent();
 
     #region [>>> Components]
-    [Header(">>> ¬O§_¦Û°Êµn¤J")]
+    [Header(">>> æ˜¯å¦è‡ªå‹•ç™»å…¥")]
     [SerializeField] private bool isAutoLogin = false;
-    [Header(">>> [Comp] ¿é¤J®Ø ±b¸¹»P±K½X")]
+    [Header(">>> [Comp] è¼¸å…¥æ¡† å¸³è™Ÿèˆ‡å¯†ç¢¼")]
     [SerializeField] private TMP_InputField inputAccount, inputPassword;
-    [Header(">>> [Comp] µn¤J­¶­±CanvasGroup")]
+    [Header(">>> [Comp] ç™»å…¥é é¢CanvasGroup")]
     [SerializeField] private CanvasGroup canvasGroupLogin;
     /// <summary>
-    ///  ¹w³]±b¸¹»P±K½X
+    ///  é è¨­å¸³è™Ÿèˆ‡å¯†ç¢¼
     /// </summary>
     private string account => "TCIT";
     private string password => "TCIT";

@@ -54,7 +54,7 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
     /// <summary>
     /// 上架設備
     /// </summary>
-    private void ToUploadDevice()
+    public void ToUploadDevice()
     {
         loadingScreen.gameObject.SetActive(true);
 
@@ -71,13 +71,13 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
             {
                 yield return new WaitForSeconds(1);
             }
-            OnUploadDeviceSuccess();
+            OnUploadDeviceSuccessHandler();
         }
         StartCoroutine(LoadingScreen());
         #endregion
     }
 
-    private void OnUploadDeviceSuccess()
+    private void OnUploadDeviceSuccessHandler()
     {
         dotweenFade.ToHide();
         stockDeviceItem.ConfirmUploadDevice();
