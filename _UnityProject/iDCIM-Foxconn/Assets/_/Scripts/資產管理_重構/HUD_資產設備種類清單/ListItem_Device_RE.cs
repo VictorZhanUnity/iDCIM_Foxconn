@@ -20,7 +20,7 @@ public class ListItem_Device_RE : MonoBehaviour
     /// <summary>
     /// 開/關 Toggle
     /// </summary>
-    public bool isOn { set => toggle.isOn = value; }
+    public bool isOn { get => toggle.isOn; set => toggle.isOn = value; }
     public ToggleGroup toggleGroup { set => toggle.group = value; }
 
     public void ShowData(Data_iDCIMAsset data)
@@ -51,7 +51,7 @@ public class ListItem_Device_RE : MonoBehaviour
     {
         toggle.onValueChanged.AddListener((isOn) =>
         {
-            if (isOn) onClickItemEvent.Invoke(this);
+            onClickItemEvent.Invoke(this);
         });
     }
     private void RemoveListener() => toggle.onValueChanged.RemoveAllListeners();

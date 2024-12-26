@@ -14,6 +14,9 @@ public class DeviceAssetList_RE : MonoBehaviour
     [Header(">>> 點擊 設備資料項 時Invoke")]
     public UnityEvent<Data_DeviceAsset> onClickItem_Device = new UnityEvent<Data_DeviceAsset>();
 
+    [Header(">>> 點擊 設備資料項 時Invoke")]
+    public UnityEvent<ListItem_Device_RE> onClickItem_Device_New = new UnityEvent<ListItem_Device_RE>();
+
     [Header(">>> [Prefab] 列表項目")]
     [SerializeField] private ListItem_Device_RE ltemPrefab;
 
@@ -63,7 +66,11 @@ public class DeviceAssetList_RE : MonoBehaviour
     private void OnItemClickHandler(ListItem_Device_RE target)
     {
         if (target.data is Data_ServerRackAsset) onClickItem_Rack?.Invoke(target);
-        else if (target.data is Data_DeviceAsset dataDevice) onClickItem_Device?.Invoke(dataDevice);
+        else if (target.data is Data_DeviceAsset dataDevice)
+        {
+            onClickItem_Device_New?.Invoke(target);
+            if(target.isOn) onClickItem_Device?.Invoke(dataDevice);
+        }
     }
 
     /// <summary>

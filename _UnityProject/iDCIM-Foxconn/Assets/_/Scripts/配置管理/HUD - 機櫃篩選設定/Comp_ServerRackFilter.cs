@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 /// <summary>
 /// [組件] 機櫃過濾
 /// </summary>
-public class Comp_ServerRackFilter : MonoBehaviour
+public class Comp_ServerRackFilter : DeviceAssetDataReceiver
 {
     [Header(">>> Dotween設定")]
     [SerializeField] private float minScale = 0.001f;
@@ -20,6 +20,8 @@ public class Comp_ServerRackFilter : MonoBehaviour
 
     public Color colorGood, colorNormal, colorBad;
 
+    public List<Data_ServerRackAsset> dataRacks;
+
     /// <summary>
     /// 機櫃原始顏色
     /// </summary>
@@ -28,18 +30,19 @@ public class Comp_ServerRackFilter : MonoBehaviour
     /// <summary>
     /// 目前所選的庫存設備項目
     /// </summary>
-    private StockDeviceListItem currentStockItem { get; set; }
+    private ListItem_Device_RE currentItem { get; set; }
+
+    public override void ReceiveData(List<Data_ServerRackAsset> datas) => dataRacks = datas;
 
     [ContextMenu("- 顯示合適的機櫃")]
-    public void ShowFilterResult()
+    private void ShowFilterResult()
     {
-        DeviceModelManager_OLD.RackDataList.ForEach(data =>
+        dataRacks.ForEach(data =>
         {
-            var info = currentStockItem.data.deviceAsset.information;
+            var info = currentItem.data.information;
 
             bool isSuitable = (info.watt <= data.reaminOfWatt)
-            && data.eachSizeOfAvailableRU.Any(size => size >= info.heightU)
-            //  && (info.heightU <= data.reaminOfRU)
+            //&& data.eachSizeOfAvailableRU.Any(size => size >= info.heightU)
             && (info.weight <= data.reaminOfWeight);
 
             if (isSuitable) data.ShowAvailableRuSpacer();
@@ -107,9 +110,9 @@ public class Comp_ServerRackFilter : MonoBehaviour
     /// <summary>
     /// 進行機櫃條件過濾
     /// </summary>
-    public void ToFilterRack(StockDeviceListItem target)
+    public void ToFilterRack(ListItem_Device_RE target)
     {
-        currentStockItem = target.isOn ? target : null;
+        currentItem = target.isOn ? target : null;
         if (target.isOn) ShowFilterResult();
         else RestoreAllRack();
         ToShow();
@@ -119,7 +122,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
     /// 復原所有機櫃樣式
     /// </summary>
     private void RestoreAllRack()
-        => DeviceModelManager_OLD.RackDataList.ForEach(data =>
+        => dataRacks.ForEach(data =>
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);

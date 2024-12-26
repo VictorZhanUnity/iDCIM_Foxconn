@@ -36,7 +36,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public List<Data_DeviceAsset> containers;
 
     /// <summary>
-    /// 可用的RU空間每種尺吋大小
+    /// 可用的RU空間每種尺吋大小 (需計算)
     /// </summary>
     public List<int> eachSizeOfAvailableRU = new List<int>();
 
@@ -110,26 +110,7 @@ public class Data_DeviceAsset : Data_iDCIMAsset, INotifyData
     public string containerId;
     public int rackLocation;
     public int state;
-
-    private Data_ServerRackAsset _rack { get; set; }
-
-    public Data_ServerRackAsset rack
-    {
-        get
-        {
-            DeviceModelManager_OLD.RackDataList.ForEach(rack =>
-            {
-                rack.containers.ForEach(device =>
-                {
-                    if (device.deviceName == this.deviceName)
-                    {
-                        _rack = rack;
-                    }
-                });
-            });
-            return _rack;
-        }
-    }
+    public Data_ServerRackAsset rack { get; set; }
 }
 
 /// <summary>

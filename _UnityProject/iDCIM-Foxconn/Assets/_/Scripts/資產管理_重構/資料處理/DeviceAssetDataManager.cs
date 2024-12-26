@@ -52,18 +52,26 @@ public class DeviceAssetDataManager : Module
     public void ParseJson(string jsonData)
     {
         dataRack = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
+        List<Data_DeviceAsset> deviceList = dataRack.SelectMany(rack => rack.containers).ToList();
+
+        // 隱藏不在JSON資料內的設備
+        deviceAssetManager.modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false)
+        .ToList().ForEach(model =>
+        {
+            bool isHaveData = deviceList.Any(dataDevice => model.name.Contains(dataDevice.deviceName));
+            model.gameObject.SetActive(isHaveData);
+        });
 
         // 設置相對應模型
         dataRack.ForEach(rack =>
         {
             rack.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(rack.deviceName));
-
 #if true
             // Demo - 隨機移除機櫃裡的某些設備
             List<Data_DeviceAsset> toHideDevices = new List<Data_DeviceAsset>();
             for (int i = 0; rack.containers.Count > i; i++)
             {
-                bool isToRemove = Random.Range(0, 11) < 8;
+                bool isToRemove = Random.Range(0, 11) < 3;
                 if (isToRemove)
                 {
                     deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(rack.containers[i].deviceName)).gameObject.SetActive(false);
@@ -74,9 +82,15 @@ public class DeviceAssetDataManager : Module
 #endif
         });
 
-        dataRack.SelectMany(rack => rack.containers).ToList().ForEach(device =>
+        // 設定device屬於哪個rack
+        dataRack.ForEach(rack =>
         {
-            device.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(device.deviceName));
+            rack.containers.ForEach(device =>
+            {
+                device.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(device.deviceName));
+                device.rack = rack;
+                device.model.parent = rack.model;
+            });
         });
 
         //發送資料

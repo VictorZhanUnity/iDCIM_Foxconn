@@ -130,7 +130,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
         DeviceModelManager_OLD.onGetAllRackDevices.AddListener(BuildRackAvailableRuSpacer);
         dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
         stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
-        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
+       // stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
         deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
 
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
@@ -143,7 +143,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     {
         dataHandler.onGetAllStockDevices.RemoveAllListeners();
         stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
-        stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
+        //stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
         deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
 
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);

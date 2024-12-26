@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -168,7 +169,8 @@ namespace VictorDev.Common
 
             //檢查對像是否已被選取
             bool isAlreadySelected = false;
-            if (target.childCount > 0)
+            bool isRack = target.name.Contains("RACK", StringComparison.OrdinalIgnoreCase) || target.name.Contains("ATEN", StringComparison.OrdinalIgnoreCase);
+            if (target.childCount > 0 && isRack == false)
             {
                 isAlreadySelected = target.GetChild(0) != null ? target.GetChild(0).gameObject.activeSelf : false;
             }
@@ -197,6 +199,7 @@ namespace VictorDev.Common
         {
             Instance.selectedObject.ForEach(target => onDeselectObjectEvent.Invoke(target.transform));
             Instance.selectedObject.Clear();
+            if(Instance.currentSelectedObject != null) CancellObjectSelected(Instance.currentSelectedObject, true);
             Instance.currentSelectedObject = null;
         }
 

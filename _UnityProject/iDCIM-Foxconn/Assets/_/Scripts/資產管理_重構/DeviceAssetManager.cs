@@ -43,8 +43,18 @@ public class DeviceAssetManager : ModulePage
     {
         RaycastHitManager.onSelectObjectEvent.RemoveListener(OnClickModelHandler);
     }
-    protected override void OnShowHandler() => InitEventListener();
-    protected override void OnCloseHandler() => RemoveEventListener();
+    protected override void OnShowHandler()
+    {
+        InitEventListener();
+        modelList.ForEach(model => model.GetComponent<Collider>().enabled = true);
+    }
+
+    protected override void OnCloseHandler()
+    {
+        RemoveEventListener();
+        modelList.ForEach(model => model.GetComponent<Collider>().enabled = false);
+        RaycastHitManager.RestoreSelectedObjects();
+    }
 
     #region [Components]
     private DeviceAssetDataManager _deviceAssetDataManager { get; set; }
