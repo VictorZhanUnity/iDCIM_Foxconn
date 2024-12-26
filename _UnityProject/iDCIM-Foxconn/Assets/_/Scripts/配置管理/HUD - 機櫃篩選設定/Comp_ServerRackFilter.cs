@@ -33,7 +33,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
     [ContextMenu("- 顯示合適的機櫃")]
     public void ShowFilterResult()
     {
-        DeviceModelManager.RackDataList.ForEach(data =>
+        DeviceModelManager_OLD.RackDataList.ForEach(data =>
         {
             var info = currentStockItem.data.deviceAsset.information;
 
@@ -119,7 +119,7 @@ public class Comp_ServerRackFilter : MonoBehaviour
     /// 復原所有機櫃樣式
     /// </summary>
     private void RestoreAllRack()
-        => DeviceModelManager.RackDataList.ForEach(data =>
+        => DeviceModelManager_OLD.RackDataList.ForEach(data =>
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);

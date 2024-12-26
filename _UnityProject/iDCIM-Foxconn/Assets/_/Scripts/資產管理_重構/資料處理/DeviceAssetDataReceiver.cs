@@ -7,6 +7,8 @@ using UnityEngine;
 public abstract class DeviceAssetDataReceiver : MonoBehaviour, IDeviceAssetDataReceiver
 {
     public abstract void ReceiveData(List<Data_ServerRackAsset> datas);
+    public virtual void ReceiveData(List<Data_DeviceAsset> datas) { }
+    
 }
 
 public interface IDeviceAssetDataReceiver

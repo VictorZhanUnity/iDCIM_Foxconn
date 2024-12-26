@@ -2,11 +2,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
-using VictorDev.RevitUtils;
 
 /// <summary>
 /// 配置管理 - 資料載入
@@ -16,21 +14,23 @@ public class DeviceConfigureDataManager : Module
     [Header(">>> [Receiver] - 資料接收器")]
     [SerializeField] private List<DeviceAssetDataReceiver> receivers;
 
-    [Header(">>> [資料項] - 機櫃與設備清單")]
-    [SerializeField] protected List<Data_ServerRackAsset> dataRack;
+    [Header(">>> [資料項] - 庫存機櫃與設備清單")]
+    [SerializeField] private List<Data_DeviceAsset> stockDevices;
 
-    [Header(">>> [WebAPI] - 取得機櫃與設備(現有 or 庫存)")]
+    [Header(">>> [WebAPI] - 取得庫存機櫃與設備")]
     [SerializeField] private WebAPI_Request request;
+
+    public DeviceModelManager deviceModelManager;
 
     private Action onInitComplete { get; set; }
     public override void OnInit(Action onInitComplete = null)
     {
         this.onInitComplete = onInitComplete;
-        GetDeviceAssets();
+        GetStockDeviceAssets();
     }
 
-    [ContextMenu("- 取得機櫃與設備")]
-    protected void GetDeviceAssets()
+    [ContextMenu("- 取得庫存機櫃與設備")]
+    private void GetStockDeviceAssets()
     {
         WebAPI_LoginManager.CheckToken(request);
         WebAPI_Caller.SendRequest(request, onSuccessHandler, null);
@@ -47,36 +47,18 @@ public class DeviceConfigureDataManager : Module
     /// </summary>
     public void ParseJson(string jsonData)
     {
-        dataRack = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData);
-        SetDeviceModel();
-
-        if (EditorApplication.isPlaying) //Editor在Play狀態下才Invoke資料給各自receiver
+        stockDevices.Clear();
+        //全部設備
+        List<Data_DeviceAsset> allDeviceData = JsonConvert.DeserializeObject<List<Data_ServerRackAsset>>(jsonData).SelectMany(rack => rack.containers).ToList();
+        // 設置相對應模型
+        //庫存
+        deviceModelManager.allDeviceModel.ForEach(stockDevice =>
         {
-            //發送資料
-            receivers.ForEach(receiver => receiver.ReceiveData(dataRack));
-        }
-    }
+            Data_DeviceAsset device = allDeviceData.FirstOrDefault(device => device.deviceName.Contains(stockDevice.name));
+            device.model = stockDevice.model;
+            stockDevices.Add(device);
+        });
 
-    /// <summary>
-    /// 設置相對應模型
-    /// </summary>
-    protected virtual void SetDeviceModel()
-    {
-    }
-
-
-    /// <summary>
-    /// 依據模型名稱尋找相對應的資料項
-    /// </summary>
-    public Data_iDCIMAsset FindDataByModelName(Transform target)
-    {
-        Data_iDCIMAsset result;
-        string deviceName = RevitHandler.GetDevicePath(target.name);
-        deviceName = deviceName.Split(":")[1];
-        Debug.Log($"deviceName: {deviceName}");
-
-        result = dataRack.FirstOrDefault(rack => rack.devicePath.Contains(deviceName, StringComparison.OrdinalIgnoreCase));
-        result ??= dataRack.SelectMany(rack => rack.containers).FirstOrDefault(device => device.devicePath.Contains(deviceName, StringComparison.OrdinalIgnoreCase));
-        return result;
+        receivers.ForEach(receiver => receiver.ReceiveData(stockDevices));
     }
 }

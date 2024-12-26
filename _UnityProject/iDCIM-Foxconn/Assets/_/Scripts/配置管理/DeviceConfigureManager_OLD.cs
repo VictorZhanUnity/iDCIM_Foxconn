@@ -34,7 +34,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     {
         RemovetListener();
         serverRackFilter.ToClose();
-        DeviceModelManager.HideAllRackAvailableRuSpacer();
+        DeviceModelManager_OLD.HideAllRackAvailableRuSpacer();
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
         NotificationManager.CreateNotifyMessage(notifyPrefab, "設備已下架!!", data);
 
         //建立RU空格物件
-        Data_ServerRackAsset parentRackData = DeviceModelManager.RackDataList.FirstOrDefault(rack => rackModel.name.Contains(rack.deviceName));
+        Data_ServerRackAsset parentRackData = DeviceModelManager_OLD.RackDataList.FirstOrDefault(rack => rackModel.name.Contains(rack.deviceName));
         for (int i = data.rackLocation; i < data.rackLocation + data.information.heightU; i++)
         {
             CreateRuSpace(parentRackData, i);
@@ -127,7 +127,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     #region [>>> 事件監聽]
     private void InitListener()
     {
-        DeviceModelManager.onGetAllRackDevices.AddListener(BuildRackAvailableRuSpacer);
+        DeviceModelManager_OLD.onGetAllRackDevices.AddListener(BuildRackAvailableRuSpacer);
         dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
         stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
         stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);

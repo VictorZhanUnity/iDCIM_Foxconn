@@ -9,7 +9,8 @@ using VictorDev.Parser;
 /// </summary>
 public class DemoDataManager : Module
 {
-    public List<DeviceConfigureDataManager> deviceManager;
+    public DeviceConfigureDataManager deviceConfigureManager;
+    public DeviceAssetDataManager deviceAssetManager;
 
     [Header(">>> [JSON檔] - 機櫃設備資料，以第一個為主要讀取")]
     public List<TextAsset> jsonFiles;
@@ -19,7 +20,8 @@ public class DemoDataManager : Module
     public override void OnInit(Action onInitComplete = null)
     {
         ParseJsonFile();
-        deviceManager.ForEach(manager => manager.ParseJson(strDeviceDatas));
+        deviceConfigureManager?.ParseJson(strDeviceDatas);
+        deviceAssetManager?.ParseJson(strDeviceDatas);
         onInitComplete?.Invoke();
     }
 
@@ -27,6 +29,7 @@ public class DemoDataManager : Module
     private void ParseJsonFile()
     {
         strDeviceDatas = JsonUtils.PrintJSONFormatting(jsonFiles[0].text);
+
 #if UNITY_EDITOR
         Debug.Log($"ParseJsonFile: {jsonFiles[0].name}\n{strDeviceDatas}");
 #endif

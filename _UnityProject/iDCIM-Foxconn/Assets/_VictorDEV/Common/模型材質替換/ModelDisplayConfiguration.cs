@@ -27,5 +27,15 @@ namespace VictorDev.Common
         {
             ObjectHandler.RemoveColliderFromObjects(models);
         }
+/*
+        #region [ContextMenu]
+        [ContextMenu("- [Parent] 根據Keywords尋找目標物件")]
+        public void FindTargetObjects() => modelForDisplay.FindTargetObjects();
+        [ContextMenu("- [Parent] 新增BoxCollider到目標物件")]
+        public void AddColliderToObjects() => modelForDisplay.AddColliderToObjects();
+        [ContextMenu("- [Parent] 移除目標物件的Collider")]
+        public void RemoveColliderFromObjects() => modelForDisplay.RemoveColliderFromObjects();
+        #endregion
+*/
     }
 }

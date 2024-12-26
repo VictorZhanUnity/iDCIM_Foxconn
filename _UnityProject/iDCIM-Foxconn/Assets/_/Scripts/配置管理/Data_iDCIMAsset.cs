@@ -117,7 +117,7 @@ public class Data_DeviceAsset : Data_iDCIMAsset, INotifyData
     {
         get
         {
-            DeviceModelManager.RackDataList.ForEach(rack =>
+            DeviceModelManager_OLD.RackDataList.ForEach(rack =>
             {
                 rack.containers.ForEach(device =>
                 {
