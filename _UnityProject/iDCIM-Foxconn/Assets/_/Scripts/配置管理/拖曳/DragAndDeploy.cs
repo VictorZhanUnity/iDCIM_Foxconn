@@ -4,16 +4,16 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerExitHandler
 {
 
     [Header(">>> [Event] 新建設備模型時Invoke {新增設備, 目標機櫃U層}")]
-    public UnityEvent<StockDeviceListItem, RackSpacer> onCreateTempDevice = new UnityEvent<StockDeviceListItem, RackSpacer>();
+    public UnityEvent<ListItem_Device_RE, RackSpacer> onCreateTempDevice = new UnityEvent<ListItem_Device_RE, RackSpacer>();
 
     public Image dragImagePrefab;
     public Vector3 offset = new Vector3(0, 0, -0.075f);
-    private StockDeviceListItem _stockDeviceItem { get; set; }
-    private StockDeviceListItem stockDeviceItem => _stockDeviceItem ??= GetComponent<StockDeviceListItem>();
+    private ListItem_Device_RE _listItem { get; set; }
+    private ListItem_Device_RE listItem => _listItem ??= GetComponent<ListItem_Device_RE>();
     private Canvas _canvas { get; set; }
     private Canvas canvas => _canvas ??= GameManager.mainCanvas;
 
@@ -21,13 +21,18 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private string containerTag { get; set; } = "BuildContainer_Device";
 
+    private void Start()
+    {
+        
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 創建拖拽用的Image
         dragImage = Instantiate(dragImagePrefab, canvas.transform);
         dragImage.transform.SetAsLastSibling(); // 確保在UI最上層
         dragImage.raycastTarget = false; // 防止拖拽影響UI交互
-        //dragImage.sprite = stockDeviceItem.data.dragIcon;
+        //dragImage.sprite = listItem.data.dragIcon;
 
         // 添加半透明效果
         Color color = dragImage.color;
@@ -63,11 +68,20 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask_RUSpacer))
                 {
                     //取得對像RackSpacer
-                    RackSpacer targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
+                    targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
 
-                    if (targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset))
+                    if (listItem.data is Data_DeviceAsset dataDevice)
                     {
-                        targetRackSapcer.dataRack.ShowRackSpacer(targetRackSapcer.RuIndex, stockDeviceItem.data.deviceAsset.information.heightU);
+                        if (targetRackSapcer.isAbleToUpload(dataDevice))
+                        {
+                            if (listItem.targetRack != targetRackSapcer.dataRack)
+                            {
+                                listItem.occupyRackSpacers.ForEach(ruSpacer => ruSpacer.isForceToShow = false);
+                                listItem.occupyRackSpacers.Clear();
+                            }
+                            listItem.targetRack = targetRackSapcer.dataRack;
+                            listItem.occupyRackSpacers = targetRackSapcer.dataRack.ShowRackSpacer(targetRackSapcer.RuLocation, dataDevice.information.heightU);
+                        }
                     }
                 }
             }
@@ -75,6 +89,7 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public LayerMask layerMask_RUSpacer;
+    private RackSpacer targetRackSapcer;
 
     public void OnEndDrag(PointerEventData eventData)
     {
@@ -89,14 +104,47 @@ public class DragAndDeploy : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask_RUSpacer))
                 {
                     //取得對像RackSpacer
-                    RackSpacer targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
-                    if (targetRackSapcer.isAbleToUpload(stockDeviceItem.data.deviceAsset))
+                    targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
+                    if (listItem.data is Data_DeviceAsset dataDevice)
                     {
-                        onCreateTempDevice.Invoke(stockDeviceItem, targetRackSapcer);
+                        if (targetRackSapcer.isAbleToUpload(dataDevice))
+                        {
+                            onCreateTempDevice.Invoke(listItem, targetRackSapcer);
+                        }
                     }
                 }
             }
             Destroy(dragImage.gameObject); // 清理拖拽Image
+        }
+    }
+
+    /// <summary>
+    /// 當OnDrag離開時，隱藏
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (dragImage != null)
+        {
+            //檢測鼠標沒有在UI物件上
+            if (EventSystem.current.IsPointerOverGameObject() == false)
+            {
+                // 檢測是否拖拽到目標物件A
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                // 檢查命中的物件是否是目標物件A
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask_RUSpacer))
+                {
+                    //取得對像RackSpacer
+                    targetRackSapcer = hit.transform.GetComponent<RackSpacer>();
+                    if (listItem.data is Data_DeviceAsset dataDevice)
+                    {
+                        if (targetRackSapcer.isAbleToUpload(dataDevice))
+                        {
+                            onCreateTempDevice.Invoke(listItem, targetRackSapcer);
+                        }
+                    }
+                }
+            }
         }
     }
 }

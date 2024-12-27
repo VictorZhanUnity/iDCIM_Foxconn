@@ -167,7 +167,7 @@ namespace VictorDev.Common
 
                 // 取得物件的 Renderer 組件
                 // 如果有 Renderer 組件，恢復原本的材質
-                if (objTransform.TryGetComponent<Renderer>(out Renderer renderer))
+                if (objTransform != null && objTransform.TryGetComponent<Renderer>(out Renderer renderer))
                 {
                     renderer.materials = originalMats;
                     //開啟Collider

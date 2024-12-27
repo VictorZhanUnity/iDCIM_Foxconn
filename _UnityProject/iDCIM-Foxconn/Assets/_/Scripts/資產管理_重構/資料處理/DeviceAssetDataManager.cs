@@ -18,6 +18,7 @@ public class DeviceAssetDataManager : Module, IJsonParser
 
     [Header(">>> [資料項] - 現有機櫃與設備清單")]
     [SerializeField] private List<Data_ServerRackAsset> dataRack;
+    public List<Data_ServerRackAsset> DataRack => dataRack;
 
     [Header(">>> [WebAPI] - 取得現有機櫃與設備")]
     [SerializeField] private WebAPI_Request request;

@@ -13,20 +13,20 @@ using VictorDev.DoTweenUtils;
 public class Panel_StockDeviceUploadInfo : MonoBehaviour
 {
     [Header(">>> [資料項] - 所選庫存設備")]
-    [SerializeField] private StockDeviceListItem stockDeviceItem;
+    [SerializeField] private ListItem_Device_RE listItem;
 
     [Header(">>> [Prefab] - 訊息通知")]
     [SerializeField] private NotifyListItem notifyPrefab;
 
     [Header(">>> 上架設備成功時Invoke")]
-    public UnityEvent<StockDeviceListItem> onUploadDeviceComplete = new UnityEvent<StockDeviceListItem>();
+    public UnityEvent<ListItem_Device_RE> onUploadDeviceComplete = new UnityEvent<ListItem_Device_RE>();
 
-    public void ShowData(StockDeviceListItem item)
+    public void ShowData(ListItem_Device_RE item)
     {
-        if (stockDeviceItem != item)
+        if (listItem != item)
         {
             CancellUploadDevice();
-            stockDeviceItem = item;
+            listItem = item;
         }
         UpdateUI();
         gameObject.SetActive(false);
@@ -35,9 +35,9 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
 
     private void UpdateUI()
     {
-        txtUploadDevice.SetText(stockDeviceItem.data.deviceAsset.deviceName);
-        txtTargetRack.SetText(stockDeviceItem.TargetRackName);
-        txtOccupyRU.SetText(stockDeviceItem.OccupyRuSpacer);
+        txtUploadDevice.SetText(listItem.data.deviceName);
+        txtTargetRack.SetText(listItem.targetRack.deviceName);
+        txtOccupyRU.SetText(listItem.OccupyRuSpacerString);
     }
     public void ToClose()
     {
@@ -47,8 +47,8 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
 
     private void CancellUploadDevice()
     {
-        stockDeviceItem?.CancellUploadDevice();
-        stockDeviceItem = null;
+        listItem?.CancellUploadDevice();
+        listItem = null;
     }
 
     /// <summary>
@@ -80,9 +80,9 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
     private void OnUploadDeviceSuccessHandler()
     {
         dotweenFade.ToHide();
-        stockDeviceItem.ConfirmUploadDevice();
-        onUploadDeviceComplete.Invoke(stockDeviceItem);
-        NotificationManager.CreateNotifyMessage(notifyPrefab, "設備上架成功!!", stockDeviceItem.data.deviceAsset);
+        listItem.ConfirmUploadDevice();
+        onUploadDeviceComplete.Invoke(listItem);
+        NotificationManager.CreateNotifyMessage(notifyPrefab, "設備上架成功!!", listItem.data as Data_DeviceAsset);
     }
 
     private void OnEnable()

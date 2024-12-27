@@ -4,13 +4,13 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// [°t¸mºŞ²z] - RUªÅ®æ
+/// [é…ç½®ç®¡ç†] - RUç©ºæ ¼
 /// </summary>
 public class RackSpacer : MonoBehaviour
 {
     public Data_ServerRackAsset dataRack { get; set; }
 
-    public int RuIndex
+    public int RuLocation
     {
         get => int.Parse(txtRuIndex.text);
         set
@@ -41,12 +41,12 @@ public class RackSpacer : MonoBehaviour
     }
 
     /// <summary>
-    /// ¬O§_©ñªº¤U³]³Æ¤j¤p
+    /// æ˜¯å¦æ”¾çš„ä¸‹è¨­å‚™å¤§å°
     /// </summary>
     public bool isAbleToUpload(Data_DeviceAsset deviceAsset)
     {
-        List<int> occupyRuIndex = Enumerable.Range(RuIndex, deviceAsset.information.heightU).ToList();
-        List<int> availableRuIndex = dataRack.availableRackSpacerList.Select(rackSpacer => rackSpacer.RuIndex).ToList();
+        List<int> occupyRuIndex = Enumerable.Range(RuLocation, deviceAsset.information.heightU).ToList();
+        List<int> availableRuIndex = dataRack.availableRackSpacerList.Select(rackSpacer => rackSpacer.RuLocation).ToList();
         return occupyRuIndex.All(occupy => availableRuIndex.Contains(occupy));
     }
 

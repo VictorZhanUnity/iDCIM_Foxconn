@@ -44,9 +44,9 @@ public class StockDeviceListItem : MonoBehaviour
     {
         get
         {
-            var data = occupyRackSpacer.OrderBy(rack => rack.RuIndex);
-            int startIndex = data.First().RuIndex;
-            int endIndex = data.Last().RuIndex;
+            var data = occupyRackSpacer.OrderBy(rack => rack.RuLocation);
+            int startIndex = data.First().RuLocation;
+            int endIndex = data.Last().RuLocation;
             return (startIndex == endIndex) ? $"U{startIndex}" : $"U{startIndex} ~ U{endIndex}";
         }
     }
@@ -98,7 +98,7 @@ public class StockDeviceListItem : MonoBehaviour
             ChangeColor(isOn);
         });
 
-        dragController.onCreateTempDevice.AddListener(OnCreateTempDeviceHandler);
+        //dragController.onCreateTempDevice.AddListener(OnCreateTempDeviceHandler);
         dragController.enabled = false;
     }
 
@@ -110,7 +110,7 @@ public class StockDeviceListItem : MonoBehaviour
         CancellUploadDevice();
 
         Data_ServerRackAsset targetRack = rackSpacer.dataRack;
-        occupyRackSpacer = targetRack.ShowRackSpacer(rackSpacer.RuIndex, stockItem.data.deviceAsset.information.heightU);
+        occupyRackSpacer = targetRack.ShowRackSpacer(rackSpacer.RuLocation, stockItem.data.deviceAsset.information.heightU);
 
         //建立設備模型
         createTempDeviceModel ??= Instantiate(data.deviceAsset.model);

@@ -84,6 +84,7 @@ namespace VictorDev.Common
             if (Physics.Raycast(ray, out hit))
             {
                 currentHoveredObject = hit.collider.gameObject;
+                if (currentHoveredObject.CompareTag("BuildContainer_Device")) return;
 
                 // 檢查是否指向了不同的物體
                 if (currentHoveredObject != lastHoveredObject)

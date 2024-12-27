@@ -126,7 +126,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);
-            data.HideAvailableRuSpacer();
+            //data.HideAvailableRuSpacer();
         });
 
     #region [>>> Show/Hide]

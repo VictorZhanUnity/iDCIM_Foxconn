@@ -74,7 +74,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     public List<RackSpacer> ShowRackSpacer(int ruIndex, int heightU)
     {
         int endRuIndex = ruIndex + heightU;
-        List<RackSpacer> result = availableRackSpacerList.Where(rackSpacer => rackSpacer.RuIndex >= ruIndex && rackSpacer.RuIndex < endRuIndex).ToList();
+        List<RackSpacer> result = availableRackSpacerList.Where(rackSpacer => rackSpacer.RuLocation >= ruIndex && rackSpacer.RuLocation < endRuIndex).ToList();
         result.ForEach(rack => rack.isForceToShow = true);
         availableRackSpacerList.Except(result).ToList().ForEach(rackSpacer => rackSpacer.isForceToShow = false);
         return result;

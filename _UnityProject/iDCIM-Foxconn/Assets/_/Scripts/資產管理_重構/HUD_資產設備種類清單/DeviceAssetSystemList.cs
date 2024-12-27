@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VictorDev.Common;
 
 /// <summary>
 /// 資產設備種類列表
@@ -43,10 +44,74 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
 
         void SetStringFormat(TextMeshProUGUI txt, int count, Toggle toggle)
         {
-            txt.SetText($"共{count.ToString()}台");
+            if (count > 0)
+            {
+                DotweenHandler.ToBlink(txt, $"共{count.ToString()}台", 0.2f, 0.2f, true);
+            }
             toggle.gameObject.SetActive(count > 0); //若數量為0，則隱藏該項目
         }
         SetStringFormat(txtNumOfRack, rackList.Count, toggleRack);
+        SetStringFormat(txtNumOfServer, serverList.Count, toggleServer);
+        SetStringFormat(txtNumOfSwitch, switchList.Count, toggleSwitch);
+        SetStringFormat(txtNumOfRouter, routerList.Count, toggleRouter);
+    }
+
+    public void AddDeviceItem(Data_DeviceAsset device)
+    {
+        if (device.system.Contains("DCS"))
+        {
+            serverList.Add(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(serverList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        else if (device.devicePath.Contains("Switch"))
+        {
+            switchList.Add(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(switchList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        else if (device.devicePath.Contains("Router"))
+        {
+            routerList.Add(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(routerList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        void SetStringFormat(TextMeshProUGUI txt, int count, Toggle toggle)
+        {
+            if (count > 0)
+            {
+                DotweenHandler.ToBlink(txt, $"共{count.ToString()}台", 0.2f, 0.2f, true);
+            }
+            toggle.gameObject.SetActive(count > 0); //若數量為0，則隱藏該項目
+        }
+        SetStringFormat(txtNumOfServer, serverList.Count, toggleServer);
+        SetStringFormat(txtNumOfSwitch, switchList.Count, toggleSwitch);
+        SetStringFormat(txtNumOfRouter, routerList.Count, toggleRouter);
+    }
+
+    public void RemoveDeviceData(ListItem_Device_RE item)
+    {
+        Data_DeviceAsset device = item.data as Data_DeviceAsset;
+        if (device.system.Contains("DCS"))
+        {
+            serverList.Remove(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(serverList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        else if (device.devicePath.Contains("Switch"))
+        {
+            switchList.Remove(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(switchList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        else if (device.devicePath.Contains("Router"))
+        {
+            routerList.Remove(device);
+            if (toggleServer.isOn) onClickDeviceSystem?.Invoke(routerList.Cast<Data_iDCIMAsset>().ToList());
+        }
+        void SetStringFormat(TextMeshProUGUI txt, int count, Toggle toggle)
+        {
+            if (count > 0)
+            {
+                DotweenHandler.ToBlink(txt, $"共{count.ToString()}台", 0.2f, 0.2f, true);
+            }
+            toggle.gameObject.SetActive(count > 0); //若數量為0，則隱藏該項目
+        }
         SetStringFormat(txtNumOfServer, serverList.Count, toggleServer);
         SetStringFormat(txtNumOfSwitch, switchList.Count, toggleSwitch);
         SetStringFormat(txtNumOfRouter, routerList.Count, toggleRouter);

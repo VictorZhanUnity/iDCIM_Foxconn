@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-public class ToolTip_DeivceController : MonoBehaviour
+public class ToolTip_DeivceController : DeviceAssetDataReceiver
 {
     [Header(">>> [資料項] - 設備資料")] private Data_DeviceAsset dataDevice;
 
@@ -11,9 +12,11 @@ public class ToolTip_DeivceController : MonoBehaviour
     [Header(">>> 點擊下架時Invoke")]
     public UnityEvent<Data_DeviceAsset> onClickRemoveDeviceEvent = new UnityEvent<Data_DeviceAsset>();
 
+    private List<Data_ServerRackAsset> rackDataList;
+
     public void ShowData(Transform model)
     {
-        dataDevice = DeviceModelManager_OLD.RackDataList.SelectMany(rack => rack.containers).FirstOrDefault(device => model.name.Contains(device.deviceName));
+        dataDevice = rackDataList.SelectMany(rack => rack.containers).FirstOrDefault(device => model.name.Contains(device.deviceName));
         gameObject.SetActive(true);
     }
 
@@ -40,6 +43,11 @@ public class ToolTip_DeivceController : MonoBehaviour
     {
         btnMove.onClick.RemoveAllListeners();
         btnRemove.onClick.RemoveAllListeners();
+    }
+
+    public override void ReceiveData(List<Data_ServerRackAsset> datas)
+    {
+        rackDataList = datas;
     }
 
     #region[>>> Componenets]

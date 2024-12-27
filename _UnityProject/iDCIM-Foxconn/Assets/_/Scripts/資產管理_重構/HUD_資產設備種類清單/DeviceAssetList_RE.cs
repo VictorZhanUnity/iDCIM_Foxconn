@@ -50,15 +50,26 @@ public class DeviceAssetList_RE : MonoBehaviour
         //建立項目
         filterDataList.ForEach(data =>
         {
-            ListItem_Device_RE item = ObjectPoolManager.GetInstanceFromQueuePool(ltemPrefab, scrollRect.content);
+            ListItem_Device_RE item = Instantiate(ltemPrefab, scrollRect.content);
             item.toggleGroup = toggleGroup;
             item.ShowData(data);
             item.onClickItemEvent.AddListener(OnItemClickHandler);
             itemList.Add(item);
+
+            //Demo
+            if (bol && item.TryGetComponent(out DragAndDeploy dragAndDeploy))
+            {
+                item.GetComponent<DragAndDeploy>().onCreateTempDevice.AddListener(deviceEmptyRuCreator.OnCreateTempDeviceHandler);
+            }
         });
 
         scrollRect.verticalNormalizedPosition = 1;
     }
+
+    public bool bol = false;
+
+    //Demo
+    public DeviceEmptyRuCreator deviceEmptyRuCreator;
 
     /// <summary>
     /// 先行判定資料類型為Rack或Device，再進行Invoke
@@ -69,7 +80,7 @@ public class DeviceAssetList_RE : MonoBehaviour
         else if (target.data is Data_DeviceAsset dataDevice)
         {
             onClickItem_Device_New?.Invoke(target);
-            if(target.isOn) onClickItem_Device?.Invoke(dataDevice);
+            if (target.isOn) onClickItem_Device?.Invoke(dataDevice);
         }
     }
 
@@ -92,4 +103,9 @@ public class DeviceAssetList_RE : MonoBehaviour
     private ToggleGroup _toggleGroup { get; set; }
     private ToggleGroup toggleGroup => _toggleGroup ??= transform.GetComponent<ToggleGroup>();
     #endregion
+
+    public void UpdateList(ListItem_Device_RE removeItem)
+    {
+        itemList.Remove(removeItem);
+    }
 }

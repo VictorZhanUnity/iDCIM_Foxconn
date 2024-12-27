@@ -86,7 +86,7 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     {
         float perRUposY = 0.076f * 0.61f;
         RackSpacer ruSpacer = ObjectPoolManager.GetInstanceFromQueuePool(rackSpacerPrefab, dataRack.model);
-        ruSpacer.RuIndex = ruIndex;
+        ruSpacer.RuLocation = ruIndex;
         ruSpacer.dataRack = dataRack;
         ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruIndex, 0);
         dataRack.availableRackSpacerList.Add(ruSpacer);
@@ -129,9 +129,9 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     {
         DeviceModelManager_OLD.onGetAllRackDevices.AddListener(BuildRackAvailableRuSpacer);
         dataHandler.onGetAllStockDevices.AddListener(stockDeviceList.ShowData);
-        stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
+      //  stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
        // stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
-        deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
+       // deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
 
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
         RaycastHitManager.onDeselectObjectEvent.AddListener((target) => deviceController.ToClose());
@@ -142,9 +142,9 @@ public class DeviceConfigureManager_OLD : iDCIM_ModuleManager
     private void RemovetListener()
     {
         dataHandler.onGetAllStockDevices.RemoveAllListeners();
-        stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
+      //  stockDeviceList.onCreateTempDeviceModel.AddListener(deviceUploadInfoPanel.ShowData);
         //stockDeviceList.onSelectDeviceModel.AddListener(serverRackFilter.ToFilterRack);
-        deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
+        //deviceUploadInfoPanel.onUploadDeviceComplete.AddListener(stockDeviceList.UpdateList);
 
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
         RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectDeviceHandler);

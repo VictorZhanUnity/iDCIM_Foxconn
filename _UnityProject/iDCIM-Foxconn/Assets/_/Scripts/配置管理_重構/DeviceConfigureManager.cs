@@ -1,25 +1,95 @@
 using System;
+using System.Linq;
 using UnityEngine;
+using VictorDev.Common;
 
 public class DeviceConfigureManager : ModulePage
 {
+    public DeviceAssetDataManager deviceAssetDataManager;
+
     public override void OnInit(Action onInitComplete = null)
     {
+        Debug.Log("DeviceAssetDataManager OnInit.");
+        onInitComplete?.Invoke();
     }
 
     protected override void InitEventListener()
     {
+        RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
+        RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectDeviceHandler);
+
+        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
     }
 
     protected override void OnCloseHandler()
     {
+        deviceAssetDataManager.DataRack.ForEach(rack => rack.HideAvailableRuSpacer());
+        modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false).ToList()
+             .ForEach(model => model.GetComponent<Collider>().enabled = false);
+        RaycastHitManager.RestoreSelectedObjects();
     }
 
     protected override void OnShowHandler()
     {
+        deviceAssetDataManager.DataRack.ForEach(rack => rack.ShowAvailableRuSpacer());
+        modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false).ToList()
+            .ForEach(model => model.GetComponent<Collider>().enabled = true);
     }
 
     protected override void RemoveEventListener()
     {
+        RaycastHitManager.onSelectObjectEvent.RemoveListener(OnClickDeviceHandler);
+        RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectDeviceHandler);
+        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
+    }
+
+    public DeviceAssetSystemList deviceSystemList;
+    public DeviceEmptyRuCreator deviceEmptyRuCreator;
+    public NotifyListItem notifyPrefab;
+    /// <summary>
+    /// 點擊下架設備時
+    /// </summary>
+    private void OnClickRemoveDeviceHandler(Data_DeviceAsset data)
+    {
+        Transform rackModel = data.model.transform.parent;
+
+        data.model.gameObject.SetActive(false);
+        data.model.transform.parent = null;
+        deviceSystemList.AddDeviceItem(data);
+        deviceController.ToClose();
+
+        NotificationManager.CreateNotifyMessage(notifyPrefab, "設備已下架!!", data);
+
+        //建立RU空格物件
+        Data_ServerRackAsset parentRackData = DeviceModelManager_OLD.RackDataList.FirstOrDefault(rack => rackModel.name.Contains(rack.deviceName));
+        for (int i = data.rackLocation; i < data.rackLocation + data.information.heightU; i++)
+        {
+            deviceEmptyRuCreator.CreateRuSpace(parentRackData, i);
+        }
+    }
+
+    private Transform currentSelectModel;
+    public ToolTip_DeivceController deviceController;
+    private void OnClickDeviceHandler(Transform targetModel)
+    {
+        if (IsDevice(targetModel))
+        {
+            if (currentSelectModel == targetModel)
+            {
+                deviceController.ToClose();
+                currentSelectModel = null;
+            }
+            else
+            {
+                deviceController.ShowData(targetModel);
+            }
+        }
+    }
+    private void OnDeselectDeviceHandler(Transform target) => deviceController.ToClose();
+    private bool IsDevice(Transform targetModel)
+    {
+        return targetModel.name.Contains("Server")
+            || targetModel.name.Contains("Switch")
+            || targetModel.name.Contains("Router");
     }
 }
