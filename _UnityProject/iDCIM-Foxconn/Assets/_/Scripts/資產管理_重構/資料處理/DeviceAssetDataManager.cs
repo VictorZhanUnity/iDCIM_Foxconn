@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 /// <summary>
 /// 資產管理 - 資料載入
 /// </summary>
-public class DeviceAssetDataManager : Module
+public class DeviceAssetDataManager : Module, IJsonParser
 {
     [Header(">>> [Receiver] - 資料接收器")]
     [SerializeField] private List<DeviceAssetDataReceiver> receivers;
