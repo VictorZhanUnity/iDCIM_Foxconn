@@ -38,7 +38,7 @@ public class Data_ServerRackAsset : Data_iDCIMAsset
     /// <summary>
     /// 可用的RU空間每種尺吋大小 (需計算)
     /// </summary>
-    public List<int> eachSizeOfAvailableRU = new List<int>();
+    public List<int> eachSizeOfAvailableRU { get; set; } = new List<int>();
 
     public Data_ServerRackAsset RefreshData(Data_ServerRackAsset source)
     {

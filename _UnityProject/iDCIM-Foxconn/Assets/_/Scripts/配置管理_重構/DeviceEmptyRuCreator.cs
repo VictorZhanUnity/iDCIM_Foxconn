@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditorInternal.VersionControl;
 using UnityEngine;
-using UnityEngine.Events;
 using VictorDev.Common;
 
 /// <summary>
@@ -11,7 +9,6 @@ using VictorDev.Common;
 /// </summary>
 public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
 {
-
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
         CaculateAvailabeRu(datas);
@@ -31,17 +28,9 @@ public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
             //算出佔用的格數
             dataRack.containers.ForEach(device =>
             {
-                //可用空格的Size尺吋
-                int availableRuSize = 0;
                 for (int i = device.rackLocation; i < device.rackLocation + device.information.heightU; i++)
                 {
                     occupyLlst.Add(i);
-                    availableRuSize++;
-                }
-                //計算每個RU空格的尺吋大小
-                if (dataRack.eachSizeOfAvailableRU.Contains(availableRuSize) == false)
-                {
-                    dataRack.eachSizeOfAvailableRU.Add(availableRuSize);
                 }
             });
 
@@ -49,6 +38,14 @@ public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
             availableRackUList = availableRackUList.Except(occupyLlst).ToList();
             //建立RuSpacer
             availableRackUList.ForEach(locaion => CreateRuSpace(dataRack, locaion));
+
+            //計算剩餘RU層空間有哪幾種高度尺吋
+            dataRack.eachSizeOfAvailableRU = availableRackUList.OrderBy(ru => ru) // 排序
+                        .Select((ru, index) => ru - index) // 計算偏移值：連續區間具有相同的偏移值
+                        .GroupBy(offset => offset) // 按偏移值分組
+                        .Select(group => group.Count()) // 計算每組的長度
+                        .Distinct() // 獲取唯一的尺吋
+                        .ToList();
         });
     }
 

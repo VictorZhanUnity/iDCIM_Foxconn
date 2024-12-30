@@ -37,19 +37,26 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
     [ContextMenu("- 顯示合適的機櫃")]
     private void ShowFilterResult()
     {
-        dataRacks.ForEach(data =>
+        dataRacks.ForEach(dataRack =>
         {
-            var info = currentItem.data.information;
+            InfoWithCOBie selectDeviceInfo = currentItem.data.information;
 
-            bool isSuitable = (info.watt <= data.reaminOfWatt)
-            //&& data.eachSizeOfAvailableRU.Any(size => size >= info.heightU)
-            && (info.weight <= data.reaminOfWeight);
+            bool isSuitable = (selectDeviceInfo.watt <= dataRack.reaminOfWatt) //剩餘電力
+            && (selectDeviceInfo.weight <= dataRack.reaminOfWeight) //剩餘負重
+            && dataRack.eachSizeOfAvailableRU.Any(size => size >= selectDeviceInfo.heightU); //可以空間尺吋
 
-            if (isSuitable) data.ShowAvailableRuSpacer();
-            else data.HideAvailableRuSpacer();
+            if(dataRack.eachSizeOfAvailableRU.Any(size => size >= selectDeviceInfo.heightU))
+            {
+                Debug.Log($"dataRack: {dataRack.deviceName} / heightU: {selectDeviceInfo.heightU}");
+            }
 
-            ChangeRackHeight(data, isSuitable);
-            ChangeRackColor(data, isSuitable);
+            if (isSuitable) dataRack.ShowAvailableRuSpacer();
+            else dataRack.HideAvailableRuSpacer();
+
+            ChangeRackHeight(dataRack, isSuitable);
+            ChangeRackColor(dataRack, isSuitable);
+
+            dataRack.containers.ForEach(dataDevice=> dataDevice.model.GetComponent<Collider>().enabled = isSuitable);
         });
     }
 
@@ -59,7 +66,6 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
     private void ChangeRackHeight(Data_ServerRackAsset data, bool isSuitable)
     {
         DOTween.Kill(data.model);
-
         data.model
             .DOScaleY(isSuitable ? 1 : minScale, isSuitable ? duration : duration * 0.5f)
             .SetEase(isSuitable ? easeOut : easeIn).SetDelay(Random.Range(0f, duration)).SetAutoKill(true);
@@ -70,6 +76,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
     private void ChangeRackColor(Data_ServerRackAsset data, bool isSuitable)
     {
         int rackMaterialIndex = data.model.name.Contains("ATEN") ? 7 : 4;
+        int rackHoleIndex = data.model.name.Contains("ATEN") ? 9 : 2;
         Material[] mats = data.model.GetComponent<MeshRenderer>().materials;
 
         for (int i = 0; i < mats.Length; i++)
@@ -99,7 +106,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
             }
 
             color.a = isSuitable ? 0 : 1;
-            if (isSuitable) MaterialHandler.SetTransparentMode(mats[i]);
+            if (isSuitable || i == rackHoleIndex) MaterialHandler.SetTransparentMode(mats[i]);
             else MaterialHandler.SetOpaqueMode(mats[i]);
 
             DOTween.Kill(mats[i]);
@@ -132,7 +139,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
     #region [>>> Show/Hide]
     public void ToShow()
     {
-        uiObject.gameObject.SetActive(true);
+        gameObject.SetActive(true);
         ToggleRemainRuSpace.onValueChanged.AddListener((isOn) => ShowFilterResult());
         ToggleRemainWatt.onValueChanged.AddListener((isOn) => ShowFilterResult());
         ToggleRemainWeight.onValueChanged.AddListener((isOn) => ShowFilterResult());
@@ -140,7 +147,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
 
     public void ToClose()
     {
-        uiObject.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         ToggleRemainRuSpace.onValueChanged.RemoveAllListeners();
         ToggleRemainWatt.onValueChanged.RemoveAllListeners();
         ToggleRemainWeight.onValueChanged.RemoveAllListeners();

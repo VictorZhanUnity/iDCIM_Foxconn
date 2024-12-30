@@ -28,6 +28,7 @@ namespace VictorDev.Advanced
             toggle.onValueChanged.AddListener(
                 (isOn) =>
                 {
+
                     if (isOn) OnValueToTrue?.Invoke(isOn);
                     else OnValueToFalse?.Invoke(isOn);
 
