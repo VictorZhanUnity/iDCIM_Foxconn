@@ -81,15 +81,13 @@ public class DeviceAssetDataManager : Module, IJsonParser
             }
             rack.containers = rack.containers.Except(toHideDevices).ToList();
 #endif
-        });
 
-        // 設定device屬於哪個rack
-        dataRack.ForEach(rack =>
-        {
+            // 設定device屬於哪個rack
             rack.containers.ForEach(device =>
             {
                 device.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(device.deviceName));
                 device.rack = rack;
+                if (device.model == null) Debug.Log($"deviceAssetManager.modelList裡找不到模型: {device.deviceName}");
                 device.model.parent = rack.model;
             });
         });

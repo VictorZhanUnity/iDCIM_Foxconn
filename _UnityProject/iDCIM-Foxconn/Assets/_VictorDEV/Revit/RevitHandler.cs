@@ -431,6 +431,21 @@ namespace VictorDev.RevitUtils
             {"Other.Document.Drawing", "圖說"},
         };
         #endregion
+
+        #region [設定Config]
+        /// <summary>
+        /// Light強度調整
+        /// </summary>
+        public static float Light_Intensity = 0.63f;
+        /// <summary>
+        /// Camera背景色
+        /// </summary>
+        public static uint CameraBkgColor => 0x051935;
+        /// <summary>
+        /// 畫面材質球背景色
+        /// </summary>
+        public static uint BkgColor => 0x082557;
+        #endregion
     }
 }
 
