@@ -41,7 +41,7 @@ public class DeviceConfigureManager : ModulePage
     {
         RaycastHitManager.onSelectObjectEvent.RemoveListener(OnClickDeviceHandler);
         RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectDeviceHandler);
-        deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
+        deviceController.onClickRemoveDeviceEvent.RemoveListener(OnClickRemoveDeviceHandler);
     }
 
     public DeviceAssetSystemList deviceSystemList;
@@ -62,10 +62,11 @@ public class DeviceConfigureManager : ModulePage
         NotificationManager.CreateNotifyMessage(notifyPrefab, "設備已下架!!", data);
 
         //建立RU空格物件
-        Data_ServerRackAsset parentRackData = DeviceModelManager_OLD.RackDataList.FirstOrDefault(rack => rackModel.name.Contains(rack.deviceName));
         for (int i = data.rackLocation; i < data.rackLocation + data.information.heightU; i++)
         {
-            deviceEmptyRuCreator.CreateRuSpace(parentRackData, i);
+            RackSpacer rackSpacer = deviceEmptyRuCreator.CreateRuSpace(data.rack, i);
+            rackSpacer.gameObject.SetActive(true);
+            data.rack.availableRackSpacerList.Add(rackSpacer);
         }
     }
 

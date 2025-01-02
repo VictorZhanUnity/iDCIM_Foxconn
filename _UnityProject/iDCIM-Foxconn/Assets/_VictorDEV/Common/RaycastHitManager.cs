@@ -88,7 +88,7 @@ namespace VictorDev.Common
             if (Physics.Raycast(ray, out hit))
             {
                 currentHoveredObject = hit.collider.gameObject;
-                if (currentHoveredObject.CompareTag("BuildContainer_Device")) return;
+             //   if (currentHoveredObject.CompareTag("BuildContainer_Device")) return;
 
                 // 檢查是否指向了不同的物體
                 if (currentHoveredObject != lastHoveredObject)
@@ -170,7 +170,7 @@ namespace VictorDev.Common
         /// </summary>
         public static void ToSelectTarget(Transform target, bool isInvokeEvent = true)
         {
-            if (target.CompareTag("BuildContainer_Device")) return;
+           // if (target.CompareTag("BuildContainer_Device")) return;
 
             //檢查對像是否已被選取
             bool isAlreadySelected = false;

@@ -37,7 +37,7 @@ public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
             //排除後取得可使用的RU層數
             availableRackUList = availableRackUList.Except(occupyLlst).ToList();
             //建立RuSpacer
-            availableRackUList.ForEach(locaion => CreateRuSpace(dataRack, locaion));
+            availableRackUList.ForEach(locaion => CreateRuSpace(dataRack, locaion).gameObject.SetActive(false));
 
             //計算剩餘RU層空間有哪幾種高度尺吋
             dataRack.eachSizeOfAvailableRU = availableRackUList.OrderBy(ru => ru) // 排序
@@ -52,7 +52,7 @@ public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
     /// <summary>
     /// 建立可用RU層物件 {目標機櫃, 第幾層U}
     /// </summary>
-    public void CreateRuSpace(Data_ServerRackAsset dataRack, int ruLocation)
+    public RackSpacer CreateRuSpace(Data_ServerRackAsset dataRack, int ruLocation)
     {
         float perRUposY = 0.076f * 0.61f;
         perRUposY = 0.04445f;
@@ -61,7 +61,7 @@ public class DeviceEmptyRuCreator : DeviceAssetDataReceiver
         ruSpacer.dataRack = dataRack;
         ruSpacer.transform.localPosition = new Vector3(0, perRUposY * ruLocation + 0.055f, 0);
         dataRack.availableRackSpacerList.Add(ruSpacer);
-        ruSpacer.gameObject.SetActive(false);
+        return ruSpacer;
     }
 
     public void UpdateDeviceComplete()

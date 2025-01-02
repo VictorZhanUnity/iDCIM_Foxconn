@@ -129,7 +129,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);
-            //data.HideAvailableRuSpacer();
+            data.containers.ForEach(device=> device.model.GetComponent<Collider>().enabled = true);
         });
 
     #region [>>> Show/Hide]
