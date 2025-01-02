@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VictorDev.Common;
 using Random = UnityEngine.Random;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// [組件] 機櫃過濾
@@ -44,11 +45,6 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
             bool isSuitable = (selectDeviceInfo.watt <= dataRack.reaminOfWatt) //剩餘電力
             && (selectDeviceInfo.weight <= dataRack.reaminOfWeight) //剩餘負重
             && dataRack.eachSizeOfAvailableRU.Any(size => size >= selectDeviceInfo.heightU); //可以空間尺吋
-
-            if(dataRack.eachSizeOfAvailableRU.Any(size => size >= selectDeviceInfo.heightU))
-            {
-                Debug.Log($"dataRack: {dataRack.deviceName} / heightU: {selectDeviceInfo.heightU}");
-            }
 
             if (isSuitable) dataRack.ShowAvailableRuSpacer();
             else dataRack.HideAvailableRuSpacer();

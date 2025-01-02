@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using VictorDev.Common;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// 設備配置管理器

@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using VictorDev.Common;
 using VictorDev.EditorTool;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// [Singleton] [static]  物件池管理器

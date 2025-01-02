@@ -9,6 +9,7 @@ using VictorDev.Advanced;
 using VictorDev.Async.CoroutineUtils;
 using VictorDev.Common;
 using VictorDev.IAQ;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// HUD - 機房即時平均IAQ各項指數

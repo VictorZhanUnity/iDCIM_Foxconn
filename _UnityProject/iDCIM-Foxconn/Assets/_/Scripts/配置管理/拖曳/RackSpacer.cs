@@ -16,21 +16,18 @@ public class RackSpacer : MonoBehaviour
         set
         {
             txtRuIndex.SetText(value.ToString());
+            txtRuIndex_Hint.SetText(value.ToString());
             name = $"U {value}";
         }
     }
 
-    private void OnMouseEnter()
-    {
-        container.gameObject.SetActive(true);
-    }
     private bool _isForceToShow { get; set; } = false;
     public bool isForceToShow
     {
         set
         {
             _isForceToShow = value;
-            if (_isForceToShow) OnMouseEnter();
+            if (_isForceToShow) container.gameObject.SetActive(true);
             else OnMouseExit();
         }
     }
@@ -41,7 +38,7 @@ public class RackSpacer : MonoBehaviour
     }
 
     /// <summary>
-    /// 是否放的下設備大小
+    /// 檢查是否放的下設備大小
     /// </summary>
     public bool isAbleToUpload(Data_DeviceAsset deviceAsset)
     {
@@ -59,6 +56,8 @@ public class RackSpacer : MonoBehaviour
     public Transform container => _container ??= transform.Find("Container");
     private TextMeshPro _txtRuIndex { get; set; }
     private TextMeshPro txtRuIndex => _txtRuIndex ??= container.GetChild(0).GetComponent<TextMeshPro>();
+    private TextMeshPro _txtRuIndex_Hint { get; set; }
+    private TextMeshPro txtRuIndex_Hint => _txtRuIndex_Hint ??= transform.Find("Hint").GetChild(0).GetComponent<TextMeshPro>();
     private Transform tempDeviceModel { get; set; }
     #endregion
 }

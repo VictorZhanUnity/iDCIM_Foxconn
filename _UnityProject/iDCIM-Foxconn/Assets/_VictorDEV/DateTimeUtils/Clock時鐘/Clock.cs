@@ -72,8 +72,8 @@ namespace VictorDev.DateTimeUtils
 
             DateTime dateNow = DateTime.Now;
 
-            float timeValue = 0f;
-            dateNow = dateNow.AddHours(timeValue); //往回推 for Demo
+            float timeAdjust = 0f;
+            dateNow = dateNow.AddHours(timeAdjust); //往回推 for Demo
 
             string time = dateNow.ToString(format, cultureInfo);
             string date = dateNow.ToString("yyyy/MM/dd", cultureInfo);
@@ -97,7 +97,7 @@ namespace VictorDev.DateTimeUtils
                 UpdateClock();
             }
 
-            iClockReceiver = ObjectHandler.CheckTypoOfList<IClockReceiver>(_iClockReceiver);
+            _iClockReceiver = ObjectHandler.CheckTypoOfList<IClockReceiver>(_iClockReceiver);
         }
 
         private enum enumLang { 中文, 英文 }

@@ -109,7 +109,7 @@ namespace VictorDev.Common
         /// <summary>
         /// 檢查List裡面是否有實作T類別，將不符合的從List裡移除
         /// </summary>
-        public static List<T> CheckTypoOfList<T>(List<MonoBehaviour> list) where T : class
+        public static List<MonoBehaviour> CheckTypoOfList<T>(List<MonoBehaviour> list) where T : class
         {
             #region 取得上一層呼叫的資訊
             StackTrace stackTrace = new StackTrace();
@@ -127,7 +127,7 @@ namespace VictorDev.Common
                 }
             }
 
-            return list.OfType<T>().ToList();
+            return list;
         }
     }
 }

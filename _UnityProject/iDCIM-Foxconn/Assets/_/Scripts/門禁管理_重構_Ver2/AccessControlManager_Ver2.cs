@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// 門禁管理器

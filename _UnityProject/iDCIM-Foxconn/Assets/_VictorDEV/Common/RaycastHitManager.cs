@@ -13,17 +13,21 @@ namespace VictorDev.Common
         [SerializeField] private List<MonoBehaviour> _iRayCastReceiverList;
         private List<IRaycastHitReceiver> iRayCastReceiverList { get; set; }
 
-        private void Awake() => InitListener();
+        private void Awake()
+        {
+            iRayCastReceiverList = _iRayCastReceiverList.OfType<IRaycastHitReceiver>().ToList();
+            InitListener();
+        }
+
         private void InitListener()
         {
-            iRayCastReceiverList = ObjectHandler.CheckTypoOfList<IRaycastHitReceiver>(_iRayCastReceiverList);
             onSelectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnSelectObjectHandler(target)));
             onMouseOverObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseOverObjectEvent(target)));
             onMouseExitObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnMouseExitObjectEvent(target)));
             onDeselectObjectEvent.AddListener((target) => iRayCastReceiverList.ForEach(receiver => receiver.OnDeselectObjectHandler(target)));
         }
 
-        private void OnValidate() => iRayCastReceiverList = ObjectHandler.CheckTypoOfList<IRaycastHitReceiver>(_iRayCastReceiverList);
+        private void OnValidate() => _iRayCastReceiverList = ObjectHandler.CheckTypoOfList<IRaycastHitReceiver>(_iRayCastReceiverList);
 
         /// <summary>
         /// 當點擊模型物件時Invoke

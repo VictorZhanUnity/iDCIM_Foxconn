@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Managers;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// 環控資料管理器
@@ -75,10 +76,13 @@ public class BlackboxDataManager : Module
         {
             if (tagNames.Contains(tag) == false) tagNames.AddRange(tags);
         });
+
     }
 
-    private void OnDestroy() => StopCoroutine(coroutine);
-
+    private void OnDestroy()
+    {
+        if (coroutine != null) StopCoroutine(coroutine);
+    }
     #region [設定TagNames]
     [ContextMenu("- 設定Tag Names")]
     private void SetupTagNames()

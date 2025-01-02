@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
 using VictorDev.RTSP;
+using Debug = VictorDev.Common.Debug;
 
 public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
 {

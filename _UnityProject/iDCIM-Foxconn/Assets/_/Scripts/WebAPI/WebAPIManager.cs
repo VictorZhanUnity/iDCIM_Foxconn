@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +6,7 @@ using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Net.WebAPI;
 using VictorDev.Parser;
+using Debug = VictorDev.Common.Debug;
 
 public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
 {
@@ -78,8 +78,8 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.CheckToken(Instance.request_GetIAQIndexHistory) == false) return;
 
-     /*   Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
-        Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");*/
+        /*   Debug.Log($">>> [取得IAQ各項指數歷史資料] WebAPI Call: {Instance.request_GetIAQIndexHistory.url}");
+           Debug.Log($">>> from: {from.ToString(DateTimeHandler.FullDateTimeFormatWithT)} / to: {to.ToString(DateTimeHandler.FullDateTimeFormatWithT)}");*/
         Dictionary<string, object> data = new Dictionary<string, object>()
         {
             { "tags", tags.ToArray() },
@@ -132,7 +132,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
         WebAPI_Caller.SendRequest(request, (responseCode, jsonString) =>
         {
             onSuccess?.Invoke(responseCode, jsonString);
-           // Debug.Log($"*** WebAPI呼叫成功!!");
+            // Debug.Log($"*** WebAPI呼叫成功!!");
             //PrintJSONFormatting(jsonString);j
         }, onFailed);
     }
@@ -144,7 +144,7 @@ public class WebAPIManager : SingletonMonoBehaviour<WebAPIManager>
     {
         if (Instance.token == null)
         {
-          //  Debug.LogWarning($"尚未事先取得Token!!");
+            //  Debug.LogWarning($"尚未事先取得Token!!");
             return false;
         }
         request.token = token;

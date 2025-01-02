@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.Common;
-using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
+using Debug = VictorDev.Common.Debug;
 
 public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
 {

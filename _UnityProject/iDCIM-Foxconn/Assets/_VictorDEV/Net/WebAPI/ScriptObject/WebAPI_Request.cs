@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.Common;
+using Debug = VictorDev.Common.Debug;
 
 namespace VictorDev.Net.WebAPI
 {
