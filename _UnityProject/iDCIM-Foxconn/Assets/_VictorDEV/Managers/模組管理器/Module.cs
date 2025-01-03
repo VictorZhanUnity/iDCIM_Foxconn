@@ -18,7 +18,7 @@ namespace VictorDev.Managers
         /// </summary>
         abstract void OnInit(Action onInitComplete = null);
     }
-    public interface IJsonParser
+    public interface IJsonParseReceiver
     {
         void ParseJson(string jsonData);
     }

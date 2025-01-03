@@ -13,11 +13,11 @@ public class DemoDataManager : Module
     [Header(">>> [接收器IJsonParser] - 接收JSON檔解析後的json字串")]
     [SerializeField] List<MonoBehaviour> jsonParseReceivers;
 
-    [Header(">>> 是否在非運行狀態下Invoke資料")]
-    [SerializeField] bool isInvokeDataInEditor = false;
-
     [Header(">>> [JSON檔] - 本地機櫃設備資料，以第一個為主要讀取")]
     [SerializeField] List<TextAsset> jsonFiles;
+
+    [Header(">>> 是否在非運行狀態下Invoke資料")]
+    [SerializeField] bool isInvokeDataInEditor = false;
 
     private string jsonDeviceDatas { get; set; }
 
@@ -37,10 +37,11 @@ public class DemoDataManager : Module
         Debug.Log($"ParseJsonFile: {jsonFiles[0].name}\n{jsonDeviceDatas}");
 #endif
     }
+
     /// <summary>
     /// 發送資料
     /// </summary>
-    private void InvokeData() => jsonParseReceivers.OfType<IJsonParser>().ToList().ForEach(receiver =>
+    private void InvokeData() => jsonParseReceivers.OfType<IJsonParseReceiver>().ToList().ForEach(receiver =>
     {
         Debug.Log($">>> 發送資料 to [{(receiver as MonoBehaviour).name}]");
         receiver.ParseJson(jsonDeviceDatas);
@@ -48,8 +49,8 @@ public class DemoDataManager : Module
 
     private void OnValidate()
     {
-        List<MonoBehaviour> exclude = jsonParseReceivers.Where(receiver => receiver is IJsonParser == false).ToList();
+        List<MonoBehaviour> exclude = jsonParseReceivers.Where(receiver => receiver is IJsonParseReceiver == false).ToList();
         jsonParseReceivers = jsonParseReceivers.Except(exclude).ToList();
-        exclude.ForEach(target => Debug.Log($">>> [{target.name}] 並無實作{typeof(IJsonParser).Name}, 已從List中移除 !!"));
+        exclude.ForEach(target => Debug.Log($">>> [{target.name}] 並無實作{typeof(IJsonParseReceiver).Name}, 已從List中移除 !!"));
     }
 }

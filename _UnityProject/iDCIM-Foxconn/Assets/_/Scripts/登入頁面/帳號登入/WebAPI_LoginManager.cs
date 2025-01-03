@@ -8,6 +8,9 @@ using Debug = VictorDev.Common.Debug;
 
 public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
 {
+    [Header(">>> [Demo] - 是否強制登入? (token不為空即代表登入)")]
+    [SerializeField] private bool isForceLogin = false;
+
     [Header(">>> [資料項]")]
     [SerializeField] private Data_LoginInfo loginInfo;
     public static Data_LoginInfo LoginInfo => Instance.loginInfo;
@@ -36,7 +39,21 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
             Debug.Log($"*** 登入成功!! / {account}");
             onSuccess?.Invoke(responseCode, Instance.loginInfo);
         }
+
+#if UNITY_EDITOR
+        //當Editor模式下，且Token不為空值時
+        if (Instance.isForceLogin && string.IsNullOrEmpty(Instance.loginInfo.access_token) == false)
+        {
+            Debug.Log($"*** 登入成功!! / {account}");
+            onSuccess?.Invoke(200, Instance.loginInfo);
+        }
+        else
+        {
+            WebAPI_Caller.SendRequest(Instance.request_SignIn, onSuccessHandler, onFailed);
+        }
+#else
         WebAPI_Caller.SendRequest(Instance.request_SignIn, onSuccessHandler, onFailed);
+#endif
     }
 
     /// <summary>

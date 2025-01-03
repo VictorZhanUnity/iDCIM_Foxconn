@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VictorDev.Common;
@@ -6,7 +7,11 @@ using Debug = VictorDev.Common.Debug;
 
 public class DeviceConfigureManager : ModulePage
 {
+    #region [Components]
     public DeviceAssetDataManager deviceAssetDataManager;
+    private List<Transform> _devices { get; set; }
+    private List<Transform> devices => _devices ??= modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false).ToList();
+    #endregion
 
     public override void OnInit(Action onInitComplete = null)
     {
@@ -18,23 +23,25 @@ public class DeviceConfigureManager : ModulePage
     {
         RaycastHitManager.onSelectObjectEvent.AddListener(OnClickDeviceHandler);
         RaycastHitManager.onDeselectObjectEvent.AddListener(OnDeselectDeviceHandler);
-
         deviceController.onClickRemoveDeviceEvent.AddListener(OnClickRemoveDeviceHandler);
     }
 
     protected override void OnCloseHandler()
     {
         deviceAssetDataManager.DataRack.ForEach(rack => rack.HideAvailableRuSpacer());
-        modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false).ToList()
-             .ForEach(model => model.GetComponent<Collider>().enabled = false);
-        RaycastHitManager.RestoreSelectedObjects();
+        devices.ForEach(model =>
+        {
+            model.GetComponent<Collider>().enabled = false;
+            RaycastHitManager.CancellObjectSelected(model);
+        });
     }
 
     protected override void OnShowHandler()
     {
         deviceAssetDataManager.DataRack.ForEach(rack => rack.ShowAvailableRuSpacer());
-        modelList.Where(model => (model.name.Contains("RACK") || model.name.Contains("ATEN")) == false).ToList()
-            .ForEach(model => model.GetComponent<Collider>().enabled = true);
+
+        modelList.Except(devices).ToList().ForEach(model => model.GetComponent<Collider>().enabled = false);
+        devices.ForEach(model => model.GetComponent<Collider>().enabled = true);
     }
 
     protected override void RemoveEventListener()
@@ -46,7 +53,7 @@ public class DeviceConfigureManager : ModulePage
 
     public DeviceAssetSystemList deviceSystemList;
     public DeviceEmptyRuCreator deviceEmptyRuCreator;
-    public NotifyListItem notifyPrefab;
+    public NotifyListItem_TextMessage notifyPrefab;
     /// <summary>
     /// 點擊下架設備時
     /// </summary>
@@ -59,7 +66,8 @@ public class DeviceConfigureManager : ModulePage
         deviceSystemList.AddDeviceItem(data);
         deviceController.ToClose();
 
-        NotificationManager.CreateNotifyMessage(notifyPrefab, "設備已下架!!", data);
+        NotifyListItem_TextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab) as NotifyListItem_TextMessage;
+        notifyItem.ShowMessage("設備已下架!", data.deviceName);
 
         //建立RU空格物件
         for (int i = data.rackLocation; i < data.rackLocation + data.information.heightU; i++)

@@ -133,13 +133,17 @@ public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
     protected override void OnShowHandler()
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
+        modelList.ForEach(model => model.GetComponent<Collider>().enabled = true);
     }
     protected override void OnCloseHandler()
     {
         landmarkList.ForEach(landmark =>
         {
-            //      landmark.isOn = false;
             landmark.gameObject.SetActive(false);
+        });
+        modelList.ForEach(model =>
+        {
+            model.GetComponent<Collider>().enabled = false;
         });
     }
 

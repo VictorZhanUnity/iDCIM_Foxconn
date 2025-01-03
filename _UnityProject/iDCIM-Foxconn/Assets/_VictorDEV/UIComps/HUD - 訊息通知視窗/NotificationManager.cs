@@ -1,28 +1,20 @@
 using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace VictorDev.Common
 {
     /// <summary>
-    /// [ºŞ²z¾¹] - °T®§³qª¾ºŞ²z¾¹
+    /// [ç®¡ç†å™¨] - è¨Šæ¯é€šçŸ¥ç®¡ç†å™¨
     /// </summary>
     public class NotificationManager : SingletonMonoBehaviour<NotificationManager>
     {
-        public NotifyListItem itemPrefab;
-
-        private ScrollRect _scrollRect { get; set; }
-        private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(0).GetComponent<ScrollRect>();
-
-        private GraphicRaycaster _rayCaster { get; set; }
-        private GraphicRaycaster rayCaster => _rayCaster ??= transform.GetComponent<GraphicRaycaster>();
-
         /// <summary>
-        /// «Ø¥ß°T®§³qª¾ {UI¼Ë¦¡²Õ¥ó, ¼ĞÃD¤å¦r, ©ÒÄâ±aªº¸ê®Æ¶µ, ÂI¿ï¶µ¥Ø®É¦æ¬°, ÂI¿ïÃö³¬¶s®É¦æ¬°}
+        /// å»ºç«‹è¨Šæ¯é€šçŸ¥ {UIæ¨£å¼çµ„ä»¶, æ¨™é¡Œæ–‡å­—, æ‰€æ”œå¸¶çš„è³‡æ–™é …, é»é¸é …ç›®æ™‚è¡Œç‚º, é»é¸é—œé–‰éˆ•æ™‚è¡Œç‚º}
         /// </summary>
-        public static void CreateNotifyMessage(NotifyListItem itemPrefab, string title, INotifyData data, Action<INotifyData> onClickItem = null, Action onClose = null)
+        public static NotifyListItem CreateNotifyMessage(NotifyListItem itemPrefab, Action<NotifyListItem> onClickItem = null, Action onClose = null)
         {
             NotifyListItem notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
-            notifyItem.ShowData(title, data);
             Instance.scrollRect.verticalNormalizedPosition = 1;
 
             void OnCloseHandler(NotifyListItem target)
@@ -30,15 +22,30 @@ namespace VictorDev.Common
                 ObjectPoolManager.PushToPool(target);
                 onClose?.Invoke();
                 target.onCloseEvent.RemoveAllListeners();
-                target.onClickEvent.RemoveAllListeners();
             }
             notifyItem.onCloseEvent.AddListener(OnCloseHandler);
-            if (onClickItem != null) notifyItem.onClickEvent.AddListener(onClickItem.Invoke);
+            return notifyItem;
         }
 
         private void LateUpdate()
         {
+            if (Input.GetMouseButtonDown(0))
+            {
+                CreateNotifyMessage(defaultItemPrefab);
+            }
+
+
             rayCaster.enabled = scrollRect.content.childCount > 0;
         }
+
+        #region [Componenets]
+        public NotifyListItem defaultItemPrefab;
+
+        private ScrollRect _scrollRect { get; set; }
+        private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(0).GetComponent<ScrollRect>();
+
+        private GraphicRaycaster _rayCaster { get; set; }
+        private GraphicRaycaster rayCaster => _rayCaster ??= transform.GetComponent<GraphicRaycaster>();
+        #endregion
     }
 }

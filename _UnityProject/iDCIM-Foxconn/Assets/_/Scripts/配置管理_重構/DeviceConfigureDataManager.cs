@@ -9,7 +9,7 @@ using VictorDev.Net.WebAPI;
 /// <summary>
 /// 配置管理 - 資料載入
 /// </summary>
-public class DeviceConfigureDataManager : Module, IJsonParser
+public class DeviceConfigureDataManager : Module, IJsonParseReceiver
 {
     [Header(">>> [Receiver] - 資料接收器")]
     [SerializeField] private List<DeviceAssetDataReceiver> receivers;

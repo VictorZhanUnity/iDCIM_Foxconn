@@ -40,7 +40,7 @@ public class ListItem_Device_RE : MonoBehaviour
         }
     }
     /// <summary>
-    /// 確認上傳設備
+    /// 確認上傳設備，將設備GameObject移至機櫃GameObject之下
     /// </summary>
     public void ConfirmUploadDevice()
     {

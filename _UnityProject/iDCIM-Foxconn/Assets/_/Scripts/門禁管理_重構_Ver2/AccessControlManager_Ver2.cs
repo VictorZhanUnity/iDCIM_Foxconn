@@ -21,8 +21,8 @@ public class AccessControlManager_Ver2 : ModulePage
     protected override void OnShowHandler()
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
-
         Debug.Log("OnShowHandler");
+        modelList.ForEach(model => model.GetComponent<Collider>().enabled = true);
 
         //預設點選
         AccessDoorLandmarkDisplayer defaultSelected = landmarkList[0].GetComponent<AccessDoorLandmarkDisplayer>();
@@ -31,6 +31,7 @@ public class AccessControlManager_Ver2 : ModulePage
             landmarkList[0].isOn = true;
             onClickLandmark?.Invoke(landmarkList[0].targetModel);
         }
+
     }
     protected override void OnCloseHandler()
     {
@@ -38,6 +39,11 @@ public class AccessControlManager_Ver2 : ModulePage
         {
             landmark.isOn = false;
             landmark.gameObject.SetActive(false);
+        });
+        modelList.ForEach(model =>
+        {
+            model.GetComponent<Collider>().enabled = false;
+         //   RaycastHitManager.CancellObjectSelected(model);
         });
     }
 

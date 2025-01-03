@@ -59,7 +59,7 @@ public class DeviceAssetList_RE : MonoBehaviour
             //Demo
             if (bol && item.TryGetComponent(out DragAndDeploy dragAndDeploy))
             {
-                item.GetComponent<DragAndDeploy>().onCreateTempDevice.AddListener(deviceEmptyRuCreator.OnCreateTempDeviceHandler);
+                dragAndDeploy.onCreateTempDevice.AddListener(deviceEmptyRuCreator.OnCreateTempDeviceHandler);
             }
         });
 

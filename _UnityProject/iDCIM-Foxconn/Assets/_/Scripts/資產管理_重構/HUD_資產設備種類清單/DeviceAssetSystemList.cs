@@ -86,8 +86,12 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         SetStringFormat(txtNumOfRouter, routerList.Count, toggleRouter);
     }
 
+    /// <summary>
+    /// 上架設備完成後移除該項目
+    /// </summary>
     public void RemoveDeviceData(ListItem_Device_RE item)
     {
+         // 從列表上移除
         Data_DeviceAsset device = item.data as Data_DeviceAsset;
         if (device.system.Contains("DCS"))
         {

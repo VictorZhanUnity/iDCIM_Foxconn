@@ -53,8 +53,11 @@ public class DeviceAssetManager : ModulePage
     protected override void OnCloseHandler()
     {
         RemoveEventListener();
-        modelList.ForEach(model => model.GetComponent<Collider>().enabled = false);
-        RaycastHitManager.RestoreSelectedObjects();
+        modelList.ForEach(model =>
+        {
+            model.GetComponent<Collider>().enabled = false;
+            RaycastHitManager.CancellObjectSelected(model);
+        });
     }
 
     #region [Components]

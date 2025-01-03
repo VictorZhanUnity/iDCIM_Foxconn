@@ -21,7 +21,7 @@ public class AccessDoor_InfoPanel_Ver2 : AccessRecordDataReceiver
     public override void ReceiveData(List<Data_AccessRecord_Ver2> datas)
     {
         todayRecordList.Clear();
-        todayRecordList = datas.SelectMany(recored => recored.pageData.users).Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();
+        todayRecordList = datas.SelectMany(recored => recored.pageData.users).Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).OrderBy(data => data.accessTime).ToList();
         recordTable.ShowData(todayRecordList);
     }
 
