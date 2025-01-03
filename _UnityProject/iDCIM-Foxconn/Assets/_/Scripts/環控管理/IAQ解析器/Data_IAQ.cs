@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VictorDev.ColorUtils;
 using VictorDev.Common;
 using XCharts.Runtime;
 

@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using VictorDev.Common;
+using VictorDev.ColorUtils;
 
 /// <summary>
 /// 九宮格資料項目

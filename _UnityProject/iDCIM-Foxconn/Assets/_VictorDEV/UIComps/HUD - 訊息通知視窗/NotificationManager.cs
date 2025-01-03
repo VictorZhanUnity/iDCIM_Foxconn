@@ -12,9 +12,9 @@ namespace VictorDev.Common
         /// <summary>
         /// 建立訊息通知 {UI樣式組件, 標題文字, 所攜帶的資料項, 點選項目時行為, 點選關閉鈕時行為}
         /// </summary>
-        public static NotifyListItem CreateNotifyMessage(NotifyListItem itemPrefab, Action<NotifyListItem> onClickItem = null, Action onClose = null)
+        public static T CreateNotifyMessage<T>(T itemPrefab, Action<NotifyListItem> onClickItem = null, Action onClose = null) where T: NotifyListItem
         {
-            NotifyListItem notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
+            T notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
             Instance.scrollRect.verticalNormalizedPosition = 1;
 
             void OnCloseHandler(NotifyListItem target)
@@ -29,7 +29,7 @@ namespace VictorDev.Common
 
         private void LateUpdate()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.N))
             {
                 CreateNotifyMessage(defaultItemPrefab);
             }

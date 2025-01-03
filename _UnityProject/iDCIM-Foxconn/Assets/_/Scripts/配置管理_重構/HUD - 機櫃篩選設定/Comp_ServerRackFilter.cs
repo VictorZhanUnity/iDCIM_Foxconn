@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using VictorDev.ColorUtils;
 using VictorDev.Common;
 using Random = UnityEngine.Random;
-using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// [組件] 機櫃過濾
@@ -52,7 +52,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
             ChangeRackHeight(dataRack, isSuitable);
             ChangeRackColor(dataRack, isSuitable);
 
-            dataRack.containers.ForEach(dataDevice=> dataDevice.model.GetComponent<Collider>().enabled = isSuitable);
+            dataRack.containers.ForEach(dataDevice => dataDevice.model.GetComponent<Collider>().enabled = isSuitable);
         });
     }
 
@@ -129,7 +129,7 @@ public class Comp_ServerRackFilter : DeviceAssetDataReceiver
         {
             ChangeRackHeight(data, true);
             ChangeRackColor(data, false);
-            data.containers.ForEach(device=> device.model.GetComponent<Collider>().enabled = true);
+            data.containers.ForEach(device => device.model.GetComponent<Collider>().enabled = true);
         });
 
     #region [>>> Show/Hide]

@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
-using VictorDev.Common;
+using VictorDev.ColorUtils;
 using VictorDev.DoTweenUtils;
-using static CCTVManager;
 
 public class Panel_CCTV : MonoBehaviour
 {
@@ -52,7 +51,7 @@ public class Panel_CCTV : MonoBehaviour
 
     private void OnEnable()
     {
-      //  btnScale.onClick.AddListener(() => onClickScale.Invoke(_data));
+        //  btnScale.onClick.AddListener(() => onClickScale.Invoke(_data));
         dragHandler.onDragged.AddListener(OnDragHandler);
         doTweenFade.OnHideEvent.AddListener(CloseHandler);
     }
@@ -62,7 +61,7 @@ public class Panel_CCTV : MonoBehaviour
         onClickScale.RemoveAllListeners();
         onDragged.RemoveAllListeners();
         onClose.RemoveAllListeners();
-       // btnScale.onClick.RemoveListener(() => onClickScale.Invoke(_data));
+        // btnScale.onClick.RemoveListener(() => onClickScale.Invoke(_data));
         dragHandler.onDragged.RemoveListener(OnDragHandler);
         doTweenFade.OnHideEvent.RemoveListener(CloseHandler);
     }
@@ -95,7 +94,7 @@ public class Panel_CCTV : MonoBehaviour
         this._data = data;
         //txtTitle.SetText(data.);
         txtDeviceName.SetText(data.name);
-        
+
         doTweenFade.ToShow();
 
         if (listItem != null) listItem.isDisplay = true;
@@ -107,7 +106,6 @@ public class Panel_CCTV : MonoBehaviour
     public void Close()
     {
         doTweenFade.ToHide();
-      //  onClose.Invoke(_data);
 
         listItem.isDisplay = false;
     }
@@ -121,6 +119,5 @@ public class Panel_CCTV : MonoBehaviour
     public void ToShining()
     {
         ColorHandler.LerpColor(border, Color.red, originalColor);
-      //  pointerEventHandler.MoveToFront();
     }
 }

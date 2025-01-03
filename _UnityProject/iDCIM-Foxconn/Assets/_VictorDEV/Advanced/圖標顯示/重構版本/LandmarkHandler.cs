@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using VictorDev.Common;
+using VictorDev.ColorUtils;
 
 /// <summary>
 /// [父類別] - 圖標物件

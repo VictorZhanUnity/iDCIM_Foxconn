@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using VictorDev.Common;
+using VictorDev.ColorUtils;
 
 namespace VictorDev.Advanced
 {

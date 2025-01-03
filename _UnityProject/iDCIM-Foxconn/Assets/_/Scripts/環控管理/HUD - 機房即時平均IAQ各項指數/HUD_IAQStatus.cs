@@ -1,9 +1,8 @@
-using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using VictorDev.Common;
+using VictorDev.ColorUtils;
 
 /// <summary>
 /// IAQ指數資訊顯示器
@@ -19,10 +18,10 @@ public class HUD_IAQStatus : IAQIndexDisplayer
         set
         {
             base.data = value;
-            
+
             ColorHandler.ChangeColorLevel_Temperature(data.RT, imgICON, 1f);
             imgList.ForEach(img => ColorHandler.ChangeColorLevel_Temperature(data.RT, txtValue, 0.5f));
-           // txtStatus.SetText(value.levelStatus);
+            // txtStatus.SetText(value.levelStatus);
             //imgICON.DOColor(value.levelColor, 1f);
             //txtStatus.DOColor(value.levelColor, 1.5f);
             //txtValue.DOColor(value.levelColor, 0.5f);

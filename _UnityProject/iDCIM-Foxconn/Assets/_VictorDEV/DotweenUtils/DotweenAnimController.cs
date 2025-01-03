@@ -71,9 +71,10 @@ namespace VictorDev.DoTweenUtils
             }
             sequence.Play().SetDelay(anim.delaySec).SetAutoKill(true).OnComplete(() =>
             {
-                if (++counter > animSequenceSet.Count - 1)
+                if (counter++ > animSequenceSet.Count - 1)
                 {
                     counter = 0;
+                    transform.SetAsFirstSibling();
                     onDotweenFinished.Invoke(transform.gameObject);
                 }
                 else GoAnimTween(animSequenceSet[counter]);

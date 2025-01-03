@@ -66,7 +66,7 @@ public class DeviceConfigureManager : ModulePage
         deviceSystemList.AddDeviceItem(data);
         deviceController.ToClose();
 
-        NotifyListItem_TextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab) as NotifyListItem_TextMessage;
+        NotifyListItem_TextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab);
         notifyItem.ShowMessage("設備已下架!", data.deviceName);
 
         //建立RU空格物件
