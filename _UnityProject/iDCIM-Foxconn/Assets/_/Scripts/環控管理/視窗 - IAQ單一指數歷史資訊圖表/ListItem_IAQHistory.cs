@@ -1,4 +1,5 @@
 using System;
+using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
@@ -26,7 +27,7 @@ public class ListItem_IAQHistory : MonoBehaviour
 
             txtUnit = isPMUnit ? txtUnit_ugm3.text : txtUnit_Others.text;
 
-            //³]©w³æ¦ì¤å¦r
+            //ï¿½]ï¿½wï¿½ï¿½ï¿½ï¿½r
             if (!isPMUnit) txtUnit_Others.SetText(Data_IAQ.UnitName[value].unitName);
         }
     }

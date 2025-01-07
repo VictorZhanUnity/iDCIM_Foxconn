@@ -1,3 +1,4 @@
+using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,10 +7,10 @@ using VictorDev.Common;
 
 public class ListItem_AccessRecord : MonoBehaviour
 {
-    [Header(">>> ÂIÀ»¶µ¥Ø®ÉÄ²µo")]
+    [Header(">>> ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ø®ï¿½Ä²ï¿½o")]
     public UnityEvent<ListItem_AccessRecord> onClickItemEvent = new UnityEvent<ListItem_AccessRecord>();
 
-    [Header(">>> UIª«¥ó")]
+    [Header(">>> UIï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private TextMeshProUGUI txtTimeStamp, txtUserName, txtRole;
     [SerializeField] private Image imgPhoto;
     [SerializeField] private Toggle toggle;

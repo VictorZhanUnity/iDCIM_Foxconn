@@ -1,4 +1,5 @@
 using System;
+using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
@@ -7,18 +8,18 @@ using static VictorDev.DateTimeUtils.Clock;
 namespace VictorDev.DateTimeUtils
 {
     /// <summary>
-    /// ¤é´Á®É¶¡Åã¥Ü¾¹
+    /// ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½Ü¾ï¿½
     /// </summary>
 
     public class DateTimeDisplay : MonoBehaviour, IClockReceiver
     {
-        [Header(">>> ¤é´Á®É¶¡¦r¦ê®æ¦¡ {MM/dd ddd} =>")]
+        [Header(">>> ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½rï¿½ï¿½æ¦¡ {MM/dd ddd} =>")]
         [SerializeField] private string format = "MM/dd ddd";
 
-        [Header(">>> ¬O§_¬°­^¤åª©")]
+        [Header(">>> ï¿½Oï¿½_ï¿½ï¿½ï¿½^ï¿½åª©")]
         [SerializeField] private bool isEng = true;
 
-        [Header(">>> [²Õ¥ó]¡A­YµL«ü©w«h±q¥»¨­Â^¨ú")]
+        [Header(">>> [ï¿½Õ¥ï¿½]ï¿½Aï¿½Yï¿½Lï¿½ï¿½ï¿½wï¿½hï¿½qï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½ï¿½")]
         [SerializeField] private TextMeshProUGUI txt;
 
         public void OnReceive(DateTime dateNow)

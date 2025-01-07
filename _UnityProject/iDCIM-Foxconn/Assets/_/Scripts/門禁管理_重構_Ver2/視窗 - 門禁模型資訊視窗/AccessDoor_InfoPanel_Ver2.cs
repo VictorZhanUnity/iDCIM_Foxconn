@@ -1,20 +1,21 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using _VictorDEV.DateTimeUtils;
 using UnityEngine;
 using VictorDev.Common;
 using static Data_AccessRecord_Ver2;
 
 public class AccessDoor_InfoPanel_Ver2 : AccessRecordDataReceiver
 {
-    [Header(">>> [Prefab] ªí®æ¶µ¥Ø")]
+    [Header(">>> [Prefab] ï¿½ï¿½ï¿½æ¶µï¿½ï¿½")]
     [SerializeField] private AccessRecord_TableRow itemPrefab;
 
-    [Header(">>> ªí®æ")]
+    [Header(">>> ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private AccessRecord_Table recordTable;
 
     /// <summary>
-    /// ¤µ¤éªù¸T°O¿ý
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Tï¿½Oï¿½ï¿½
     /// </summary>
     private List<User> todayRecordList { get; set; } = new List<User>();
 

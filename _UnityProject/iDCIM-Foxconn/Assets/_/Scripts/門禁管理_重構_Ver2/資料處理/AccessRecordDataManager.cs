@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using _VictorDEV.DateTimeUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
@@ -11,16 +12,16 @@ using static AccessRecord_DataHandler.SendRawJSON;
 
 public class AccessRecordDataManager : Module
 {
-    [Header(">>> [µù¥U¾¹] ±µ¦¬¨ì¤µ¦~«×ªù¸T¸ê®Æµo°eµ¹¦U¹ï¹³²Õ¥ó")]
+    [Header(">>> [ï¿½ï¿½ï¿½Uï¿½ï¿½] ï¿½ï¿½ï¿½ï¿½ï¿½ì¤µï¿½~ï¿½×ªï¿½ï¿½Tï¿½ï¿½Æµoï¿½eï¿½ï¿½ï¿½Uï¿½ï¹³ï¿½Õ¥ï¿½")]
     [SerializeField] private List<AccessRecordDataReceiver> receivers;
 
-    [Header(">>> [Event] ±µ¦¬¨ì¤µ¦~«×ªù¸T¸ê®Æ®ÉInvoke")]
+    [Header(">>> [Event] ï¿½ï¿½ï¿½ï¿½ï¿½ì¤µï¿½~ï¿½×ªï¿½ï¿½Tï¿½ï¿½Æ®ï¿½Invoke")]
     public UnityEvent<List<Data_AccessRecord_Ver2>> onGetAccessRecordOfThisYear = new UnityEvent<List<Data_AccessRecord_Ver2>>();
 
-    [Header(">>> [¸ê®Æ¶µ] - ¥Ø«e¬d¸ßªù¸T¸ê®Æ")]
+    [Header(">>> [ï¿½ï¿½Æ¶ï¿½] - ï¿½Ø«eï¿½dï¿½ßªï¿½ï¿½Tï¿½ï¿½ï¿½")]
     [SerializeField] private List<Data_AccessRecord_Ver2> datas;
 
-    [Header(">>> [WebAPI] - ¬d¸ßªù¸T°O¿ý")]
+    [Header(">>> [WebAPI] - ï¿½dï¿½ßªï¿½ï¿½Tï¿½Oï¿½ï¿½")]
     [SerializeField] private WebAPI_Request request;
 
     private Action onInitComplete { get; set; }
@@ -31,9 +32,9 @@ public class AccessRecordDataManager : Module
         GetAccessRecordsOfThisYear();
     }
 
-    [ContextMenu("- ¨ú±o¤µ¦~«×ªù¸T°O¿ý")]
+    [ContextMenu("- ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½~ï¿½×ªï¿½ï¿½Tï¿½Oï¿½ï¿½")]
     /// <summary>
-    /// ¨ú±o¤µ¦~«×ªù¸T°O¿ý
+    /// ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½~ï¿½×ªï¿½ï¿½Tï¿½Oï¿½ï¿½
     /// </summary>
     private void GetAccessRecordsOfThisYear()
     {
@@ -51,11 +52,11 @@ public class AccessRecordDataManager : Module
     }
 
     /// <summary>
-    /// ¨ú±o¬Y¤@®É¬qªºªù¸T°O¿ý
+    /// ï¿½ï¿½ï¿½oï¿½Yï¿½@ï¿½É¬qï¿½ï¿½ï¿½ï¿½ï¿½Tï¿½Oï¿½ï¿½
     /// </summary>
     public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<List<Data_AccessRecord_Ver2>> onSuccess, Action<long, string> onFailed)
     {
-        //³]©w¶Ç°e¸ê®Æ
+        //ï¿½]ï¿½wï¿½Ç°eï¿½ï¿½ï¿½
         sendData = new SendRawJSON()
         {
             filter = new Filter()

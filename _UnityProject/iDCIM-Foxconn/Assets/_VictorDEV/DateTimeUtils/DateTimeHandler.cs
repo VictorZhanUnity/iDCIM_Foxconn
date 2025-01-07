@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace VictorDev.Common
+namespace _VictorDEV.DateTimeUtils
 {
     /// <summary>
     /// DateTime日期格式
@@ -13,6 +13,7 @@ namespace VictorDev.Common
         /// 2024.11.24 13:33:22
         /// </summary>
         public static string FullDateTimeFormat => $"{FullDateFormat} {FullTimeFormat}";
+
         /// <summary>
         /// 2024.11.24 13:33
         /// </summary>
@@ -31,12 +32,14 @@ namespace VictorDev.Common
         /// <summary>
         /// 2024.11.24 (週六)
         /// </summary>
-        public static string FullDateFormatWithWeekDay(DateTime dateTime) => dateTime.ToString($"{FullDateFormat} (ddd)", new CultureInfo("zh-TW"));
+        public static string FullDateFormatWithWeekDay(DateTime dateTime) =>
+            dateTime.ToString($"{FullDateFormat} (ddd)", new CultureInfo("zh-TW"));
 
         /// <summary>
         /// 13:33:22
         /// </summary>
         public static string FullTimeFormat => "HH:mm:ss";
+
         /// <summary>
         /// 13:33
         /// </summary>
@@ -54,6 +57,7 @@ namespace VictorDev.Common
                 return (currentTime.Minute == 0 && currentTime.Second == 0);
             }
         }
+
         /// <summary>
         /// 指定日期是否在日期區間內
         /// <parp>+ to 會自動換算為to天的23:59:59</parp>
@@ -64,6 +68,7 @@ namespace VictorDev.Common
             to = to.AddDays(1).AddTicks(-1);
             return date >= from && date <= to;
         }
+
         /// <summary>
         /// 指定日期是否在今年內
         /// </summary>
@@ -73,6 +78,7 @@ namespace VictorDev.Common
             DateTime to = from.AddYears(1).AddTicks(-1);
             return isDateIntervalDays(date, from, to);
         }
+
         /// <summary>
         /// 指定日期是否在當月內
         /// </summary>
@@ -82,10 +88,12 @@ namespace VictorDev.Common
             DateTime to = from.AddMonths(1).AddTicks(-1);
             return isDateIntervalDays(date, from, to);
         }
+
         /// <summary>
         /// 指定日期是否在某天內 {目標時間, 指定哪一天}
         /// </summary>
         public static bool isDateInDay(DateTime date, DateTime day) => isDateIntervalDays(date, day, day);
+
         /// <summary>
         /// 指定日期是否在今天內
         /// </summary>
@@ -107,6 +115,7 @@ namespace VictorDev.Common
                     DateTime hourlyTime = startOfDay.AddHours(hour);
                     result.Add(hourlyTime.ToString("HH:mm"));
                 }
+
                 return result;
             }
         }
@@ -120,15 +129,12 @@ namespace VictorDev.Common
             else return cultureInfo_ZH ??= new CultureInfo("enzh-CN");
         }
 
-        /// <summary>
         /// 依年份取得隨機某一天時間點 {是否限制不超過目前時間}
-        /// </summary>
         public static DateTime GetRandomDateTimeInYear(int year, bool limitToCurrentTime = false)
         {
             Random random = new Random();
             DateTime start = new DateTime(year, 1, 1); // 隨機生成的開始時間
             DateTime end = start.AddYears(1).AddTicks(-1); // 隨機生成的結束時間
-
             if (limitToCurrentTime)
             {
                 end = DateTime.UtcNow; // 限制到目前時間
@@ -138,12 +144,24 @@ namespace VictorDev.Common
             TimeSpan timeSpan = end - start;
             TimeSpan newSpan = new TimeSpan((long)(random.NextDouble() * timeSpan.Ticks));
             DateTime randomDateTime = start + newSpan;
-
             return randomDateTime;
         }
-        /// <summary>
+
+        /// 從今天日期隨機某一天時間點 {是否限制不超過目前時間}
+        public static DateTime GetRandomDateTimeInToday(bool limitToCurrentTime = true)
+        {
+            // 獲取當前時間 或 今日午夜12點之前
+            DateTime todayEnd = limitToCurrentTime ? DateTime.Now : DateTime.Now.Date.AddDays(1).AddTicks(-1);
+            DateTime todayStart = todayEnd.Date; // 今天的開始時間（00:00:00）
+            // 計算今天的總秒數
+            TimeSpan timeSpan = todayEnd - todayStart;
+            int totalSeconds = (int)timeSpan.TotalSeconds;
+            Random random = new Random();
+            int randomSeconds = random.Next(0, totalSeconds + 1); // 生成隨機秒數
+            return todayStart.AddSeconds(randomSeconds);
+        }
+
         /// [格式] - 全球標準時間 2024-12-29T23:49:38.241Z
-        /// </summary>
         public static string Format_GlobalTime => "yyyy-MM-ddTHH:mm:ss.fffZ";
 
         /// <summary>

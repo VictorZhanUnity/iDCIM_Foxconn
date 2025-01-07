@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,21 +9,21 @@ using VictorDev.Common;
 using static Data_AccessRecord_Ver2;
 
 /// <summary>
-/// HUD - ªù¸T¶i³õÁ`¤H¼Æ
+/// HUD - ï¿½ï¿½ï¿½Tï¿½iï¿½ï¿½ï¿½`ï¿½Hï¿½ï¿½
 /// </summary>
 public class HUD_AccessRecordTotalCounter : AccessRecordDataReceiver
 {
-    [Header(">>> [¸ê®Æ¶µ] ¤µ¦~ªù¸T°O¿ý")]
+    [Header(">>> [ï¿½ï¿½Æ¶ï¿½] ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½Tï¿½Oï¿½ï¿½")]
     [SerializeField] private List<User> thisYearList;
     [SerializeField] private List<User> thisMonthList;
     [SerializeField] private List<User> todayList;
 
-    [Header(">>> [Event]  ÂIÀ»¥ô¤@¶µ¥Ø®ÉInvoke")]
+    [Header(">>> [Event]  ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½Ø®ï¿½Invoke")]
     public UnityEvent<List<User>> onClickButton = new UnityEvent<List<User>>();
 
     public override void ReceiveData(List<Data_AccessRecord_Ver2> datas)
     {
-        //¨Ì¤é´Á¶i¦æ¤ÀÃþ
+        //ï¿½Ì¤ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½
         thisYearList = datas.SelectMany(data => data.pageData.users)
             .Where(user => DateTimeHandler.isDateInThisYear(user.DateAccessTime)).ToList();
         thisMonthList = thisYearList.Where(user => DateTimeHandler.isDateInThisMonth(user.DateAccessTime)).ToList();
@@ -51,7 +52,7 @@ public class HUD_AccessRecordTotalCounter : AccessRecordDataReceiver
     }
 
     #region [Components]
-    [Header(">>> [²Õ¥ó]")]
+    [Header(">>> [ï¿½Õ¥ï¿½]")]
     [SerializeField] private TextMeshProUGUI txtThisYear;
     [SerializeField] private TextMeshProUGUI txtThisMonth;
     [SerializeField] private TextMeshProUGUI txtToday;

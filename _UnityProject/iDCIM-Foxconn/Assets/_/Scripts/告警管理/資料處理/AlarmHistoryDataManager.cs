@@ -25,7 +25,6 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
 
     [Header(">>> [WebAPI] - 查詢歷史告警記錄")]
     [SerializeField] private WebAPI_Request request;
-
    
     /// 依年份取得告警歷史記錄
     [ContextMenu("- 依年份取得告警歷史記錄")]
@@ -73,6 +72,6 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
     public class Data_AlarmHistoryData
     {
         public string tagName;
-        public List<Alarm> alarms;
+        public List<Alarm> alarms = new List<Alarm>();
     }
 }

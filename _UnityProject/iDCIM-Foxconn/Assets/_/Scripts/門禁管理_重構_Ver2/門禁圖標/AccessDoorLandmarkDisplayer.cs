@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
@@ -7,7 +8,7 @@ using static Data_AccessRecord_Ver2;
 
 public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
 {
-    [Header(">>> [¸ê®Æ¶µ] ¤µ¤éªù¸T°O¿ý")]
+    [Header(">>> [ï¿½ï¿½Æ¶ï¿½] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Tï¿½Oï¿½ï¿½")]
     [SerializeField] private List<User> todayList;
 
     public List<User> TodayList => todayList;
@@ -24,7 +25,7 @@ public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
     private void OnEnable() => DotweenHandler.ToBlink(txtAmountofEntryRecord);
 
     #region [Components]
-    [Header(">>> [²Õ¥ó] ¤å¦r")]
+    [Header(">>> [ï¿½Õ¥ï¿½] ï¿½ï¿½r")]
     [SerializeField] private TextMeshProUGUI txtIdNumber;
     [SerializeField] private TextMeshProUGUI txtAmountofEntryRecord;
     #endregion
