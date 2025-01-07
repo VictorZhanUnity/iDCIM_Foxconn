@@ -24,19 +24,29 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
 
         int amount = filtData.SelectMany(data => data.alarms).Count();
         DotweenHandler.DoInt(txtAmount, int.Parse(txtAmount.text), amount);
-        imgColor.DOColor(amount > 0 ? Color.red : Color.green, 0.5f).SetEase(Ease.OutQuad);
+        imgColor.DOColor(amount > 0 ? colorAlert : colorNormal, 1f).SetEase(Ease.OutQuad);
     }
 
     #region[Initialize]
 
-    private void OnEnable() => btn.onClick.AddListener(() => onItemClicked?.Invoke(this.filtData));
-    private void OnDisable() => btn.onClick.RemoveAllListeners();
+    private void Awake() => ResetUI();
+    private void OnEnable() => btn.onClick.AddListener(() => OnItemClicked?.Invoke(this.filtData));
+    private void OnDisable()
+    {
+        btn.onClick.RemoveAllListeners();
+        ResetUI();
+    }
 
+    private void ResetUI()
+    {
+        txtAmount.SetText("0");
+        imgColor.color = colorNormal;
+    }
     #endregion
 
     #region[Componentes]
     [FormerlySerializedAs("datas")] [Header("[資料項]")] [SerializeField] private List<Data_AlarmHistoryData> filtData;
-    public UnityEvent<List<Data_AlarmHistoryData>> onItemClicked = new();
+    public UnityEvent<List<Data_AlarmHistoryData>> OnItemClicked { get; set; } = new();
     [SerializeField] private Color colorNormal = Color.green;
     [SerializeField] private Color colorAlert = Color.red;
     private Button btn => _btn ??= transform.GetComponent<Button>();

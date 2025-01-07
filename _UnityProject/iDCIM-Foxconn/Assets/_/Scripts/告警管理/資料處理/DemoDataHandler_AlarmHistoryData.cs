@@ -39,7 +39,7 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
             {
                 //亂數決定年份
                 bool isToday = Random.Range(1, 20) > 18;
-                int year = Random.Range(1, 11) < 8 ? 2024 : 2025;
+                int year = Random.Range(1, 11) < 9 ? 2024 : 2025;
                 Alarm data = new Alarm()
                 {
                     alarmTime = DateTimeHandler.GetRandomDateTimeInYear(year, year == 2025)

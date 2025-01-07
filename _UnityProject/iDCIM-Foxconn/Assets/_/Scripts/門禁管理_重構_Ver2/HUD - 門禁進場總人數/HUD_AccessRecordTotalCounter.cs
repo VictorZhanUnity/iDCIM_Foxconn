@@ -26,7 +26,7 @@ public class HUD_AccessRecordTotalCounter : AccessRecordDataReceiver
         //�̤���i�����
         thisYearList = datas.SelectMany(data => data.pageData.users)
             .Where(user => DateTimeHandler.isDateInThisYear(user.DateAccessTime)).ToList();
-        thisMonthList = thisYearList.Where(user => DateTimeHandler.isDateInThisMonth(user.DateAccessTime)).ToList();
+        thisMonthList = thisYearList.Where(user => DateTimeHandler.IsDateInThisMonth(user.DateAccessTime)).ToList();
         todayList = thisMonthList.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();
         UpdateUI();
     }

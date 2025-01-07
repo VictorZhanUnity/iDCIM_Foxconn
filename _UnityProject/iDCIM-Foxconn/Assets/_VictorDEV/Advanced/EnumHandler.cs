@@ -41,5 +41,15 @@ namespace VictorDev.Advanced
         /// </summary>
         public static List<string> SetEnumToStringList<E>() where E : Enum
            => new List<string>(Enum.GetNames(typeof(E)));
+        
+        /// 依照字串取得該Enum項目的Value
+        public static int GetValueWithEnumString<T>(string enumString) where T : struct, Enum
+        {
+            if (Enum.TryParse<T>(enumString, true, out var result))
+            {
+                return Convert.ToInt32(result); // 返回整數值
+            }
+            return -1; // 如果無法解析，返回 -1
+        }
     }
 }

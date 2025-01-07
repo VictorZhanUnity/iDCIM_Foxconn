@@ -79,12 +79,18 @@ namespace _VictorDEV.DateTimeUtils
             return isDateIntervalDays(date, from, to);
         }
 
-        /// <summary>
         /// 指定日期是否在當月內
-        /// </summary>
-        public static bool isDateInThisMonth(DateTime date)
-        {
+        public static bool IsDateInThisMonth(DateTime date) =>IsDateInMonth(date, DateTime.Now.Month);
+        /*{
             DateTime from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime to = from.AddMonths(1).AddTicks(-1);
+            return isDateIntervalDays(date, from, to);
+        }*/
+        
+        /// 指定日期是否在指定月份內 {選填：指定年份}
+        public static bool IsDateInMonth(DateTime date,int month, int year=-1)
+        {
+            DateTime from = new DateTime(year == -1? DateTime.Now.Year: year, month, 1);
             DateTime to = from.AddMonths(1).AddTicks(-1);
             return isDateIntervalDays(date, from, to);
         }
@@ -168,5 +174,22 @@ namespace _VictorDEV.DateTimeUtils
         /// 字串轉換成LocalTime
         /// </summary>
         public static DateTime StrToLocalTime(string dateTimeString) => DateTime.Parse(dateTimeString).ToLocalTime();
+
+        public static string[] MonthName_ZH => Enum.GetNames(typeof(EnumMonthName_ZH));
+        public enum EnumMonthName_ZH
+        {
+            一月 = 1,
+            二月,
+            三月,
+            四月,
+            五月,
+            六月,
+            七月,
+            八月,
+            九月,
+            十月,
+            十一月,
+            十二月
+        }
     }
 }

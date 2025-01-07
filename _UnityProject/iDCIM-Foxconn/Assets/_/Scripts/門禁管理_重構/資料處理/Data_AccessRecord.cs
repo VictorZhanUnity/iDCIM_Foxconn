@@ -61,14 +61,14 @@ public class Data_AccessRecord : ILandmarkData
         pageData.chartData.ForEach(data =>
         {
             if (DateTimeHandler.isDateInThisYear(data.DateFrom)) _listOfThisYear.chartData.Add(data);
-            if (DateTimeHandler.isDateInThisMonth(data.DateFrom)) _listOfThisMonth.chartData.Add(data);
+            if (DateTimeHandler.IsDateInThisMonth(data.DateFrom)) _listOfThisMonth.chartData.Add(data);
             if (DateTimeHandler.isDateInToday(data.DateFrom)) _listOfToday.chartData.Add(data);
         });
 
         pageData.users.ForEach(data =>
         {
             if (DateTimeHandler.isDateInThisYear(data.DateAccessTime)) _listOfThisYear.users.Add(data);
-            if (DateTimeHandler.isDateInThisMonth(data.DateAccessTime)) _listOfThisMonth.users.Add(data);
+            if (DateTimeHandler.IsDateInThisMonth(data.DateAccessTime)) _listOfThisMonth.users.Add(data);
             if (DateTimeHandler.isDateInToday(data.DateAccessTime)) _listOfToday.users.Add(data);
         });
     }

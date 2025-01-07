@@ -12,11 +12,12 @@ namespace VictorDev.DoTweenUtils
     {
         #region [Components]
         [SerializeField] private float duration = 0.2f;
-        private bool isRandomDelay = true;
+        [SerializeField] private bool isRandomDelay = true;
         [SerializeField] private float delay = 0.2f;
+        [SerializeField] private float delay_Start = 0f;
         [SerializeField] private Ease ease = Ease.OutQuad;
         [Header(">>> 是否移動")]
-        [SerializeField] private bool isDoMove = true;
+        [SerializeField] private bool isDoMove = false;
         [SerializeField] private Vector3 fromPosValue = Vector3.zero;
         [Header(">>> 是否縮放")]
         [SerializeField] private bool isDoScale = false;
@@ -41,6 +42,7 @@ namespace VictorDev.DoTweenUtils
             ToShow();
         }
 
+        [ContextMenu("- 播放Dotween動畫")]
         public void ToShow()
         {
             DOTween.Kill(targetTrans);
@@ -53,8 +55,11 @@ namespace VictorDev.DoTweenUtils
                 cg = targetTrans.AddComponent<CanvasGroup>();
             }
             Vector3 fromPos = (originalPos ?? Vector3.zero) + fromPosValue;
-            float targetDelay = isRandomDelay ? Random.Range(0, delay) : delay;
-            cg.DOFade(1, duration).From(0).SetEase(ease).SetDelay(targetDelay);
+            float targetDelay = delay_Start + (isRandomDelay ? Random.Range(0, delay) : delay);
+            cg.alpha = 0;
+            void CheckAlpha() => cg.interactable = cg.blocksRaycasts = cg.alpha == 1;
+            CheckAlpha();
+            cg.DOFade(1, duration).From(0).SetEase(ease).SetDelay(targetDelay).OnUpdate(CheckAlpha);
 
             if (isDoMove) targetTrans.DOLocalMove(originalPos ?? Vector3.zero, duration).From(fromPos).SetEase(ease).SetDelay(targetDelay);
             if (isDoScale) targetTrans.DOScale(originalScale ?? Vector3.zero, duration).From(new Vector3(fromScaleValue, fromScaleValue, fromScaleValue)).SetEase(ease).SetDelay(targetDelay);

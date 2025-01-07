@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using _VictorDEV.DateTimeUtils;
 using UnityEngine;
 
 [Serializable]
@@ -13,16 +14,17 @@ public class Data_Blackbox
     public class Alarm
     {
         /// <summary>
-        /// µo¥Í®É¶¡ÂI
+        /// ï¿½oï¿½Í®É¶ï¿½ï¿½I
         /// </summary>
         public string alarmTime;
+        public DateTime AlarmTime => DateTimeHandler.StrToLocalTime(alarmTime);
         /// <summary>
-        /// ´y­z
+        /// ï¿½yï¿½z
         /// </summary>
         public string alarmMessage;
         public int alarmLevel = 1;
         /// <summary>
-        /// ¬O§_¦^´_¥¿±`
+        /// ï¿½Oï¿½_ï¿½^ï¿½_ï¿½ï¿½ï¿½`
         /// </summary>
         public bool isBackToNormal = false;
 
@@ -31,7 +33,7 @@ public class Data_Blackbox
         public string tagName;
         public int compareOrder;
         /// <summary>
-        /// §iÄµÃC¦â
+        /// ï¿½iÄµï¿½Cï¿½ï¿½
         /// </summary>
         public string alarmColor;
     }
