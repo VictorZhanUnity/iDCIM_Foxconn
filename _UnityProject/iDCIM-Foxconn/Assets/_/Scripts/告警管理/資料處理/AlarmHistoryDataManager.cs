@@ -26,9 +26,8 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
     [Header(">>> [WebAPI] - 查詢歷史告警記錄")]
     [SerializeField] private WebAPI_Request request;
 
-    /// <summary>
+   
     /// 依年份取得告警歷史記錄
-    /// </summary>
     [ContextMenu("- 依年份取得告警歷史記錄")]
     public void GetAlarmRecordOfYears()
     {
@@ -41,27 +40,21 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
         }
     }
 
-    /// <summary>
     /// 解析JSON
-    /// </summary>
     public void ParseJson(string jsonData)
     {
         datas = JsonConvert.DeserializeObject<List<Data_AlarmHistoryData>>(jsonData);
         InovkeData();
     }
 
-    /// <summary>
     /// 發送資料
-    /// </summary>
     private void InovkeData()
     {
         Debug.Log($">>> AlarmHistoryDataManager: 發送資料 to Receives...");
         receivers.OfType<IAlarmHistoryDataReceiver>().ToList().ForEach(receiver => receiver.ReceiveData(datas));
     }
 
-    /// <summary>
     /// [接收器] 
-    /// </summary>
     public interface IAlarmHistoryDataReceiver
     {
         void ReceiveData(List<Data_AlarmHistoryData> datas);
