@@ -38,5 +38,16 @@ namespace VictorDev.Common
                 onUpdate.Invoke(startValue);
             }, endValue, duration).SetDelay(dealy).SetEase(Ease.OutQuart);
         }
+
+        /// NEW===========================================================================================
+
+        public static Tween DoInt(TextMeshProUGUI target, int startValue, int endValue, float duration = 1f, Ease ease = Ease.OutQuad)
+        {
+            return DOTween.To(() => startValue, x =>
+            {
+                startValue = x;
+                target.SetText(startValue.ToString());
+            }, endValue, duration).SetEase(ease);
+        }
     }
 }

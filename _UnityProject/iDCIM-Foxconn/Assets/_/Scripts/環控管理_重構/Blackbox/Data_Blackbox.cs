@@ -20,11 +20,13 @@ public class Data_Blackbox
         /// 描述
         /// </summary>
         public string alarmMessage;
-        public int alarmLevel;
+        public int alarmLevel = 1;
         /// <summary>
         /// 是否回復正常
         /// </summary>
         public bool isBackToNormal = false;
+
+
 
         public string tagName;
         public int compareOrder;

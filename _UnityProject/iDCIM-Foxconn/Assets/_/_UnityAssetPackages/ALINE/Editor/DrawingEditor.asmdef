@@ -1,9 +1,8 @@
 {
     "name": "ALINEEditor",
+    "rootNamespace": " ",
     "references": [
-        "GUID:de4e6084e6d474788bb8c799d6b461ec",
-        "GUID:774e21169c4ac4ec8a01db9cdb98d33b",
-        "GUID:f4059aaf6c60a4a58a177a2609feb769"
+        "GUID:de4e6084e6d474788bb8c799d6b461ec"
     ],
     "includePlatforms": [
         "Editor"

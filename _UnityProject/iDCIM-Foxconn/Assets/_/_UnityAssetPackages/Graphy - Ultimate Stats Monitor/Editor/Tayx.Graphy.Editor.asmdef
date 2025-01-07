@@ -1,5 +1,6 @@
 {
     "name": "Tayx.Graphy.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:18e5109d897e1b244ab2dfeaf5482c7b"
     ],

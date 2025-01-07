@@ -1,9 +1,9 @@
 {
     "name": "UnityPlayModeSaverEditor",
+    "rootNamespace": "",
     "references": [
         "GUID:9e04453c0b3628643a36c7b3920a37e8"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -13,5 +13,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

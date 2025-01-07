@@ -119,5 +119,36 @@ namespace VictorDev.Common
             if (isEng) return cultureInfo_ENG ??= new CultureInfo("en-US");
             else return cultureInfo_ZH ??= new CultureInfo("enzh-CN");
         }
+
+        /// <summary>
+        /// 依年份取得隨機某一天時間點 {是否限制不超過目前時間}
+        /// </summary>
+        public static DateTime GetRandomDateTimeInYear(int year, bool limitToCurrentTime = false)
+        {
+            Random random = new Random();
+            DateTime start = new DateTime(year, 1, 1); // 隨機生成的開始時間
+            DateTime end = start.AddYears(1).AddTicks(-1); // 隨機生成的結束時間
+
+            if (limitToCurrentTime)
+            {
+                end = DateTime.UtcNow; // 限制到目前時間
+            }
+
+            // 生成隨機時間
+            TimeSpan timeSpan = end - start;
+            TimeSpan newSpan = new TimeSpan((long)(random.NextDouble() * timeSpan.Ticks));
+            DateTime randomDateTime = start + newSpan;
+
+            return randomDateTime;
+        }
+        /// <summary>
+        /// [格式] - 全球標準時間 2024-12-29T23:49:38.241Z
+        /// </summary>
+        public static string Format_GlobalTime => "yyyy-MM-ddTHH:mm:ss.fffZ";
+
+        /// <summary>
+        /// 字串轉換成LocalTime
+        /// </summary>
+        public static DateTime StrToLocalTime(string dateTimeString) => DateTime.Parse(dateTimeString).ToLocalTime();
     }
 }
