@@ -15,8 +15,8 @@ namespace _VictorDEV.DateTimeUtils
         private void OnEnable() => dropdownYear.onValueChanged.AddListener(OnYearChangedHandler);
         private void OnDisable()
         {
-            Dropdown.value = 0;
             dropdownYear.onValueChanged.RemoveListener(OnYearChangedHandler);
+            Dropdown.value = 0;
         }
 
         private void OnYearChangedHandler(int index)

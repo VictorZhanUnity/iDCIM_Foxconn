@@ -13,28 +13,16 @@ public class Data_Blackbox
     [Serializable]
     public class Alarm
     {
-        /// <summary>
-        /// �o�ͮɶ��I
-        /// </summary>
+        /// 發生時間
         public string alarmTime;
         public DateTime AlarmTime => DateTimeHandler.StrToLocalTime(alarmTime);
-        /// <summary>
-        /// �y�z
-        /// </summary>
+        /// 描述
         public string alarmMessage;
-        public int alarmLevel = 1;
-        /// <summary>
-        /// �O�_�^�_���`
-        /// </summary>
+        /// 是否恢復正常
         public bool isBackToNormal = false;
-
-
 
         public string tagName;
         public int compareOrder;
-        /// <summary>
-        /// �iĵ�C��
-        /// </summary>
         public string alarmColor;
     }
 }
