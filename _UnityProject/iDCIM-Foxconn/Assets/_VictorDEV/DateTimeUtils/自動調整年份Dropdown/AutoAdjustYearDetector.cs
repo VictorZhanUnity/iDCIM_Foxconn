@@ -9,24 +9,32 @@ namespace _VictorDEV.DateTimeUtils
     [RequireComponent(typeof(TMP_Dropdown))]
     public class AutoAdjustYearDetector : MonoBehaviour
     {
-        private TMP_Dropdown Dropdown => _dropdown ??= GetComponent<TMP_Dropdown>();
-        private TMP_Dropdown _dropdown;
+        [Header(">>> 增減年數")]
+        [SerializeField] private int adjustYear = 0;
+        
         private void Awake()
         {
-            int optionYear = int.Parse(Dropdown.options[0].text.Replace("年", ""));
+            string firstLabel = DropdownInstance.options[0].text.Trim();
+            bool isInclueLabel = firstLabel.Contains("年");
+            
+            int firstOptionYear = int.Parse(isInclueLabel? firstLabel.Replace("年", ""): firstLabel);
             int currentYear = DateTime.Now.Year;
             // 動態增加未來的年份
-            for (int year = optionYear + 1; year <= currentYear; year++)
+            for (int year = firstOptionYear + 1; year <= currentYear+adjustYear; year++)
             {
-                if (!Dropdown.options.Exists(option => option.text == year.ToString()))
+                if (DropdownInstance.options.Exists(option => option.text == year.ToString()) == false)
                 {
-                    Dropdown.options.Add(new TMP_Dropdown.OptionData(year.ToString() + "年"));
+                    DropdownInstance.options.Add(new TMP_Dropdown.OptionData(year.ToString() + (isInclueLabel? "年" :"")));
                 }
             }
-            Dropdown.options = Dropdown.options.OrderByDescending(item => int.Parse(item.text.Replace("年", ""))).ToList();
-            Dropdown.options = Dropdown.options.OrderByDescending(item => int.Parse(item.text.Replace("年", ""))).ToList();
+            
+            //遞減排序
+            DropdownInstance.options = DropdownInstance.options.OrderByDescending(optionData => int.Parse(isInclueLabel? optionData.text.Trim().Replace("年", ""): optionData.text.Trim())).ToList();
         }
 
-        private void OnDisable() => Dropdown.value = 0;
+        private void OnDisable() => DropdownInstance.value = 0;
+        
+        private TMP_Dropdown DropdownInstance => _dropdown ??= GetComponent<TMP_Dropdown>();
+        private TMP_Dropdown _dropdown;
     }
 }
