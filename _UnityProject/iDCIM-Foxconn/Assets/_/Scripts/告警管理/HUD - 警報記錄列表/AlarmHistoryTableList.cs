@@ -112,7 +112,7 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
         
         //設定告警則數
         int startValue = int.Parse(txtAmount.text);
-        if(startValue != filterData.Count) DotweenHandler.DoInt(txtAmount, 0, filterData.Count);
+        if(startValue != filterData.Count) DotweenHandler.DoInt(txtAmount, 0, dataSet.Count());
     }
 
     public struct DataSet

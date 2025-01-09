@@ -39,7 +39,7 @@ namespace _VictorDEV.XChart
    
         #region [設定格式]
         ///設定YAxis格式 {最小值，最大值, 顯示格式}
-        public void SetYAxisMinMax(float min, float max, string formatter = "{value}")
+        public void SetYAxisMaxMin(float max, float min = 0, string formatter = "{value}")
         {
             YAxis.minMaxType = Axis.AxisMinMaxType.Custom;
             YAxis.min = min;

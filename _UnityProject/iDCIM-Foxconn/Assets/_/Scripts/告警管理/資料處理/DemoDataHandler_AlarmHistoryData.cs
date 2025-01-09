@@ -31,15 +31,19 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
     {
         Debug.Log(">>> 產生資料...");
         alarmList = new List<Data_AlarmHistoryData>();
+        int countToday = 0;
+        
         tagNames.ForEach(tagName =>
         {
             Data_AlarmHistoryData record = new Data_AlarmHistoryData() { tagName = tagName };
             record.alarms = new List<Alarm>();
+            
             for (int i = 0; i < Random.Range(1, 11); i++)
             {
                 //亂數決定年份
-                bool isToday = Random.Range(1, 20) > 18;
-                int year = Random.Range(1, 11) < 9 ? 2024 : 2025;
+                bool isToday = Random.Range(1, 21) > 19;
+                int year = 2020 + Random.Range(2, 5) + (Random.Range(1, 11) > 9 ? 1:0);
+                //int year = Random.Range(1, 11) < 9 ? 2024 : 2025;
                 Alarm data = new Alarm()
                 {
                     alarmTime = DateTimeHandler.GetRandomDateTimeInYear(year, year == 2025)
@@ -47,11 +51,11 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
                     alarmMessage = alarmMessageSet.FirstOrDefault(keyPair =>
                         tagName.Contains(keyPair.Key, StringComparison.OrdinalIgnoreCase)).Value,
                 };
-
+                
                 // 是否為今日發生
                 if (isToday)
                 {
-                    Debug.Log($"\t今日資料: {tagName}");
+                    countToday++;
                     data.alarmTime = DateTimeHandler.GetRandomDateTimeInToday().ToString(DateTimeHandler.Format_GlobalTime);
                 }
 
@@ -61,7 +65,7 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
             record.alarms = record.alarms.OrderBy(alarm => alarm.alarmTime).ToList();
             alarmList.Add(record);
         });
-        Debug.Log(">>> 產生資料完畢.");
+        Debug.Log($">>> 產生資料完畢 / 今日資料數量: {countToday}");
     }
 
     #endregion
