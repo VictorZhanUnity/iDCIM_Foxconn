@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -19,8 +20,8 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
 
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
     {
-        filtData = datas.Where(data => keywords.Any(word => data.tagName.Contains(word)) 
-                && keywordsExclude.All(word => data.tagName.Contains(word) == false)).ToList();
+        filtData = datas.Where(data => keywords.Any(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase)) 
+                && keywordsExclude.All(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase) == false)).ToList();
 
         int amount = filtData.SelectMany(data => data.alarms).Count();
         DotweenHandler.DoInt(txtAmount, int.Parse(txtAmount.text), amount);

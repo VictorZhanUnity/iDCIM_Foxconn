@@ -58,10 +58,8 @@ namespace _VictorDEV.DateTimeUtils
             }
         }
 
-        /// <summary>
         /// 指定日期是否在日期區間內
         /// <parp>+ to 會自動換算為to天的23:59:59</parp>
-        /// </summary>
         public static bool isDateIntervalDays(DateTime date, DateTime from, DateTime to)
         {
             from = from.Date;
@@ -69,23 +67,20 @@ namespace _VictorDEV.DateTimeUtils
             return date >= from && date <= to;
         }
 
-        /// <summary>
         /// 指定日期是否在今年內
-        /// </summary>
-        public static bool isDateInThisYear(DateTime date)
+        public static bool isDateInThisYear(DateTime date) => isDateInYear(date, DateTime.Now.Year);  
+        
+        /// 指定日期是否在指定年份內
+        public static bool isDateInYear(DateTime date, int year)
         {
-            DateTime from = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime from = new DateTime(year, 1, 1);
             DateTime to = from.AddYears(1).AddTicks(-1);
             return isDateIntervalDays(date, from, to);
         }
+        
 
         /// 指定日期是否在當月內
         public static bool IsDateInThisMonth(DateTime date) =>IsDateInMonth(date, DateTime.Now.Month);
-        /*{
-            DateTime from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            DateTime to = from.AddMonths(1).AddTicks(-1);
-            return isDateIntervalDays(date, from, to);
-        }*/
         
         /// 指定日期是否在指定月份內 {選填：指定年份}
         public static bool IsDateInMonth(DateTime date,int month, int year=-1)
