@@ -16,8 +16,8 @@ public class AlarmTodayDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     [Header(">>> [Receiver] - 接收器 - AlarmTypeDisplayer")] [SerializeField]
     private List<AlarmTypeDisplayer> receivers;
 
-    [Header(">>> [Event] - 當分類項目被點擊時Invoke")]
-    public UnityEvent<List<Data_AlarmHistoryData>> onItemClicked = new();
+    [Header(">>> [Event] - 當分類項目被點擊時Invoke {分類後列表，標題}")]
+    public UnityEvent<List<Data_AlarmHistoryData>, string> onItemClicked = new();
 
     /// 接收資料，需轉成JSON字串再重新解析成新的List，以避免變更到原始資料
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
@@ -44,11 +44,10 @@ public class AlarmTodayDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     #region [Initialize]
     private void Awake()
     {
-        onItemClicked.AddListener((datas) => Debug.Log(datas[0].tagName));
         txtThisMonth.SetText(DateTime.Today.Month.ToString());
         ResetUI();
     }
-    private void OnEnable() => receivers.ForEach(receiver => receiver.OnItemClicked.AddListener(onItemClicked.Invoke));
+    private void OnEnable() => receivers.ForEach(receiver => receiver.OnItemClicked.AddListener((dataList, title)=>onItemClicked.Invoke(dataList, $"今日告警記錄 - {title}")));
     private void OnDisable()
     {
       receivers.ForEach(receiver => receiver.OnItemClicked.RemoveAllListeners());

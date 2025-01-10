@@ -20,6 +20,7 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
 
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
     {
+        btn.interactable = (datas.Count > 0);
         filtData = datas.Where(data => keywords.Any(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase)) 
                 && keywordsExclude.All(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase) == false)).ToList();
 
@@ -31,7 +32,7 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     #region[Initialize]
 
     private void Awake() => ResetUI();
-    private void OnEnable() => btn.onClick.AddListener(() => OnItemClicked?.Invoke(this.filtData));
+    private void OnEnable() => btn.onClick.AddListener(() => OnItemClicked?.Invoke(this.filtData, Title));
     private void OnDisable()
     {
         btn.onClick.RemoveAllListeners();
@@ -42,14 +43,20 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     {
         txtAmount.SetText("0");
         imgColor.color = colorNormal;
+        btn.interactable = false;
     }
     #endregion
 
     #region[Componentes]
     [FormerlySerializedAs("datas")] [Header("[資料項]")] [SerializeField] private List<Data_AlarmHistoryData> filtData;
-    public UnityEvent<List<Data_AlarmHistoryData>> OnItemClicked { get; set; } = new();
+    public UnityEvent<List<Data_AlarmHistoryData>, string> OnItemClicked { get; set; } = new();
     [SerializeField] private Color colorNormal = Color.green;
     [SerializeField] private Color colorAlert = Color.red;
+
+    private string Title => _title ??= transform.Find("txtLabel").GetComponent<TextMeshProUGUI>().text.Trim();
+    private string _title;
+    
+    
     private Button btn => _btn ??= transform.GetComponent<Button>();
     private Button _btn;
     private Transform imgMask => _imgMask ??= transform.Find("imgMask");

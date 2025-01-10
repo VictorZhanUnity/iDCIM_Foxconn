@@ -14,8 +14,8 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     [Header(">>> [Receiver] - 接收器 - AlarmTypeDisplayer")] [SerializeField]
     private List<AlarmTypeDisplayer> receivers;
 
-    [Header(">>> [Event] - 當分類項目被點擊時Invoke")]
-    public UnityEvent<List<Data_AlarmHistoryData>> onItemClicked = new();
+    [Header(">>> [Event] - 當分類項目被點擊時Invoke {告警記錄清單，標題}")]
+    public UnityEvent<List<Data_AlarmHistoryData>, string> onItemClicked = new();
 
     /// 接收資料，需轉成JSON字串再重新解析成新的List，以避免變更到原始資料
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
@@ -39,13 +39,9 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     private void InvokeData() => receivers.ForEach(receiver => receiver.ReceiveData(filteData));
 
     #region [Initialize]
-    private void Awake()
-    {
-        onItemClicked.AddListener((datas) => Debug.Log(datas[0].tagName));
-    }
     private void OnEnable()
     {
-        receivers.ForEach(receiver => receiver.OnItemClicked.AddListener(onItemClicked.Invoke));
+        receivers.ForEach(receiver => receiver.OnItemClicked.AddListener((dataList, title)=>onItemClicked.Invoke(dataList, $"{SelectedYear}年告警記錄 - {title}")));
         DropdownYears.onValueChanged.AddListener((selectedIndex)=>UpdateUI());
     }
 
