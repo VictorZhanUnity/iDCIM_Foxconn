@@ -53,7 +53,10 @@ namespace VictorDev.Advanced
             return colorLevels[colorLevels.Count - 1];
         }
 
+        
+        #if UNITY_EDITOR
         [CustomEditor(typeof(ImageFilledHandler))]
         public class ImageFilledHandlerEditor : Editor { } //需設置才能改變原組件的Inspector內容
+        #endif
     }
 }

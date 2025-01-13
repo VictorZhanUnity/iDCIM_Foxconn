@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using VictorDev.Common;
 
@@ -13,9 +14,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     /// <summary>
-    /// ³]©wRaycastHitºÞ²z¾¹»P¹Ï¼ÐºÞ²z¾¹¤§¶¡ªº¨Æ¥ó¤¬°Ê
-    /// <para>+ ·íÂIÀ»/¨ú®ø¹Ï¼ÐToggle®É ¡÷ ³]©wRaycastHit¥Ø¼Ð¼Ò«¬.isOn¡AinvokeÂI¿ï/¨ú®ø¨Æ¥ó</para>
-    /// <para>+ ·íÂIÀ»/¨ú®øRaycastHit¥Ø¼Ð¼Ò«¬®É ¡÷ ³]©w¹Ï¼ÐToggle.isOn¡A¤£¶i¦æinvokeÂI¿ï/¨ú®ø¨Æ¥ó</para>
+    /// ï¿½]ï¿½wRaycastHitï¿½Þ²zï¿½ï¿½ï¿½Pï¿½Ï¼ÐºÞ²zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ó¤¬°ï¿½
+    /// <para>+ ï¿½ï¿½ï¿½Iï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½Toggleï¿½ï¿½ ï¿½ï¿½ ï¿½]ï¿½wRaycastHitï¿½Ø¼Ð¼Ò«ï¿½.isOnï¿½Ainvokeï¿½Iï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½</para>
+    /// <para>+ ï¿½ï¿½ï¿½Iï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½RaycastHitï¿½Ø¼Ð¼Ò«ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½]ï¿½wï¿½Ï¼ï¿½Toggle.isOnï¿½Aï¿½ï¿½ï¿½iï¿½ï¿½invokeï¿½Iï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½</para>
     /// </summary>
     private void Setup_RaycastAndLandmark()
     {
@@ -33,5 +34,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         RaycastHitManager.onDeselectObjectEvent.AddListener((targetModel) => func(targetModel, false));
     }
 
-    public void CloseApp() => Application.Quit();
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape)) Exit();
+    }
+
+    public void Exit() => Application.Quit();
 }

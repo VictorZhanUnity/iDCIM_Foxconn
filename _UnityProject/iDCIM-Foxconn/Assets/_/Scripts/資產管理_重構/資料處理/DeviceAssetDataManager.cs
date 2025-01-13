@@ -63,11 +63,12 @@ public class DeviceAssetDataManager : Module, IJsonParseReceiver
             model.gameObject.SetActive(isHaveData);
         });
 
+
         // 設置相對應模型
         dataRack.ForEach(rack =>
         {
             rack.model = deviceAssetManager.modelList.FirstOrDefault(model => model.name.Contains(rack.deviceName));
-#if true
+#if false
             // Demo - 隨機移除機櫃裡的某些設備
             List<Data_DeviceAsset> toHideDevices = new List<Data_DeviceAsset>();
             for (int i = 0; rack.containers.Count > i; i++)
