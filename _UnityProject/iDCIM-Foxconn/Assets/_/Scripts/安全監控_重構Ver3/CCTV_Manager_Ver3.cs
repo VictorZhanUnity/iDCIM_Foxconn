@@ -8,19 +8,19 @@ using Debug = VictorDev.Common.Debug;
 
 public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
 {
-    [Header(">>> ±ýÅã¥Üªº Landmark¹Ï¼Ð")]
+    [Header(">>> ï¿½ï¿½ï¿½ï¿½Üªï¿½ Landmarkï¿½Ï¼ï¿½")]
     [SerializeField] private List<Landmark_RE> landmarkList;
 
     #region [>>> Components]
-    [Header(">>> [Prefab] - CCTV¸ê°Tµøµ¡")]
+    [Header(">>> [Prefab] - CCTVï¿½ï¿½Tï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private CCTV_InfoPanel infoPanelPrefab;
     [SerializeField] private RectTransform containerForCCTVPanel;
 
-    [Header(">>> CCTV¥þ«Ì¼½©ñµøµ¡")]
-    [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
+    [Header(">>> CCTVï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    [SerializeField] private CCTVFullScreenPlayer fullScreenPlayer;
 
     /// <summary>
-    /// ¥Ø«eªºCCTV¸ê°Tµøµ¡
+    /// ï¿½Ø«eï¿½ï¿½CCTVï¿½ï¿½Tï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private CCTV_InfoPanel currentPanel { get; set; } = null;
 
@@ -55,7 +55,7 @@ public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
         }
     }
     /// <summary>
-    /// ½T»{ÂIÀ»¹ï¹³¬O§_¬°¦¹ºÞ²z¾¹¦Cªí¤Wªº¹ï¹³
+    /// ï¿½Tï¿½{ï¿½Iï¿½ï¿½ï¿½ï¹³ï¿½Oï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Þ²zï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¹³
     /// </summary>
     private bool IsTargetInList(Transform target, out Landmark_RE landmark)
     {
@@ -67,11 +67,11 @@ public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
     public void OnMouseExitObjectEvent(Transform target) { }
 
     /// <summary>
-    /// ³Ð«ØCCTV¿W¥ßµøµ¡
+    /// ï¿½Ð«ï¿½CCTVï¿½Wï¿½ßµï¿½ï¿½ï¿½
     /// </summary>
     private void ShowData(SoData_RTSP_Channel data, Transform targetModel)
     {
-        //ÀË¬d¬O§_¤w¶}±Ò
+        //ï¿½Ë¬dï¿½Oï¿½_ï¿½wï¿½}ï¿½ï¿½
         if (currentPanel != null)
         {
             if (currentPanel.data == data)
@@ -95,7 +95,7 @@ public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
         //  var infoPanel = ObjectPoolManager.GetInstanceFromQueuePool(infoPanelPrefab, containerForCCTVPanel);
         CCTV_InfoPanel infoPanel = Instantiate(infoPanelPrefab, containerForCCTVPanel);
 
-        //³]©w³s±µ½u
+        //ï¿½]ï¿½wï¿½sï¿½ï¿½ï¿½u
         infoPanel.targetModel = targetModel;
         infoPanel.lineSegment1 = Instantiate(linePrefab, containerForCCTVPanel);
         infoPanel.lineSegment2 = Instantiate(linePrefab, containerForCCTVPanel);
@@ -149,11 +149,11 @@ public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
 
     protected override void InitEventListener()
     {
-        //¬°¤F¦b¨ä¥¦­¶­±¥ç¥i¥H³QÂI¿ï¡A©Ò¥H¦bOnInit®ÉºÊÅ¥¨Æ¥ó
+        //ï¿½ï¿½ï¿½Fï¿½bï¿½ä¥¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½Hï¿½Qï¿½Iï¿½ï¿½Aï¿½Ò¥Hï¿½bOnInitï¿½Éºï¿½Å¥ï¿½Æ¥ï¿½
     }
     protected override void RemoveEventListener()
     {
-        //¬°¤F¦b¨ä¥¦¼Ò²Õ­¶­±®É¡A¥ç¥i¥HÂI¿ï¡A©Ò¥H¤£²¾°£Listener
+        //ï¿½ï¿½ï¿½Fï¿½bï¿½ä¥¦ï¿½Ò²Õ­ï¿½ï¿½ï¿½ï¿½É¡Aï¿½ï¿½iï¿½Hï¿½Iï¿½ï¿½Aï¿½Ò¥Hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Listener
         /*RaycastHitManager.onSelectObjectEvent.RemoveListener(OnSelectObjectHandler);
         RaycastHitManager.onDeselectObjectEvent.RemoveListener(OnDeselectObjectHandler);*/
     }

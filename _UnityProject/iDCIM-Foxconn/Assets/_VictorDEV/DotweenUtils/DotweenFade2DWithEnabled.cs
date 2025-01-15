@@ -5,9 +5,7 @@ using UnityEngine.Events;
 
 namespace VictorDev.DoTweenUtils
 {
-    /// <summary>
     /// Enabled動畫控制器
-    /// </summary>
     public class DotweenFade2DWithEnabled : MonoBehaviour
     {
         #region [Components]

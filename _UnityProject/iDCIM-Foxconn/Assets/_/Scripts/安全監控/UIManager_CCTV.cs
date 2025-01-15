@@ -17,7 +17,7 @@ public class UIManager_CCTV : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private Panel_CCTV panelEntrance;
-    [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
+    [SerializeField] private CCTVFullScreenPlayer fullScreenPlayer;
     [SerializeField] private CCTV_9Grid cctv9Grid;
     [SerializeField] private Minimap_CCTV minimap;
     [SerializeField] private Button btnCloseAllWindows;
@@ -25,7 +25,7 @@ public class UIManager_CCTV : MonoBehaviour
     private Panel_CCTV currentPanel { get; set; } = null;
 
     /// <summary>
-    /// {RTSP URL, ¸ê°T­±ªO}
+    /// {RTSP URL, ï¿½ï¿½Tï¿½ï¿½ï¿½O}
     /// </summary>
     private Dictionary<string, Panel_CCTV> openedPanels { get; set; } = new Dictionary<string, Panel_CCTV> { };
 
@@ -47,7 +47,7 @@ public class UIManager_CCTV : MonoBehaviour
             //openedPanels.Add(panelEntrance.data.url, panelEntrance);
         }
 
-        //³]¸mºÊµø¾¹¦Cªí¸ê®Æ
+        //ï¿½]ï¿½mï¿½Êµï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½
         deviceModelVisualizer.onInitlializedWithLandMark.AddListener((selectableObjects, landmarks) =>
         {
             for (int i = 0; i < selectableObjects.Count; i++)
@@ -61,7 +61,7 @@ public class UIManager_CCTV : MonoBehaviour
         });
         deviceModelVisualizer.onSelectedEvent.AddListener((soData, listItem, modelName)=>CreatePanel(soData, listItem));
 
-        //Ãö³¬©Ò¦³°v¿ïµøµ¡(°£¤F¾÷©Ð¤J¤fµøµ¡)
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ò¦ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Fï¿½ï¿½ï¿½Ð¤Jï¿½fï¿½ï¿½ï¿½ï¿½)
         btnCloseAllWindows.onClick.AddListener(() =>
         {
             CloseAllPanel();
@@ -69,7 +69,7 @@ public class UIManager_CCTV : MonoBehaviour
             CheckAmountOfOpenedWindow();
         });
 
-        //¤p¦a¹ÏÂI¿ïÁpµ²
+        //ï¿½pï¿½aï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½pï¿½ï¿½
         minimap.onClickPin.AddListener((index) =>
         {
             ListItem_CCTV listItem = scrollViewContainer.GetChild(index).GetComponent<ListItem_CCTV>();
@@ -80,11 +80,11 @@ public class UIManager_CCTV : MonoBehaviour
     }
 
     /// <summary>
-    /// Ãö³¬©Ò¦³°v¿ïµøµ¡(°£¤F¾÷©Ð¤J¤fµøµ¡)
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ò¦ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Fï¿½ï¿½ï¿½Ð¤Jï¿½fï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     private void CloseAllPanel()
     {
-        //Ãö³¬¥Ø¼Ðµøµ¡
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼Ðµï¿½ï¿½ï¿½
         if (currentPanel != null) currentPanel.Close();
         currentPanel = null;
 
@@ -97,7 +97,7 @@ public class UIManager_CCTV : MonoBehaviour
     }
 
     /// <summary>
-    /// «Ø¥ß¸ê°T­±ªO
+    /// ï¿½Ø¥ß¸ï¿½Tï¿½ï¿½ï¿½O
     /// </summary>
     private void CreatePanel(SO_RTSP data, ListItem_CCTV listItem)
     {
@@ -111,14 +111,14 @@ public class UIManager_CCTV : MonoBehaviour
             currentPanel.Close();
             currentPanel = null;
         }
-        //¦pªG¤w¦³¥´¶}¹Lªºµøµ¡¡A«h¶i¦æ´£¥Ü
+        //ï¿½pï¿½Gï¿½wï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½hï¿½iï¿½æ´£ï¿½ï¿½
         if (openedPanels.TryGetValue(data.url, out Panel_CCTV panel))
         {
             panel.ToShining();
             return;
         }
 
-        //­Y¬°¤E®c®æ¼Ò¦¡¡A«h¥Î¤E®c®æ¼½©ñ
+        //ï¿½Yï¿½ï¿½ï¿½Eï¿½cï¿½ï¿½Ò¦ï¿½ï¿½Aï¿½hï¿½Î¤Eï¿½cï¿½æ¼½ï¿½ï¿½
         if (cctv9Grid.isON)
         {
             cctv9Grid.Play(data, listItem);
@@ -126,7 +126,7 @@ public class UIManager_CCTV : MonoBehaviour
             return;
         }
 
-        //©Ò¦³«D°v¿ïª¬ºAªºµøµ¡¡A«h¶i¦æÃö³¬
+        //ï¿½Ò¦ï¿½ï¿½Dï¿½vï¿½ïª¬ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½hï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         openedPanels.ToList().ForEach(panel =>
         {
             if (panel.Value.isPinOn == false)
@@ -136,7 +136,7 @@ public class UIManager_CCTV : MonoBehaviour
             }
         });
 
-        //·íµøµ¡³Q©ì¦²®É¡A§Y³]¬°°v¿ïª¬ºA
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½ì¦²ï¿½É¡Aï¿½Yï¿½]ï¿½ï¿½ï¿½vï¿½ïª¬ï¿½A
         currentPanel = ObjectPoolManager.GetInstanceFromQueuePool<Panel_CCTV>(panelPrefab, transform);
         currentPanel.listItem = listItem;
         //currentPanel.onClickScale.AddListener(fullScreenPlayer.Show);
@@ -159,7 +159,7 @@ public class UIManager_CCTV : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀË¬d¶}±Òªºµøµ¡¼Æ¶q»P¥Ø«e¬O§_¤w¶}±Òµøµ¡
+    /// ï¿½Ë¬dï¿½}ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶qï¿½Pï¿½Ø«eï¿½Oï¿½_ï¿½wï¿½}ï¿½Òµï¿½ï¿½ï¿½
     /// </summary>
     private void CheckAmountOfOpenedWindow()
     {
@@ -176,7 +176,7 @@ public class UIManager_CCTV : MonoBehaviour
     }
 
     /// <summary>
-    /// ³]¸m¤E®c®æ¼½©ñ
+    /// ï¿½]ï¿½mï¿½Eï¿½cï¿½æ¼½ï¿½ï¿½
     /// </summary>
     public void Set9GridPlayer()
     {

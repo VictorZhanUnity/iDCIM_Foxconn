@@ -22,7 +22,7 @@ public class CCTVManager : iDCIM_ModuleManager
     public RectTransform linePrefab;
 
     [Header(">>> CCTV全屏播放視窗")]
-    [SerializeField] private CCTV_FullScreenPlayer fullScreenPlayer;
+    [SerializeField] private CCTVFullScreenPlayer fullScreenPlayer;
 
     /// <summary>
     /// 目前的CCTV資訊視窗
