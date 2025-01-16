@@ -4,7 +4,7 @@ using _VictorDEV.DateTimeUtils;
 using TMPro;
 using UnityEngine;
 using VictorDev.Common;
-using static Data_AccessRecord_Ver2;
+using static DataAccessRecord;
 
 public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
 {
@@ -13,7 +13,7 @@ public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
 
     public List<User> TodayList => todayList;
 
-    public override void ReceiveData(List<Data_AccessRecord_Ver2> datas)
+    public override void ReceiveData(List<DataAccessRecord> datas)
     {
         todayList = datas.SelectMany(data => data.pageData.users)
             .Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();

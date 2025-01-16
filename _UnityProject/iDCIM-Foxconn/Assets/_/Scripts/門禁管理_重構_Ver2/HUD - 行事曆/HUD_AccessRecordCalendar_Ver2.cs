@@ -6,26 +6,22 @@ using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Calendar;
 using VictorDev.Common;
-using static Data_AccessRecord_Ver2;
+using static DataAccessRecord;
 
 /// <summary>
 /// [組件] 門禁管理首頁的行事曆
 /// </summary>
 public class HUD_AccessRecordCalendar_Ver2 : AccessRecordDataReceiver
 {
-    [Header(">>> [資料項] - 當年度門禁資料")]
-    [SerializeField] private List<Data_AccessRecord_Ver2> dataOfYear;
+  
 
     [Header(">>> [Event] - 單選日期時Invoke {所選日期, 過瀘後資料}")]
     public UnityEvent<DateTime, PageData> onSelectedDateEvent = new UnityEvent<DateTime, PageData>();
 
-    [Header(">>> 組件")]
-    [SerializeField] private CalendarManager calendarManager;
+  
 
-    /// <summary>
     /// 取得當年度門禁資料
-    /// </summary>
-    public override void ReceiveData(List<Data_AccessRecord_Ver2> datas)
+    public override void ReceiveData(List<DataAccessRecord> datas)
     {
         dataOfYear = datas;
         //依日期群組化
@@ -45,6 +41,16 @@ public class HUD_AccessRecordCalendar_Ver2 : AccessRecordDataReceiver
         onSelectedDateEvent.Invoke(selectedDate, pageDate);
     }
 
+    #region [Initialize]
     private void OnEnable() => calendarManager.onSelectedDateEvent.AddListener(OnSelectedDateHandler);
     private void OnDisable() => calendarManager.onSelectedDateEvent.RemoveAllListeners();
+    #endregion
+
+    #region [Components]
+
+    [Header(">>> [資料項] - 當年度門禁資料")]
+    private List<DataAccessRecord> dataOfYear;
+    [Header(">>> 組件")]
+    [SerializeField] private CalendarManager calendarManager;
+    #endregion
 }

@@ -16,10 +16,10 @@ public class AccessRecordDataManager : Module
     [SerializeField] private List<AccessRecordDataReceiver> receivers;
 
     [Header(">>> [Event] �����줵�~�ת��T��Ʈ�Invoke")]
-    public UnityEvent<List<Data_AccessRecord_Ver2>> onGetAccessRecordOfThisYear = new UnityEvent<List<Data_AccessRecord_Ver2>>();
+    public UnityEvent<List<DataAccessRecord>> onGetAccessRecordOfThisYear = new UnityEvent<List<DataAccessRecord>>();
 
     [Header(">>> [��ƶ�] - �ثe�d�ߪ��T���")]
-    [SerializeField] private List<Data_AccessRecord_Ver2> datas;
+    [SerializeField] private List<DataAccessRecord> datas;
 
     [Header(">>> [WebAPI] - �d�ߪ��T�O��")]
     [SerializeField] private WebAPI_Request request;
@@ -40,7 +40,7 @@ public class AccessRecordDataManager : Module
     {
         DateTime from = new DateTime(today.Year, 1, 1);
         DateTime to = from.AddYears(1).AddDays(-1);
-        void onSuccess(List<Data_AccessRecord_Ver2> result)
+        void onSuccess(List<DataAccessRecord> result)
         {
             datas = result;
             receivers.ForEach(target => target.ReceiveData(datas));
@@ -54,7 +54,7 @@ public class AccessRecordDataManager : Module
     /// <summary>
     /// ���o�Y�@�ɬq�����T�O��
     /// </summary>
-    public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<List<Data_AccessRecord_Ver2>> onSuccess, Action<long, string> onFailed)
+    public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<List<DataAccessRecord>> onSuccess, Action<long, string> onFailed)
     {
         //�]�w�ǰe���
         sendData = new SendRawJSON()
@@ -69,8 +69,8 @@ public class AccessRecordDataManager : Module
 
         void onSuccessHandler(long responseCode, string jsonString)
         {
-            Data_AccessRecord_Ver2 result = JsonConvert.DeserializeObject<Data_AccessRecord_Ver2>(jsonString);
-            datas = new List<Data_AccessRecord_Ver2> { result };
+            DataAccessRecord result = JsonConvert.DeserializeObject<DataAccessRecord>(jsonString);
+            datas = new List<DataAccessRecord> { result };
             onSuccess?.Invoke(datas);
         }
 

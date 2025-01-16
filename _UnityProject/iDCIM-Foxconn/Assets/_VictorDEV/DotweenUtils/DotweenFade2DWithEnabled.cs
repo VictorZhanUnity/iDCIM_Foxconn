@@ -9,9 +9,9 @@ namespace VictorDev.DoTweenUtils
     public class DotweenFade2DWithEnabled : MonoBehaviour
     {
         #region [Components]
-        [SerializeField] private float duration = 0.2f;
+        [SerializeField] private float duration = 0.3f;
         [SerializeField] private bool isRandomDelay = true;
-        [SerializeField] private float delay = 0.2f;
+        [SerializeField] private float delay = 0.3f;
         [SerializeField] private float delay_Start = 0f;
         [SerializeField] private Ease ease = Ease.OutQuad;
         [Header(">>> 是否移動")]
