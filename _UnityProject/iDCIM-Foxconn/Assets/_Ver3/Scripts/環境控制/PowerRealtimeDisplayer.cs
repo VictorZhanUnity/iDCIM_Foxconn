@@ -1,15 +1,15 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.ColorUtils;
 using VictorDev.Common;
 
-/// <summary>
 /// 市電、UPS、PDU電力顯示器
-/// </summary>
 public class PowerRealtimeDisplayer : BlackboxDataDisplayer
 {
     [Header(">>> 當警報狀態有改變時Invoke{是否有警報}")]
@@ -18,26 +18,19 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
     [Header(">>> 文字組件，組件名稱需為TagName")]
     [SerializeField] protected List<TextMeshProUGUI> txtCompList;
 
-    /// <summary>
     /// 目前警報的狀態
-    /// </summary>
     private bool isCurrentHaveAlarm { get; set; } = false;
 
     /// 警報時文字組件的顏色
-    /// </summary>
     protected Color alarmTextColor => ColorHandler.HexToColor(0xFF3636);
-    /// <summary>
     /// 警報時背景漸層的顏色
-    /// </summary>
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
         base.ReceiveData(blackBoxData);
         UpdateUI();
     }
 
-    /// <summary>
     /// 更新UI 
-    /// </summary>
     protected virtual void UpdateUI()
     {
         //將資料依Status與Value進行分組
@@ -65,5 +58,10 @@ public class PowerRealtimeDisplayer : BlackboxDataDisplayer
             isCurrentHaveAlarm = isHaveAlarm;
             onAlarmStatusChanged?.Invoke(isCurrentHaveAlarm);
         }
+    }
+
+    private void Awake()
+    {
+        txtCompList.ForEach(txt => txt.SetText("0"));
     }
 }

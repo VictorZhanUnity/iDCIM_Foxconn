@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using VictorDev.Common;
 using static DataAccessRecord;
 
 /// 門禁管理 - 各時段的進場人數
@@ -24,14 +25,17 @@ public class AccessRecordTotalCounter : AccessRecordDataReceiver
     }
     private void UpdateUI()
     {
-        TxtThisYear.SetText(_thisYearList.Count.ToString());
-        TxtThisYear.SetText(_thisMonthList.Count.ToString());
-        TxtThisYear.SetText(_todayList.Count.ToString());
+        DotweenHandler.DoInt(TxtThisYear, 0, _thisYearList.Count);
+        DotweenHandler.DoInt(TxtThisMonth, 0, _thisYearList.Count);
+        DotweenHandler.DoInt(TxtToday, 0, _thisYearList.Count);
     }
     
     #region [Initialize]
     private void OnEnable()
     {
+        TxtThisYear.SetText("0");
+        TxtThisMonth.SetText("0");
+        TxtToday.SetText("0");
         BtnThisYear.onClick.AddListener(()=>onItemClicked?.Invoke(_thisYearList));
         BtnThisMonth.onClick.AddListener(()=>onItemClicked?.Invoke(_thisMonthList));
         BtnToday.onClick.AddListener(()=>onItemClicked?.Invoke(_todayList));
@@ -63,4 +67,12 @@ public class AccessRecordTotalCounter : AccessRecordDataReceiver
     private TextMeshProUGUI TxtToday => _txtToday??= BtnToday.transform.GetChild(0).Find("Container").Find("txt所選日期進場人數").GetComponent<TextMeshProUGUI>();
     private TextMeshProUGUI _txtToday;
     #endregion
+
+    [ContextMenu("-隨機資料")]
+    private void ContextTest()
+    {
+        DotweenHandler.DoInt(TxtThisYear, 0, Random.Range(100, 201));
+        DotweenHandler.DoInt(TxtThisMonth, 0, Random.Range(50, 151));
+        DotweenHandler.DoInt(TxtToday, 0, Random.Range(0, 21));
+    }
 }

@@ -16,17 +16,17 @@ public class CCTVFullScreenPlayer : PopUpWindow
     {
         TxtTitle.SetText(_cctvPanel.data.name);
         _cctvPanel.RtspScreen.AddRenderingTarget(RawImg.gameObject);
+        gameObject.SetActive(true);
         RawImg.gameObject.SetActive(true);
         ToShow();
     }
-
     #region [Initialize]
     private void OnEnable() => BtnClose.onClick.AddListener(ToClose);
     private void OnDisable()
     {
         RawImg.gameObject.SetActive(false);
         BtnClose.onClick.RemoveListener(ToClose);
-        _cctvPanel?.RtspScreen.RemoveRenderingTarget(RawImg.gameObject);
+        _cctvPanel.RtspScreen.RemoveRenderingTarget(RawImg.gameObject);
     }
     #endregion
     

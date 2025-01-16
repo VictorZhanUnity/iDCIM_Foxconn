@@ -45,7 +45,7 @@ public abstract class ModulePage : Module
         MaterialHandler.RestoreOriginalMaterials();
         OnCloseHandler();
         RemoveEventListener();
-        content.SetActive(false);
+        if(content!=null)content.SetActive(false);
     }
 
     /// <summary>

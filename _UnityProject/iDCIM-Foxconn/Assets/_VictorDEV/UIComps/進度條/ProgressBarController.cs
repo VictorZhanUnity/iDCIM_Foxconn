@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.ColorUtils;
 using VictorDev.Common;
@@ -12,6 +14,8 @@ public class ProgressBarController : MonoBehaviour
     [Header(">>>最大值")]
     [SerializeField] private int maxValue = 5000;
 
+    public UnityEvent<float> onValueChanged = new UnityEvent<float>();
+    
     public int MaxValue
     {
         set
@@ -35,14 +39,10 @@ public class ProgressBarController : MonoBehaviour
     [SerializeField] private List<Image> imgList;
     [SerializeField] private TextMeshProUGUI txtPercent, txtValue;
 
-    /// <summary>
     /// 目前百分比
-    /// </summary>
-    public float percentage => slider.value / slider.maxValue;
+    public float Percentage => slider.value / slider.maxValue;
 
-    /// <summary>
     /// 目前數值
-    /// </summary>
     public float value
     {
         get => slider.value;
@@ -50,8 +50,8 @@ public class ProgressBarController : MonoBehaviour
         {
             slider.value = Mathf.Max(value, 0);
             currentValue = slider.value;
-
-            Color color = ColorHandler.GetColorLevelFromPercentage(percentage);
+         
+            Color color = ColorHandler.GetColorLevelFromPercentage(Percentage);
 
             imgSliderBar.color = color;
             if (icon != null) icon.color = color;
@@ -63,7 +63,9 @@ public class ProgressBarController : MonoBehaviour
 
             float fontSize = txtPercent.fontSize * 0.4f;
             fontSize = Mathf.Max((float)fontSize, 14);
-            txtPercent.SetText($"{Mathf.FloorToInt(percentage * 100)}{StringHandler.SetFontSizeString("%", (int)fontSize)}");
+            txtPercent.SetText($"{Mathf.FloorToInt(Percentage * 100)}{StringHandler.SetFontSizeString("%", (int)fontSize)}");
+            
+            onValueChanged.Invoke(Percentage);
         }
     }
 

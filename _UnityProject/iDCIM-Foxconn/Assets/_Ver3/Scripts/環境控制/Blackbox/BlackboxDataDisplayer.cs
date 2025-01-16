@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Advanced;
+using VictorDev.Common;
 
 /// BlackBox資料數值顯示器
 public class BlackboxDataDisplayer : BlackboxDataReceiver
@@ -18,7 +19,12 @@ public class BlackboxDataDisplayer : BlackboxDataReceiver
     public override void ReceiveData(List<Data_Blackbox> blackBoxData)
     {
         GroupData(blackBoxData);
-        if(TxtValue != null) TxtValue.SetText(value.ToString("0.#"));
+        if (TxtValue != null)
+        {
+            float startValue = float.Parse(TxtValue.text);
+            DotweenHandler.DoFloat(TxtValue, startValue, value, 0.2f, "0.#");
+            //TxtValue.SetText(value.ToString("0.#"));
+        }
     }
     protected void GroupData(List<Data_Blackbox> blackBoxData)
     {
@@ -27,14 +33,27 @@ public class BlackboxDataDisplayer : BlackboxDataReceiver
     }
 
     #region [Initialize]
-    private void OnEnable() => Btn?.onClick.AddListener(() => onClickButtonEvent?.Invoke(this));
-    private void OnDisable() => Btn?.onClick.RemoveAllListeners();
+    [ContextMenu("- 隨機資料")]
+    protected void ContextTest()
+    {
+        DotweenHandler.DoFloat(TxtValue, 0, Random.Range(0f, 61f), 0.5f, "0.#");
+    }
+    private void OnEnable()
+    {
+        Btn?.onClick.AddListener(() => onClickButtonEvent?.Invoke(this));
+    }
+    
+    private void OnDisable()
+    {
+        Btn?.onClick.RemoveAllListeners();
+    }
+
     #endregion
 
     #region [Components]
 
     [Header(">>> [資料項]")]
-    protected List<Data_Blackbox> DataList;
+    public List<Data_Blackbox> DataList;
     
     protected TextBlinker TxtValue => _txtValue ??= transform.Find("txtValue")?.GetComponent<TextBlinker>();
     private TextBlinker _txtValue;

@@ -23,9 +23,91 @@ public class BlackboxDataManager : Module
     [Header(">>> [資料項] - 目前環控資料")]
     [SerializeField] private List<Data_Blackbox> datas;
 
+
     [Header(">>> Tag名稱列表")]
     [SerializeField]
-    private List<string> tagNames = new List<string>();
+    private List<string> tagNames = new List<string>()
+    {
+        "T/H-01/RT/Value", "T/H-01/RT/Status",
+        "T/H-01/RH/Value", "T/H-01/RH/Status",
+        "T/H-03/RT/Value", "T/H-03/RT/Status",
+        "T/H-03/RH/Value", "T/H-03/RH/Status",
+        "T/H-05/RT/Value", "T/H-05/RT/Status",
+        "T/H-05/RH/Value", "T/H-05/RH/Status",
+        "T/H-04/Smoke/Status",
+        "PUE",
+        "Utility/L1/Input/Voltage/Value",
+        "Utility/L1/Input/Voltage/Status",
+        "Utility/L1/Output/Voltage/Value",
+        "Utility/L1/Output/Voltage/Status",
+        "Utility/L1/Output/Current/Value",
+        "Utility/L1/Output/Current/Status",
+        "Utility/L2/Input/Voltage/Value",
+        "Utility/L2/Input/Voltage/Status",
+        "Utility/L2/Output/Voltage/Value",
+        "Utility/L2/Output/Voltage/Status",
+        "Utility/L2/Output/Current/Value",
+        "Utility/L2/Output/Current/Status",
+        "Utility/L3/Input/Voltage/Value",
+        "Utility/L3/Input/Voltage/Status",
+        "Utility/L3/Output/Voltage/Value",
+        "Utility/L3/Output/Voltage/Status",
+        "Utility/L3/Output/Current/Value",
+        "Utility/L3/Output/Current/Status",
+        "Utility/TotalPower/Value",
+        "Utility/TotalPower/Status",
+        "Utility/TotalFrequency/Value",
+        "Utility/TotalFrequency/Status",
+        "Utility/PowerFactor/Value",
+        "Utility/PowerFactor/Status",
+        "UPS/TotalPower/Value",
+        "UPS/TotalPower/Status",
+        "UPS/L1/Output/Voltage/Value",
+        "UPS/L1/Output/Voltage/Status",
+        "UPS/L1/Output/Current/Value",
+        "UPS/L1/Output/Current/Status",
+        "UPS/L2/Output/Voltage/Value",
+        "UPS/L2/Output/Voltage/Status",
+        "UPS/L2/Output/Current/Value",
+        "UPS/L2/Output/Current/Status",
+        "UPS/L3/Output/Voltage/Value",
+        "UPS/L3/Output/Voltage/Status",
+        "UPS/L3/Output/Current/Value",
+        "UPS/L3/Output/Current/Status",
+        "UPS/Quantity/Value",
+        "UPS/Quantity/Status",
+        "UPS/PowerSupply/Status",
+        "PDU/A01-1/Value",
+        "PDU/A01-1/Status",
+        "PDU/A01-2/Value",
+        "PDU/A01-2/Status",
+        "PDU/A02-1/Value",
+        "PDU/A02-1/Status",
+        "PDU/A02-2/Value",
+        "PDU/A02-2/Status",
+        "PDU/B01-1/Value",
+        "PDU/B01-1/Status",
+        "PDU/B01-2/Value",
+        "PDU/B01-2/Status",
+        "PDU/B02-1/Value",
+        "PDU/B02-1/Status",
+        "PDU/B02-2/Value",
+        "PDU/B02-2/Status",
+        "PDU/B03-1/Value",
+        "PDU/B03-1/Status",
+        "PDU/B03-2/Value",
+        "PDU/B03-2/Status",
+        "Alarm/Fire/Main/Status",
+        "Alarm/Fire/First/Status",
+        "Alarm/Fire/Secondary/Status",
+        "Alarm/Fire/Gas/Release/Status",
+        "Alarm/AirConditioner/A/Leak/1/Status",
+        "Alarm/AirConditioner/A/Leak/2/Status",
+        "Alarm/AirConditioner/A/Status",
+        "Alarm/AirConditioner/B/Leak/1/Status",
+        "Alarm/AirConditioner/B/Leak/2/Status",
+        "Alarm/AirConditioner/B/Status"
+    };
 
     [Header(">>> 每隔幾秒讀取一次WebAPI")]
     [SerializeField] private int internvalSec = 10;
@@ -38,7 +120,7 @@ public class BlackboxDataManager : Module
     public override void OnInit(Action onInitComplete = null)
     {
         IEnumerator GetData_Coroutine()
-        {
+        { 
             while (true)
             {
                 GetIAQRealtimeData();

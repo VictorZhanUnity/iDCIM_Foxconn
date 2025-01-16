@@ -6,9 +6,7 @@ using UnityEngine.UI;
 
 namespace VictorDev.Advanced
 {
-    /// <summary>
     /// 輸入框表格處理
-    /// </summary>
     public class TextFormHandler : TabSwitchHandler
     {
         [Header(">>> [Event] 按下Submit時Invoke")]
@@ -20,9 +18,7 @@ namespace VictorDev.Advanced
         [Header(">>> [Comp] Submit按鈕")]
         [SerializeField] private Button btnSubmit;
 
-        /// <summary>
         /// 當輸入框值改變時，是否全部文字框含有值，決定Submit按鈕是否顯示
-        /// </summary>
         private void OnValueChangedHandler(string txt)
         {
             bool allHaveValue = selectableComps.OfType<TMP_InputField>().All(inputTxt => string.IsNullOrEmpty(inputTxt.text.Trim()) == false);

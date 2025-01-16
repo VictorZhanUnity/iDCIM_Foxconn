@@ -8,7 +8,7 @@ using Debug = VictorDev.Common.Debug;
 
 public class CCTV_Manager_Ver3 : ModulePage, IRaycastHitReceiver
 {
-    [Header(">>> ����ܪ� Landmark�ϼ�")]
+    [Header(">>>LandMark圖標")]
     [SerializeField] private List<Landmark_RE> landmarkList;
 
     #region [>>> Components]

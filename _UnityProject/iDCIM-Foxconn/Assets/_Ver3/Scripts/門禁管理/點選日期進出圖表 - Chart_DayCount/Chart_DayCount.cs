@@ -44,7 +44,7 @@ public class Chart_DayCount : MonoBehaviour
         selectedDate = date;
         pageData = data;
         string stringDate = DateTimeHandler.FullDateFormatWithWeekDay(selectedDate);
-        string stringCount = pageData.users.Count.ToString() + "人";
+        string stringCount = pageData.users.Count.ToString();
 
         if (gameObject.activeSelf)
         {
@@ -60,6 +60,11 @@ public class Chart_DayCount : MonoBehaviour
         AddDataToSeries();
     }
 
+    private void Awake()
+    {
+        txtDateDisplay.SetText("{日期}");
+        txtCount.SetText("0");
+    }
 
     private void OnEnable()
     {
