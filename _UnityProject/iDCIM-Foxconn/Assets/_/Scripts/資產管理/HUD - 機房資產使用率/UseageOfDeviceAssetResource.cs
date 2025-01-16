@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +5,7 @@ using VictorDev.Common;
 using Random = UnityEngine.Random;
 
 /// HUD - 機房資產使用率
-public class UseageOfDeviceAssetResource : MonoBehaviour
+public class UseageOfDeviceAssetResource : DeviceAssetDataReceiver
 {
     [Header(">>> [資料項] 機房全機櫃與設備資料")] [SerializeField]
     private List<Data_ServerRackAsset> data;
@@ -15,7 +14,7 @@ public class UseageOfDeviceAssetResource : MonoBehaviour
     [SerializeField] private ProgressBarController pbRuSpace;
     [SerializeField] private ProgressBarController pbWeight;
 
-    public void ShowUsage(List<Data_ServerRackAsset> data)
+    public override void ReceiveData(List<Data_ServerRackAsset> data)
     {
         this.data = data;
 

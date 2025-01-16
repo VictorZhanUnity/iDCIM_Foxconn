@@ -34,7 +34,7 @@ public class DeviceAssetDataManager : Module, IJsonParseReceiver
     }
 
     [ContextMenu("- 取得現有機櫃與設備")]
-    private void GeAlltDeviceAssets()
+    public void GeAlltDeviceAssets()
     {
         WebAPI_LoginManager.CheckToken(request);
         WebAPI_Caller.SendRequest(request, onSuccessHandler, null);

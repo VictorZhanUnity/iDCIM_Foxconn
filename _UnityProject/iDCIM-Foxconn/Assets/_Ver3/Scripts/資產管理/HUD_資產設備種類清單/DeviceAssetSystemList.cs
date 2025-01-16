@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VictorDev.Common;
-
+using Debug = UnityEngine.Debug;
 
 /// 資產設備種類列表
 public class DeviceAssetSystemList : DeviceAssetDataReceiver
 {
     [Header(">>> 點擊設備類型Toggle時Invoke")]
     public UnityEvent<List<Data_iDCIMAsset>> onClickDeviceSystem = new UnityEvent<List<Data_iDCIMAsset>>();
-
+    
     /// 設定設備列表
     public override void ReceiveData(List<Data_ServerRackAsset> datas)
     {
@@ -38,6 +39,10 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         SetStringFormat(TxtNumOfServer, _serverList.Count);
         SetStringFormat(TxtNumOfSwitch, _switchList.Count);
         SetStringFormat(TxtNumOfRouter, _routerList.Count);
+
+        Debug.Log("ReceiveData");
+        
+        ToggleRack.isOn = true;
     }
 
     [ContextMenu("- 隨機資料測試")]
@@ -53,7 +58,6 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         if (count > 0)
         {
             DotweenHandler.DoInt(txt, 0, count);
-            //DotweenHandler.ToBlink(txt, $"共{count.ToString()}台", 0.2f, 0.2f, true);
         }
     }
 
@@ -85,6 +89,7 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         SetStringFormat(TxtNumOfServer, _serverList.Count, ToggleServer);
         SetStringFormat(TxtNumOfSwitch, _switchList.Count, ToggleSwitch);
         SetStringFormat(TxtNumOfRouter, _routerList.Count, ToggleRouter);
+
     }
 
     
@@ -124,6 +129,10 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
     #region [Event Listener]
     private void OnEnable()
     {
+        TxtNumOfRack.SetText("0");
+        TxtNumOfServer.SetText("0");
+        TxtNumOfSwitch.SetText("0");
+        
         void OnToggleChanged(bool isOn, List<Data_iDCIMAsset> data)
         {
             if (isOn) onClickDeviceSystem?.Invoke(data);
@@ -132,14 +141,6 @@ public class DeviceAssetSystemList : DeviceAssetDataReceiver
         ToggleServer.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, _serverList.Cast<Data_iDCIMAsset>().ToList()));
         ToggleSwitch.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, _switchList.Cast<Data_iDCIMAsset>().ToList()));
         ToggleRouter.onValueChanged.AddListener((isOn) => OnToggleChanged(isOn, _routerList.Cast<Data_iDCIMAsset>().ToList()));
-
-        //預設機櫃為點選狀態
-        if (ToggleRack.gameObject.activeSelf) ToggleRack.isOn = true;
-        else ToggleServer.isOn = true;
-        
-        TxtNumOfRack.SetText("0");
-        TxtNumOfServer.SetText("0");
-        TxtNumOfSwitch.SetText("0");
     }
     private void OnDisable()
     {
