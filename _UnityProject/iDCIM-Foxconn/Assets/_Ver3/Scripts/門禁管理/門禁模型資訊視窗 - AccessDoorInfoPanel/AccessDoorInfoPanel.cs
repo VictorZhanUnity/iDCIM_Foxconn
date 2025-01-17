@@ -9,10 +9,10 @@ public class AccessDoorInfoPanel : AccessRecordDataReceiver
     [Header("[Prefab] - 列表項目")]
     [SerializeField] private AccessRecord_TableRow itemPrefab;
 
-    public override void ReceiveData(List<DataAccessRecord> datas)
+    public override void ReceiveData(DataAccessRecord data)
     {
         _todayRecordList.Clear();
-        _todayRecordList = datas.SelectMany(recored => recored.pageData.users).Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).OrderBy(data => data.accessTime).ToList();
+        _todayRecordList = data.pageData.users.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).OrderBy(data => data.accessTime).ToList();
         RecordTable.ShowData(_todayRecordList);
     }
 

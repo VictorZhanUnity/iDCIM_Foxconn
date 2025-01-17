@@ -6,25 +6,28 @@ using VictorDev.Common;
 using Debug = VictorDev.Common.Debug;
 
 /// <summary>
-/// ªù¸TºÞ²z¾¹
+/// ï¿½ï¿½ï¿½Tï¿½Þ²zï¿½ï¿½
 /// </summary>
 public class AccessControlManager_Ver2 : ModulePage
 {
-    [Header(">>> [Event] ÂI¿ïLandmark®ÉInvoke")]
+    [Header(">>> [Event] ï¿½Iï¿½ï¿½Landmarkï¿½ï¿½Invoke")]
     public UnityEvent<Transform> onClickLandmark = new UnityEvent<Transform>();
-    [Header(">>> [Event] ¨ú¿ïÂI¿ïLandmark®ÉInvoke")]
+    [Header(">>> [Event] ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½Landmarkï¿½ï¿½Invoke")]
     public UnityEvent<Transform> onCancellLandmark = new UnityEvent<Transform>();
 
-    [Header(">>> ±ýÅã¥Üªº Landmark¹Ï¼Ð")]
+    [Header(">>> ï¿½ï¿½ï¿½ï¿½Üªï¿½ Landmarkï¿½Ï¼ï¿½")]
     [SerializeField] private List<Landmark_RE> landmarkList;
 
+    public AccessRecordDataManager manager;
+    
     protected override void OnShowHandler()
     {
+        manager.GetAccessRecordsOfThisYear();
+
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
         Debug.Log("OnShowHandler");
         modelList.ForEach(model => model.GetComponent<Collider>().enabled = true);
 
-        //¹w³]ÂI¿ï
         AccessDoorLandmarkDisplayer defaultSelected = landmarkList[0].GetComponent<AccessDoorLandmarkDisplayer>();
         if (defaultSelected.TodayList.Count > 0)
         {

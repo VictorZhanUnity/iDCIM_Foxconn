@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using VictorDev.Common;
 using static DataAccessRecord;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// [組件] 指定某日的進場人數Bar圖
@@ -63,13 +64,11 @@ public class Chart_DayCount : MonoBehaviour
     private void Awake()
     {
         txtDateDisplay.SetText("{日期}");
-        txtCount.SetText("0");
     }
 
     private void OnEnable()
     {
         DotweenHandler.ToBlink(txtDateDisplay);
-        DotweenHandler.ToBlink(txtCount, txtCount.text, 0.1f, 0.3f);
     }
 
     /// <summary>

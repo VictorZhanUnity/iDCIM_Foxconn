@@ -5,27 +5,26 @@ using TMPro;
 using UnityEngine;
 using VictorDev.Common;
 using static DataAccessRecord;
+using Debug = VictorDev.Common.Debug;
 
 public class AccessDoorLandmarkDisplayer : AccessRecordDataReceiver
 {
-    [Header(">>> [��ƶ�] ������T�O��")]
+    [Header("[資料項]")]
     [SerializeField] private List<User> todayList;
 
     public List<User> TodayList => todayList;
 
-    public override void ReceiveData(List<DataAccessRecord> datas)
+    public override void ReceiveData(DataAccessRecord data)
     {
-        todayList = datas.SelectMany(data => data.pageData.users)
-            .Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();
+        todayList = data.pageData.users.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();
 
-        txtIdNumber.SetText(datas[0].DevicePath);
-        DotweenHandler.ToBlink(txtAmountofEntryRecord, todayList.Count.ToString());
+        txtIdNumber.SetText(data.DevicePath);
+        DotweenHandler.DoInt(txtAmountofEntryRecord, 0, todayList.Count, 0.2f);
     }
 
     private void OnEnable() => DotweenHandler.ToBlink(txtAmountofEntryRecord);
 
     #region [Components]
-    [Header(">>> [�ե�] ��r")]
     [SerializeField] private TextMeshProUGUI txtIdNumber;
     [SerializeField] private TextMeshProUGUI txtAmountofEntryRecord;
     #endregion

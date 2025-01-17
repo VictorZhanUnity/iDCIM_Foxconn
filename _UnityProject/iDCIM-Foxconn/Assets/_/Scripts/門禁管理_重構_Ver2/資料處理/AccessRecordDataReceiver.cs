@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public abstract class AccessRecordDataReceiver : MonoBehaviour, IAccessRecordDataReceiver
 {
-    public abstract void ReceiveData(List<DataAccessRecord> datas);
+    public abstract void ReceiveData(DataAccessRecord datas);
 }
 
 public interface IAccessRecordDataReceiver
@@ -15,5 +15,5 @@ public interface IAccessRecordDataReceiver
     /// <summary>
     /// 接收資料
     /// </summary>
-    abstract void ReceiveData(List<DataAccessRecord> datas);
+    abstract void ReceiveData(DataAccessRecord datas);
 }

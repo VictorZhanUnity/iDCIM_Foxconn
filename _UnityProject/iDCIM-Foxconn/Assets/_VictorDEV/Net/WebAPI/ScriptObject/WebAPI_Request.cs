@@ -63,7 +63,7 @@ namespace VictorDev.Net.WebAPI
         public void SetRawJsonData(string rawJsonString) => body.SetRawJsonData(rawJsonString);
         public void SetTextAfterURL(string keyword) => keywordAfterURL = keyword.Trim();
 
-        public string BodyJSON => body.rawJSON;
+        public string BodyJSON => body.rawJSON.Trim();
 
         public WebAPI_Request(string url) => this.apiURL = url;
 

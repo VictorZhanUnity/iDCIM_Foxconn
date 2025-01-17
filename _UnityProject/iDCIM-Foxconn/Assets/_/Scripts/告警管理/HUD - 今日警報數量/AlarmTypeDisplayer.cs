@@ -9,6 +9,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VictorDev.Common;
 using static AlarmHistoryDataManager;
+using Debug = VictorDev.Common.Debug;
 
 /// <summary>
 /// 告警分類項目顯示器
@@ -20,13 +21,13 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
 
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
     {
-        btn.interactable = (datas.Count > 0);
         filtData = datas.Where(data => keywords.Any(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase)) 
                 && keywordsExclude.All(word => data.tagName.Contains(word, StringComparison.OrdinalIgnoreCase) == false)).ToList();
 
         int amount = filtData.SelectMany(data => data.alarms).Count();
         DotweenHandler.DoInt(txtAmount, int.Parse(txtAmount.text), amount);
         imgColor.DOColor(amount > 0 ? colorAlert : colorNormal, 1f).SetEase(Ease.OutQuad);
+        btn.interactable = (amount > 0);
     }
 
     #region[Initialize]
@@ -43,12 +44,11 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     {
         txtAmount.SetText("0");
         imgColor.color = colorNormal;
-        btn.interactable = false;
     }
     #endregion
 
     #region[Componentes]
-    [FormerlySerializedAs("datas")] [Header("[資料項]")] private List<Data_AlarmHistoryData> filtData;
+    [FormerlySerializedAs("datas")] [Header("[資料項]")] public List<Data_AlarmHistoryData> filtData;
     public UnityEvent<List<Data_AlarmHistoryData>, string> OnItemClicked { get; set; } = new();
     [SerializeField] private Color colorNormal = Color.green;
     [SerializeField] private Color colorAlert = Color.red;

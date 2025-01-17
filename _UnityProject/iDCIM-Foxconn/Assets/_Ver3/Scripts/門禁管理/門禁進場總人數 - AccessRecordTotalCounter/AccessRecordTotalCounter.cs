@@ -15,10 +15,9 @@ public class AccessRecordTotalCounter : AccessRecordDataReceiver
     [Header("[Event] - 點選各時段項目時Invoke用戶清單 {List<User>}")]
     public UnityEvent<List<User>> onItemClicked = new UnityEvent<List<User>>();
 
-    public override void ReceiveData(List<DataAccessRecord> datas)
+    public override void ReceiveData(DataAccessRecord data)
     {
-        _thisYearList = datas.SelectMany(data => data.pageData.users)
-            .Where(user => DateTimeHandler.isDateInThisYear(user.DateAccessTime)).ToList();
+        _thisYearList = data.pageData.users.Where(user => DateTimeHandler.isDateInThisYear(user.DateAccessTime)).ToList();
         _thisMonthList = _thisYearList.Where(user => DateTimeHandler.IsDateInThisMonth(user.DateAccessTime)).ToList();
         _todayList = _thisMonthList.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).ToList();
         UpdateUI();
@@ -26,8 +25,8 @@ public class AccessRecordTotalCounter : AccessRecordDataReceiver
     private void UpdateUI()
     {
         DotweenHandler.DoInt(TxtThisYear, 0, _thisYearList.Count);
-        DotweenHandler.DoInt(TxtThisMonth, 0, _thisYearList.Count);
-        DotweenHandler.DoInt(TxtToday, 0, _thisYearList.Count);
+        DotweenHandler.DoInt(TxtThisMonth, 0, _thisMonthList.Count);
+        DotweenHandler.DoInt(TxtToday, 0, _todayList.Count);
     }
     
     #region [Initialize]

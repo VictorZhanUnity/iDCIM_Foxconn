@@ -1,27 +1,26 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using _VictorDEV.DateTimeUtils;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
-using VictorDev.Common;
 using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
-using static AccessRecord_DataHandler;
-using static AccessRecord_DataHandler.SendRawJSON;
 
 public class AccessRecordDataManager : Module
 {
-    [Header(">>> [���U��] �����줵�~�ת��T��Ƶo�e���U�ﹳ�ե�")]
+    public bool isGenerateDemoData = false;
+    
+    [Header(">>> [接收器] AccessRecordDataReceiver")]
     [SerializeField] private List<AccessRecordDataReceiver> receivers;
 
-    [Header(">>> [Event] �����줵�~�ת��T��Ʈ�Invoke")]
-    public UnityEvent<List<DataAccessRecord>> onGetAccessRecordOfThisYear = new UnityEvent<List<DataAccessRecord>>();
+    [Header(">>> [Event] 取得今年門禁資料Invoke")]
+    public UnityEvent<DataAccessRecord> onGetAccessRecordOfThisYear = new UnityEvent<DataAccessRecord>();
 
-    [Header(">>> [��ƶ�] - �ثe�d�ߪ��T���")]
-    [SerializeField] private List<DataAccessRecord> datas;
+    [Header(">>> [資料項]")]
+    [SerializeField] private DataAccessRecord dataAccessRecord;
 
-    [Header(">>> [WebAPI] - �d�ߪ��T�O��")]
+    [Header(">>> [WebAPI] - [Door文件] 查詢門禁進出記錄，需在機房測試")]
     [SerializeField] private WebAPI_Request request;
 
     private Action onInitComplete { get; set; }
@@ -29,61 +28,69 @@ public class AccessRecordDataManager : Module
     public override void OnInit(Action onInitComplete = null)
     {
         this.onInitComplete = onInitComplete;
-        GetAccessRecordsOfThisYear();
     }
 
-    [ContextMenu("- ���o���~�ת��T�O��")]
-    /// <summary>
-    /// ���o���~�ת��T�O��
-    /// </summary>
-    private void GetAccessRecordsOfThisYear()
+    [ContextMenu("- 取得今年門禁資料")]
+    public void GetAccessRecordsOfThisYear()
     {
-        DateTime from = new DateTime(today.Year, 1, 1);
-        DateTime to = from.AddYears(1).AddDays(-1);
-        void onSuccess(List<DataAccessRecord> result)
+        if (isGenerateDemoData)
         {
-            datas = result;
-            receivers.ForEach(target => target.ReceiveData(datas));
-            onGetAccessRecordOfThisYear?.Invoke(datas);
-
-            onInitComplete?.Invoke();
+            GetComponent<DemoDataHandlerAccessRecord>().GenerateDemoData(DateTime.Today.Year, onSuccessHandler);
         }
-        GetAccessRecordsFromTimeInterval(from, to, onSuccess, null);
+        else
+        {
+            DateTime from = new DateTime(DateTime.Today.Year, 1, 1);
+            DateTime to = from.AddYears(1).AddDays(-1);
+           
+            GetAccessRecordsFromTimeInterval(from, to, onSuccessHandler);
+        }
+        return;
+        
+        
+        void onSuccessHandler(string jsonString)
+        {
+            Parse(jsonString);
+            
+            receivers.ForEach(target => target.ReceiveData(dataAccessRecord));
+            onGetAccessRecordOfThisYear?.Invoke(dataAccessRecord);
+        }
     }
 
-    /// <summary>
-    /// ���o�Y�@�ɬq�����T�O��
-    /// </summary>
-    public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<List<DataAccessRecord>> onSuccess, Action<long, string> onFailed)
+    private void Parse(string jsonString)
     {
-        //�]�w�ǰe���
-        sendData = new SendRawJSON()
-        {
-            filter = new Filter()
-            {
-                from = from.ToString(DateTimeHandler.FullDateTimeFormatWithT),
-                to = to.ToString(DateTimeHandler.FullDateTimeFormatWithT),
-            }
-        };
-        request.SetRawJsonData(JsonConvert.SerializeObject(datas));
+        dataAccessRecord = JsonConvert.DeserializeObject<DataAccessRecord>(jsonString);
+    }
 
-        void onSuccessHandler(long responseCode, string jsonString)
-        {
-            DataAccessRecord result = JsonConvert.DeserializeObject<DataAccessRecord>(jsonString);
-            datas = new List<DataAccessRecord> { result };
-            onSuccess?.Invoke(datas);
-        }
-
-#if UNITY_EDITOR
-        onSuccessHandler(200, DataForDemo.AccessRecord);
-#else
+    public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<string> onSuccess, Action<long, string> onFailed = null)
+    {
+        string jsonString = request.BodyJSON;
+        SendRawJSON_AccessRecord data = JsonConvert.DeserializeObject<SendRawJSON_AccessRecord>(jsonString);
+        data.filter.from = from.ToString(DateTimeHandler.FullDateTimeFormatWithT);
+        data.filter.to = to.ToString(DateTimeHandler.FullDateTimeFormatWithT);
+        request.SetRawJsonData(JsonConvert.SerializeObject(data));
         WebAPI_LoginManager.CheckToken(request);
-        WebAPI_Caller.SendRequest(request, onSuccessHandler, onFailed);
-#endif
+        WebAPI_Caller.SendRequest(request, (responseCode, jsonString)=>onSuccess.Invoke(jsonString), onFailed);
     }
 
     #region[Components]
-    private SendRawJSON sendData { get; set; }
-    private DateTime today => DateTime.Today;
+    #endregion
+    
+    #region [>>> 傳送RawJSON資料格式]
+    [Serializable]
+    public class SendRawJSON_AccessRecord
+    {
+        public int page = 0;
+        public int pageItemCount = 1000;
+        public Filter filter;
+
+        [Serializable]
+        public class Filter
+        {
+            //鴻騰機房入口門編號為10
+            public string doorId = "10";
+            public string from;
+            public string to;
+        }
+    }
     #endregion
 }

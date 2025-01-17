@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Net.WebAPI;
-using static AccessRecord_DataHandler.SendRawJSON;
 
 /// <summary>
 /// [門禁管理] 資料處理
@@ -25,21 +24,14 @@ public class AccessRecord_DataHandler : MonoBehaviour
     [Header(">>> [WebAPI] - 查詢門禁記錄")]
     [SerializeField] private WebAPI_Request requestAccessRecord;
 
-    [Header(">>> [僅顯示] - 傳送資料項")]
-    [SerializeField] private SendRawJSON sendData;
-
-    private DateTime today => DateTime.Today;
-
     public Data_AccessRecord GetDataByDevicePath(string targetModelName)
          => _datas.FirstOrDefault(data => targetModelName.Contains(data.DevicePath));
 
-    /// <summary>
     /// [目前年份] 門禁記錄
-    /// </summary>
     public void GetAccessRecordsOfThisYear(Action<List<Data_AccessRecord>> onSuccess, Action<long, string> onFailed)
     {
-        DateTime from = new DateTime(today.Year, 1, 1);
-        DateTime to = new DateTime(today.Year, 12, 31);
+        DateTime from = new DateTime(DateTime.Today.Year, 1, 1);
+        DateTime to = from.AddYears(1);
         onSuccess += (dataList) => onGetAccessRecordOfThisYear.Invoke(dataList);
         GetAccessRecordsFromTimeInterval(from, to, onSuccess, onFailed);
     }
@@ -49,7 +41,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
     /// </summary>
     public void GetAccessRecordsOfThisMonth(Action<List<Data_AccessRecord>> onSuccess, Action<long, string> onFailed)
     {
-        DateTime from = new DateTime(today.Year, today.Month, 1);
+        DateTime from = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         DateTime to = from.AddMonths(1).AddDays(-1);
         GetAccessRecordsFromTimeInterval(from, to, onSuccess, onFailed);
     }
@@ -57,7 +49,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
     /// <summary>
     /// [今天] 門禁記錄
     /// </summary>
-    public void GetAccessRecordsOfToday(Action<List<Data_AccessRecord>> onSuccess, Action<long, string> onFailed) => GetAccessRecordsOfDay(today, onSuccess, onFailed);
+    public void GetAccessRecordsOfToday(Action<List<Data_AccessRecord>> onSuccess, Action<long, string> onFailed) => GetAccessRecordsOfDay(DateTime.Today,onSuccess, onFailed);
 
     /// <summary>
     /// 取得某一天的門禁記錄
@@ -73,6 +65,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
     /// </summary>
     public void GetAccessRecordsFromTimeInterval(DateTime from, DateTime to, Action<List<Data_AccessRecord>> onSuccess, Action<long, string> onFailed)
     {
+        /*
         //設定傳送資料
         sendData = new SendRawJSON()
         {
@@ -83,6 +76,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
             }
         };
         requestAccessRecord.SetRawJsonData(JsonConvert.SerializeObject(sendData));
+        */
 
         void onSuccessHandler(long responseCode, string jsonString)
         {
@@ -98,24 +92,7 @@ public class AccessRecord_DataHandler : MonoBehaviour
 #endif
     }
 
-    #region [>>> 傳送RawJSON資料格式]
-    [Serializable]
-    public class SendRawJSON
-    {
-        public int page = 0;
-        public int pageItemCount = 1000;
-        public Filter filter;
-
-        [Serializable]
-        public class Filter
-        {
-            //鴻騰機房入口門編號為10
-            public string doorId = "10";
-            public string from;
-            public string to;
-        }
-    }
-    #endregion
+    
 
     [ContextMenu("- [目前年份] 門禁記錄")] private void Test_GetYear() => GetAccessRecordsOfThisYear(null, null);
     [ContextMenu("- [目前月份] 門禁記錄")] private void Test_GetMonth() => GetAccessRecordsOfThisMonth(null, null);

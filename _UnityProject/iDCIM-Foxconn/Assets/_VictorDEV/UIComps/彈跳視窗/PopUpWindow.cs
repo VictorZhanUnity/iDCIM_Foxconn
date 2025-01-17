@@ -10,10 +10,13 @@ namespace VictorDev.Advanced
         public void ToClose()
         {
             gameObject.SetActive(false);
-            bool hasActiveChild = transform.parent.transform.Cast<Transform>()
+            
+            BlackScreen?.SetActive(false);
+            
+            /*bool hasActiveChild = transform.parent.transform.Cast<Transform>()
                 .Any(child => child.gameObject.activeSelf && child.gameObject != BlackScreen);
 
-            if (hasActiveChild == false) BlackScreen?.SetActive(false);
+            if (hasActiveChild == false) BlackScreen?.SetActive(false);*/
         }
 
         private GameObject BlackScreen => _blackScreen ??= transform.parent.Find("BlackScreen")?.gameObject;

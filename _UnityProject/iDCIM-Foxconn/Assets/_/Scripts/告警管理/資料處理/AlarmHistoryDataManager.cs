@@ -49,7 +49,6 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
             rawJson.to = $"{year+1}-01-01T00:00:00";
             request.SetRawJsonData(JsonConvert.SerializeObject(rawJson));
             Debug.Log($">>> 讀取資料時間區段: {rawJson.from} ~ {rawJson.to}");
-            
             WebAPI_LoginManager.CheckToken(request);
             WebAPI_Caller.SendRequest(request, onSuccessHandler, null);
         }

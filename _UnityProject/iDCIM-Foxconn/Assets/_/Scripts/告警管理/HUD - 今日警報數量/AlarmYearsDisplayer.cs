@@ -48,7 +48,15 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     #region [Initialize]
     private void OnEnable()
     {
-        receivers.ForEach(receiver => receiver.OnItemClicked.AddListener((dataList, title)=>onItemClicked.Invoke(dataList, $"{SelectedYear}年告警記錄 - {title}")));
+        //receivers.ForEach(receiver => receiver.OnItemClicked.AddListener((dataList, title)=>onItemClicked.Invoke(dataList, $"{SelectedYear}年告警記錄 - {title}")));
+        receivers.ForEach(receiver =>
+        {
+            receiver.OnItemClicked.AddListener((dataList, title) =>
+            {
+                onItemClicked.Invoke(dataList, $"{SelectedYear}年告警記錄 - {title}");
+            });
+        });
+        DropdownYears.value = 0;
         DropdownYears.onValueChanged.AddListener((selectedIndex)=>GetRecordOfYear());
     }
 

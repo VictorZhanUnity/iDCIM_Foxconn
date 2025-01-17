@@ -18,8 +18,20 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
     [Header(">>> [WebAPI] - 帳密登入")]
     [SerializeField] private WebAPI_Request request_SignIn;
 
+    private static string _account, _password;
+    
+    public static void UpdateToken(string accessToken, string refreshToken)
+    {
+        Instance.loginInfo.access_token = accessToken;
+        Instance.loginInfo.refresh_token = refreshToken;
+        Debug.Log("User Token 更新完成!");
+    }
+    
     public static void SignIn(string account, string password, Action<long, Data_LoginInfo> onSuccess, Action<long, string> onFailed)
     {
+        _account = account;
+        _password = password;
+        
         Debug.Log($">>> [帳密登入] WebAPI Call: {Instance.request_SignIn.url}");
         Dictionary<string, string> sendData = new Dictionary<string, string>()
         {
@@ -29,13 +41,10 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
             { "scope", "auto" },
         };
         Instance.request_SignIn.SetRawJsonData(JsonConvert.SerializeObject(sendData));
-
+        
         void onSuccessHandler(long responseCode, string jsonString)
         {
-            Instance.loginInfo = JsonConvert.DeserializeObject<Data_LoginInfo>(jsonString);
-            Instance.loginInfo.account = account;
-            Instance.loginInfo.password = password;
-
+            Parse(jsonString);
             Debug.Log($"*** 登入成功!! / {account}");
             onSuccess?.Invoke(responseCode, Instance.loginInfo);
         }
@@ -54,6 +63,13 @@ public class WebAPI_LoginManager : SingletonMonoBehaviour<WebAPI_LoginManager>
 #else
         WebAPI_Caller.SendRequest(Instance.request_SignIn, onSuccessHandler, onFailed);
 #endif
+    }
+
+    public static void Parse(string jsonString)
+    {
+        Instance.loginInfo = JsonConvert.DeserializeObject<Data_LoginInfo>(jsonString);
+        Instance.loginInfo.account = _account;
+        Instance.loginInfo.password = _password;
     }
 
     /// <summary>

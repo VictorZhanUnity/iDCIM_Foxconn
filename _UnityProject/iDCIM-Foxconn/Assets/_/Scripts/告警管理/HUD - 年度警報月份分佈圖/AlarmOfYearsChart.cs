@@ -13,9 +13,12 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
     public void ReceiveData(List<Data_AlarmHistoryData> sourceDatas)
     {
         _dataOfMonths= sourceDatas;
-         amountOfMonths = _dataOfMonths.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
+         _amountOfMonths = _dataOfMonths.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
             .Select(group => group.Count()).ToList();
-        LineChartHandlerInstance.SetSeriaDatas(1, amountOfMonths);
+         
+        int maxValue = _amountOfSelectedYearMonths.Concat(_amountOfMonths).Max() + 3;
+        LineChartHandlerInstance.SetYAxisMaxMin(maxValue);
+        LineChartHandlerInstance.SetSeriaDatas(1, _amountOfMonths);
     }
 
     private void GetRecordOfSelectYear()
@@ -34,13 +37,13 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
     /// 依月份群組化資料
     private void FilterSelectYearAlarmDataHandler()
     {
-        List<int> amountOfSelectedYearMonths = _dataOfSelectYear.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
+        _amountOfSelectedYearMonths = _dataOfSelectYear.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
             .Select(group => group.Count()).ToList();
         
-        int maxValue = amountOfSelectedYearMonths.Concat(amountOfMonths).Max() + 3;
+        int maxValue = _amountOfSelectedYearMonths.Concat(_amountOfMonths).Max() + 3;
         LineChartHandlerInstance.SetYAxisMaxMin(maxValue);
         
-        LineChartHandlerInstance.SetSeriaDatas(0, amountOfSelectedYearMonths);
+        LineChartHandlerInstance.SetSeriaDatas(0, _amountOfSelectedYearMonths);
     }
 
     #region [Initialize]
@@ -52,8 +55,8 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
 
     private void OnEnable()
     {
+        DropDownYears.value = 0;
         DropDownYears.onValueChanged.AddListener((index) => GetRecordOfSelectYear());
-        DropDownYears.onValueChanged.Invoke(0);
     }
 
     private void OnDisable()
@@ -68,8 +71,10 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
     private List<Data_AlarmHistoryData> _dataOfMonths;
     
     private List<Data_AlarmHistoryData> _dataOfSelectYear = new List<Data_AlarmHistoryData>();
+
     /// 今年告警資料
-    private List<int> amountOfMonths; 
+    private List<int> _amountOfMonths = new List<int>(); 
+    private List<int> _amountOfSelectedYearMonths = new List<int>();
     /// 今年
     private int _thisYear;
     /// Dropdown目前所選年份

@@ -7,12 +7,10 @@ using System.Collections.Generic;
 [Serializable]
 public class DataAccessRecord
 {
-    public int currentPageIndex;
-    public int totalPage;
-    public PageData pageData;
-    /// <summary>
+    public int currentPageIndex = 0;
+    public int totalPage = 0;
+    public PageData pageData = new PageData();
     /// 模型DevicePath，門禁只有一個，所以寫死
-    /// </summary>
     public string DevicePath => "10";
 
     [Serializable]
@@ -25,18 +23,18 @@ public class DataAccessRecord
     [Serializable]
     public class ChartData
     {
-        public string from;
-        public string to;
-        public int total;
+        public string from = "";
+        public string to = "";
+        public int total = 0;
         public DateTime DateFrom => DateTime.Parse(from).ToLocalTime();
         public DateTime DateTo => DateTime.Parse(to).ToLocalTime();
     }
     [Serializable]
     public class User
     {
-        public string groupName;
-        public string userName;
-        public string accessTime;
+        public string groupName ="";
+        public string userName = "";
+        public string accessTime = "";
         public DateTime DateAccessTime => DateTime.Parse(accessTime).ToLocalTime();
     }
 }
