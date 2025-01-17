@@ -8,27 +8,36 @@ using static AlarmHistoryDataManager;
 
 public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
 {
+    public AlarmHistoryDataManager manager;
+    
     public void ReceiveData(List<Data_AlarmHistoryData> sourceDatas)
     {
-        //先依照年份進行分組
-        _dataOfYears = sourceDatas.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Year)
-            .ToDictionary(group=>group.Key, group=>group.ToList());
-        
-        //今年資料
-        _amountOfThisYearMonths = _dataOfYears[_thisYear].GroupBy(alarm => alarm.AlarmTime.Month)
+        _dataOfMonths= sourceDatas;
+         amountOfMonths = _dataOfMonths.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
             .Select(group => group.Count()).ToList();
-        LineChartHandlerInstance.SetSeriaDatas(1, _amountOfThisYearMonths);
-
-        FilterSelectYearAlarmDataHandler();
+        LineChartHandlerInstance.SetSeriaDatas(1, amountOfMonths);
     }
 
-    /// 篩選出Dropdown所選年份的資料
-    private void FilterSelectYearAlarmDataHandler(int selectIndex=0)
+    private void GetRecordOfSelectYear()
     {
-        List<int> amountOfSelectedYearMonths = _dataOfYears[SelectedYear].GroupBy(alarm => alarm.AlarmTime.Month)
+        manager.GetAlarmRecordOfYear(SelectedYear, onSuccess, null);
+        return;
+
+        void onSuccess(List<Data_AlarmHistoryData> recordData)
+        {
+            _dataOfSelectYear = recordData;
+            FilterSelectYearAlarmDataHandler();
+        }
+    }
+    
+
+    /// 依月份群組化資料
+    private void FilterSelectYearAlarmDataHandler()
+    {
+        List<int> amountOfSelectedYearMonths = _dataOfSelectYear.SelectMany(data => data.alarms).GroupBy(alarm => alarm.AlarmTime.Month)
             .Select(group => group.Count()).ToList();
         
-        int maxValue = amountOfSelectedYearMonths.Concat(_amountOfThisYearMonths).Max() + 3;
+        int maxValue = amountOfSelectedYearMonths.Concat(amountOfMonths).Max() + 3;
         LineChartHandlerInstance.SetYAxisMaxMin(maxValue);
         
         LineChartHandlerInstance.SetSeriaDatas(0, amountOfSelectedYearMonths);
@@ -41,19 +50,26 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
         TxtThisYear.SetText(_thisYear.ToString());
     }
 
-    private void OnEnable()=> DropDownYears.onValueChanged.AddListener(FilterSelectYearAlarmDataHandler);
+    private void OnEnable()
+    {
+        DropDownYears.onValueChanged.AddListener((index) => GetRecordOfSelectYear());
+        DropDownYears.onValueChanged.Invoke(0);
+    }
+
     private void OnDisable()
     {
-        DropDownYears.onValueChanged.RemoveListener(FilterSelectYearAlarmDataHandler);
+        DropDownYears.onValueChanged.RemoveListener((index)=>GetRecordOfSelectYear());
         DropDownYears.value = 0;
     }
     #endregion
 
     #region [Components]
     /// 依年份分群組 {年份，告警資料清單}
-    private Dictionary<int, List<Data_Blackbox.Alarm>> _dataOfYears;
+    private List<Data_AlarmHistoryData> _dataOfMonths;
+    
+    private List<Data_AlarmHistoryData> _dataOfSelectYear = new List<Data_AlarmHistoryData>();
     /// 今年告警資料
-    private List<int> _amountOfThisYearMonths; 
+    private List<int> amountOfMonths; 
     /// 今年
     private int _thisYear;
     /// Dropdown目前所選年份

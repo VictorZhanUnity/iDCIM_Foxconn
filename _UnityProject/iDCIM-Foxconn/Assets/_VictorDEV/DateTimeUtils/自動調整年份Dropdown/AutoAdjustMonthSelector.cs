@@ -35,6 +35,7 @@ namespace _VictorDEV.DateTimeUtils
                     Dropdown.options.Add(new TMP_Dropdown.OptionData(label));
                 }
 
+                Dropdown.value = 0;
                 Dropdown.RefreshShownValue(); // 更新顯示的值
             }
         }

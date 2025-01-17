@@ -4,6 +4,7 @@ using System.Linq;
 using _VictorDEV.DateTimeUtils;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Managers;
 using static AlarmHistoryDataManager;
@@ -14,8 +15,12 @@ using Random = UnityEngine.Random;
 /// [Demo資料處理] 告警歷史記錄
 public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
 {
-    [Header(">>> [Demo資料項] - 告警歷史記錄")] public List<Data_AlarmHistoryData> alarmList;
+    [Header(">>> [Demo資料項] - 告警歷史記錄")]
+    private List<Data_AlarmHistoryData> alarmList = new List<Data_AlarmHistoryData>();
 
+    [Header(">>> 欲產生的Alarm筆數")]
+    [SerializeField] private int amoutOfRecord = 5;
+    
     public override void OnInit(Action onInitComplete = null) => onInitComplete?.Invoke();
 
     public override void InvokeJsonData()
@@ -26,6 +31,40 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
 
     #region[ContenxtMenu: 產生Demo資料項，並轉化成Json字串]
 
+    public void GenerateDemoData(int year, Action<string> onSuccess, Action<string> onFailed = null)
+    {
+        Debug.Log("告警記錄 - 產生假資料...");
+        alarmList.Clear();
+        tagNames.ForEach(tagName =>
+        {
+            Data_AlarmHistoryData record = new Data_AlarmHistoryData() { tagName = tagName };
+            record.alarms = new List<Alarm>();
+            
+            //產生隨機數量1~11筆Alarm記錄
+            for (int i = 0; i < Random.Range(0, amoutOfRecord); i++)
+            {
+                Alarm data = new Alarm()
+                {
+                    alarmTime = DateTimeHandler.GetRandomDateTimeInYear(year, year == DateTime.Today.Year)
+                        .ToString(DateTimeHandler.Format_GlobalTime),
+                    alarmMessage = alarmMessageSet.FirstOrDefault(keyPair =>
+                        tagName.Contains(keyPair.Key, StringComparison.OrdinalIgnoreCase)).Value,
+                };
+                
+                // 是否產生今天記錄
+                if (Random.Range(1, 21) > 19 && year == DateTime.Today.Year)
+                {
+                    data.alarmTime = DateTimeHandler.GetRandomDateTimeInToday().ToString(DateTimeHandler.Format_GlobalTime);
+                }
+
+                record.alarms.Add(data);
+            }
+
+            record.alarms = record.alarms.OrderBy(alarm => alarm.alarmTime).ToList();
+            alarmList.Add(record);
+        });
+        onSuccess.Invoke(JsonConvert.SerializeObject(alarmList));
+    }
     [ContextMenu("- 產生資料")]
     private void GenerateDemoData()
     {

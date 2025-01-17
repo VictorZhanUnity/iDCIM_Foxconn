@@ -1,8 +1,10 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
+using UnityEngine.Events;
 using VictorDev.Common;
 using VictorDev.Managers;
 using VictorDev.Net.WebAPI;
@@ -17,43 +19,64 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
     [Header(">>> [Demo] - 是否動態產生假資料")]
     public bool isGenerateDemoData = false;
 
-    [Header(">>> [Receiver] - 接收器 - IAlarmHistoryDataReceiver")]
+    [Header(">>> [Receiver] - 傳送今年資料給接收器 - IAlarmHistoryDataReceiver")]
     [SerializeField] private List<MonoBehaviour> receivers;
 
+    [Header(">>> [Event] - 讀取到資料後Invoke")]
+    public UnityEvent<List<Data_AlarmHistoryData>> onReceiveData = new UnityEvent<List<Data_AlarmHistoryData>>();
+    
     [Header(">>> [資料項] - 歷史資料")]
-    [SerializeField] private List<Data_AlarmHistoryData> datas;
+    private List<Data_AlarmHistoryData> datas;
 
     [Header(">>> [WebAPI] - 查詢歷史告警記錄")]
     [SerializeField] private WebAPI_Request request;
    
     /// 依年份取得告警歷史記錄
-    [ContextMenu("- 依年份取得告警歷史記錄")]
-    public void GetAlarmRecordOfYears()
+    [ContextMenu("- 取得今年份的告警歷史記錄")]
+    public void GetAlarmRecordOfThisYear() => GetAlarmRecordOfYear(DateTime.Now.Year, (datas)=>InovkeData());
+
+    /// 依照日期取得資料
+    public void GetAlarmRecordOfYear(int year, Action<List<Data_AlarmHistoryData>> onSuccess, Action<string> onFailed = null)
     {
-        if (isGenerateDemoData) GetComponent<DemoDataHandler>().InvokeJsonData();
+        if (isGenerateDemoData)
+        {
+            GetComponent<DemoDataHandler_AlarmHistoryData>().GenerateDemoData(year, (jsonString)=>onSuccessHandler(200, jsonString));
+        }
         else
         {
+            SendRawJsonFormatAlarmHistoryRecord rawJson = JsonConvert.DeserializeObject<SendRawJsonFormatAlarmHistoryRecord>(request.BodyJSON);
+            rawJson.from = $"{year}-01-01T00:00:00";
+            rawJson.to = $"{year+1}-01-01T00:00:00";
+            request.SetRawJsonData(JsonConvert.SerializeObject(rawJson));
+            Debug.Log($">>> 讀取資料時間區段: {rawJson.from} ~ {rawJson.to}");
+            
             WebAPI_LoginManager.CheckToken(request);
             WebAPI_Caller.SendRequest(request, onSuccessHandler, null);
-            void onSuccessHandler(long responseCode, string jsonData) => ParseJson(jsonData);
+        }
+        return;
+
+        void onSuccessHandler(long responseCode, string jsonData)
+        {
+            ParseJson(jsonData);
+            onSuccess.Invoke(datas);
+            onReceiveData.Invoke(datas);
         }
     }
-
     /// 解析JSON
     public void ParseJson(string jsonData)
     {
         datas = JsonConvert.DeserializeObject<List<Data_AlarmHistoryData>>(jsonData);
-        InovkeData();
     }
 
     /// 發送資料
     private void InovkeData()
     {
-        Debug.Log($">>> AlarmHistoryDataManager: 發送資料 to Receives...");
+        Debug.Log($">>> AlarmHistoryDataManager: 發送今年記錄資料 to Receives...");
         receivers.OfType<IAlarmHistoryDataReceiver>().ToList().ForEach(receiver => receiver.ReceiveData(datas));
+        onReceiveData?.Invoke(datas);
     }
 
-    /// [接收器] 
+    /// [接收器] 取得今年度資料
     public interface IAlarmHistoryDataReceiver
     {
         void ReceiveData(List<Data_AlarmHistoryData> datas);
@@ -73,5 +96,12 @@ public class AlarmHistoryDataManager : Module, IJsonParseReceiver
     {
         public string tagName;
         public List<Alarm> alarms = new List<Alarm>();
+    }
+    
+    [Serializable]
+    public class SendRawJsonFormatAlarmHistoryRecord
+    {
+        public string[] tags;
+        public string from, to, level;
     }
 }

@@ -48,7 +48,7 @@ public class AlarmTypeDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     #endregion
 
     #region[Componentes]
-    [FormerlySerializedAs("datas")] [Header("[資料項]")] [SerializeField] private List<Data_AlarmHistoryData> filtData;
+    [FormerlySerializedAs("datas")] [Header("[資料項]")] private List<Data_AlarmHistoryData> filtData;
     public UnityEvent<List<Data_AlarmHistoryData>, string> OnItemClicked { get; set; } = new();
     [SerializeField] private Color colorNormal = Color.green;
     [SerializeField] private Color colorAlert = Color.red;

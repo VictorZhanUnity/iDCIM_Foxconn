@@ -2,6 +2,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VictorDev.Advanced;
 
 /// CCTV放大畫面視窗
 public class CCTVFullScreenPlayer : PopUpWindow
@@ -42,18 +43,3 @@ public class CCTVFullScreenPlayer : PopUpWindow
     #endregion
 }
 
-public abstract class PopUpWindow : MonoBehaviour
-{
-    protected void ToShow() => BlackScreen.gameObject.SetActive(true);
-
-    public void ToClose()
-    {
-        gameObject.SetActive(false);
-        bool hasActiveChild = transform.parent.transform.Cast<Transform>()
-            .Any(child => child.gameObject.activeSelf && child.gameObject != BlackScreen);
-        
-        if(hasActiveChild == false) BlackScreen.gameObject.SetActive(false);
-    }
-    private GameObject BlackScreen => _blackScreen ??= transform.parent.Find("BlackScreen").gameObject;
-    private GameObject _blackScreen;
-}

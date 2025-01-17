@@ -62,7 +62,7 @@ public class AlarmTodayDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     #endregion
     
     #region [Components]
-    [Header("[資料項] - 已過濾為今日的告警記錄")] [SerializeField]
+    [Header("[資料項] - 已過濾為今日的告警記錄")]
     private List<Data_AlarmHistoryData> filteData;
 
     private TextMeshProUGUI txtTodayAlertAmount => _txtTodayAlertAmount ??=

@@ -17,6 +17,8 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     [Header(">>> [Event] - 當分類項目被點擊時Invoke {告警記錄清單，標題}")]
     public UnityEvent<List<Data_AlarmHistoryData>, string> onItemClicked = new();
 
+    public AlarmHistoryDataManager manager;
+    
     /// 接收資料，需轉成JSON字串再重新解析成新的List，以避免變更到原始資料
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
     {
@@ -24,6 +26,11 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
         UpdateUI();
     }
 
+    private void GetRecordOfYear()
+    {
+        manager.GetAlarmRecordOfYear(SelectedYear, ReceiveData);
+    }
+    
     private void UpdateUI()
     {
         filteData = JsonConvert.DeserializeObject<List<Data_AlarmHistoryData>>(sourceDataJsonString);
@@ -42,7 +49,7 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     private void OnEnable()
     {
         receivers.ForEach(receiver => receiver.OnItemClicked.AddListener((dataList, title)=>onItemClicked.Invoke(dataList, $"{SelectedYear}年告警記錄 - {title}")));
-        DropdownYears.onValueChanged.AddListener((selectedIndex)=>UpdateUI());
+        DropdownYears.onValueChanged.AddListener((selectedIndex)=>GetRecordOfYear());
     }
 
     private void OnDisable()
@@ -54,8 +61,8 @@ public class AlarmYearsDisplayer : MonoBehaviour, IAlarmHistoryDataReceiver
     
     #region [Components]
     private string sourceDataJsonString;
-    [Header("[資料項] - 已過濾為年度的告警記錄")] [SerializeField]
-    private List<Data_AlarmHistoryData> filteData;
+    [Header("[資料項] - 已過濾為年度的告警記錄")] 
+    public List<Data_AlarmHistoryData> filteData;
 
     /// Dropdown目前所選年份
     private int SelectedYear =>int.Parse(DropdownYears.options[DropdownYears.value].text.Trim());

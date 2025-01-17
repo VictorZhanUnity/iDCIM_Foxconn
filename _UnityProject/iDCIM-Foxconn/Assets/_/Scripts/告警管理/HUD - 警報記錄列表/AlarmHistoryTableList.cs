@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _VictorDEV.DateTimeUtils;
@@ -20,11 +21,20 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
     [Header(">>> [Prefab] - 列表項目")] [SerializeField]
     private Button itemPrefab;
 
+    public AlarmHistoryDataManager manager;
+    
     public void ReceiveData(List<Data_AlarmHistoryData> datas)
     {
         _sourceDatas = datas;
         FiltData();
     }
+
+    /// 取得指定年度的記錄
+    private void GetRecordOfYear()
+    {
+        manager.GetAlarmRecordOfYear(SelectedYear, ReceiveData);
+    }
+
 
     /// 依條件過濾資料
     private void FiltData()
@@ -53,6 +63,7 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
 
         SortingData("警報時間");
     }
+    
 
     /// 依欄位排序
     public void SortingData(string columnName, bool isDescending = true)
@@ -111,8 +122,7 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
         });
         
         //設定告警則數
-        int startValue = int.Parse(txtAmount.text);
-        if(startValue != filterData.Count) DotweenHandler.DoInt(txtAmount, 0, dataSet.Count());
+        DotweenHandler.DoInt(txtAmount, 0, dataSet.Count());
     }
 
     public struct DataSet
@@ -126,13 +136,23 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
 
     private void OnEnable()
     {
-        DropdownYear.onValueChanged.AddListener((index) => FiltData());
+        txtAmount.text = "0";
+        scrollRect.verticalNormalizedPosition = 1;
+        
+        DropdownYear.onValueChanged.AddListener((index) => GetRecordOfYear());
         DropdownMonth.onValueChanged.AddListener((index) => FiltData());
         InputKeyword.onValueChanged.AddListener((keyword) => FiltData());
     }
 
     private void OnDisable()
     {
+        //清除項目
+        foreach (Transform child in scrollRect.content)
+        {
+            Destroy(child.gameObject);
+        }
+        scrollRect.verticalNormalizedPosition = 1;
+        
         DropdownYear.onValueChanged.RemoveAllListeners();
         DropdownMonth.onValueChanged.RemoveAllListeners();
         InputKeyword.onValueChanged.RemoveAllListeners();
@@ -141,9 +161,11 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
 
     #region [Components]
 
+    private int SelectedYear =>int.Parse(DropdownYear.options[DropdownYear.value].text.Trim().Replace("年", ""));
+    
     private List<Data_AlarmHistoryData> _sourceDatas;
 
-    [Header("[資料項] - 過濾告警記錄")] [SerializeField]
+    [Header("[資料項] - 過濾告警記錄")]
     private List<Data_AlarmHistoryData> filterData;
 
     private IEnumerable<DataSet> dataSet;
