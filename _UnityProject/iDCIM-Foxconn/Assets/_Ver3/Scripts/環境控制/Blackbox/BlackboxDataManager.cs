@@ -5,13 +5,10 @@ using System.Linq;
 using _VictorDEV.DateTimeUtils;
 using UnityEngine;
 using UnityEngine.Events;
-using VictorDev.Common;
 using VictorDev.Managers;
 using Debug = VictorDev.Common.Debug;
 
-/// <summary>
 /// 環控資料管理器
-/// </summary>
 public class BlackboxDataManager : Module
 {
     [Header(">>> 接收到資料發送給各對像組件")]
@@ -33,6 +30,8 @@ public class BlackboxDataManager : Module
     [Header(">>> [Event] 更新時間")]
     public UnityEvent<string> onUpdateTimeEvent = new UnityEvent<string>();
 
+    private WaitForSeconds _waitForSeconds;
+    
     #region [>>> Initialize]
     private Coroutine coroutine { get; set; }
     public override void OnInit(Action onInitComplete = null)
@@ -42,9 +41,10 @@ public class BlackboxDataManager : Module
             while (true)
             {
                 GetIAQRealtimeData();
-                yield return new WaitForSeconds(internvalSec);
+                yield return _waitForSeconds;
             }
         }
+        _waitForSeconds ??= new WaitForSeconds(internvalSec);
         coroutine = StartCoroutine(GetData_Coroutine());
         Debug.Log(">>> BlackboxDataManager OnInit");
         onInitComplete?.Invoke();
@@ -53,9 +53,7 @@ public class BlackboxDataManager : Module
 
     [ContextMenu("- 取得即時環控資料")]
     public void GetIAQRealtimeData() => WebAPI_GetRealtimeData.GetRealtimeData(new WebAPI_GetRealtimeData.SendDataFormat(tagNames), OnRefreshDataHandler, null);
-    /// <summary>
     /// 取得資料後發送給各個接收器
-    /// </summary>
     private void OnRefreshDataHandler(List<Data_Blackbox> result)
     {
         datas = result;

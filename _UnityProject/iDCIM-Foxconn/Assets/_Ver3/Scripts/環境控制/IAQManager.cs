@@ -5,9 +5,7 @@ using UnityEngine;
 using VictorDev.Common;
 using Debug = VictorDev.Common.Debug;
 
-/// <summary>
 /// IAQ管理器
-/// </summary>
 public class IAQManager : ModulePage
 {
     [Header(">>> 欲顯示的 Landmark圖標")]
@@ -24,9 +22,7 @@ public class IAQManager : ModulePage
         onInitComplete?.Invoke();
     }
 
-    /// <summary>
     /// 設定感測器Tag
-    /// </summary>
     private void SetTagNames()
     {
         List<string> tagNames = modelList.Select(model => model.name.Split(",")[0]).ToList();
@@ -68,5 +64,7 @@ public class IAQManager : ModulePage
     protected override void OnShowHandler()
     {
         landmarkList.ForEach(landmark => landmark.gameObject.SetActive(true));
+
+        WebApiGetHistoryData.ContextMenu_GetHistoryData_RTRH();
     }
 }

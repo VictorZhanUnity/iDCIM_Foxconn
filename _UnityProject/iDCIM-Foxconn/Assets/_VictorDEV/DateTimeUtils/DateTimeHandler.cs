@@ -4,50 +4,32 @@ using System.Globalization;
 
 namespace _VictorDEV.DateTimeUtils
 {
-    /// <summary>
     /// DateTime日期格式
-    /// </summary>
     public static class DateTimeHandler
     {
-        /// <summary>
         /// 2024.11.24 13:33:22
-        /// </summary>
         public static string FullDateTimeFormat => $"{FullDateFormat} {FullTimeFormat}";
 
-        /// <summary>
         /// 2024.11.24 13:33
-        /// </summary>
         public static string FullDateTimeMinuteFormat => $"{FullDateFormat}\n{HourMinuteFormat}";
 
-        /// <summary>
         /// 2024.11.24T13:33:22
-        /// </summary>
         public static string FullDateTimeFormatWithT => $"{FullDateFormat}T{FullTimeFormat}";
 
-        /// <summary>
         /// 2024.11.24
-        /// </summary>
         public static string FullDateFormat => "yyyy.MM.dd";
 
-        /// <summary>
         /// 2024.11.24 (週六)
-        /// </summary>
         public static string FullDateFormatWithWeekDay(DateTime dateTime) =>
             dateTime.ToString($"{FullDateFormat} (ddd)", new CultureInfo("zh-TW"));
 
-        /// <summary>
         /// 13:33:22
-        /// </summary>
         public static string FullTimeFormat => "HH:mm:ss";
 
-        /// <summary>
         /// 13:33
-        /// </summary>
         public static string HourMinuteFormat => "HH:mm";
 
-        // <summary>
         /// 檢查目前是否為整點 (分鐘和秒數都為0)
-        /// </summary>
         public static bool isNowOnTheHour
         {
             get
@@ -90,19 +72,19 @@ namespace _VictorDEV.DateTimeUtils
             return isDateIntervalDays(date, from, to);
         }
 
-        /// <summary>
+       
         /// 指定日期是否在某天內 {目標時間, 指定哪一天}
-        /// </summary>
+        
         public static bool isDateInDay(DateTime date, DateTime day) => isDateIntervalDays(date, day, day);
 
-        /// <summary>
+       
         /// 指定日期是否在今天內
-        /// </summary>
+        
         public static bool isDateInToday(DateTime date) => isDateInDay(date, DateTime.Today);
 
-        /// <summary>
+       
         /// 從00:00 ~ 24:00每一小時整點的字串列表
-        /// </summary>
+        
         public static List<string> hoursOfDay
         {
             get
@@ -165,9 +147,9 @@ namespace _VictorDEV.DateTimeUtils
         /// [格式] - 全球標準時間 2024-12-29T23:49:38.241Z
         public static string Format_GlobalTime => "yyyy-MM-ddTHH:mm:ss.fffZ";
 
-        /// <summary>
+       
         /// 字串轉換成LocalTime
-        /// </summary>
+        
         public static DateTime StrToLocalTime(string dateTimeString) => DateTime.Parse(dateTimeString).ToLocalTime();
 
         public static string[] MonthName_ZH => Enum.GetNames(typeof(EnumMonthName_ZH));

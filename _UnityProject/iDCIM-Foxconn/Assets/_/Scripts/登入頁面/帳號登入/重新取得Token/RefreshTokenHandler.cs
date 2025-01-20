@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VictorDev.Net.WebAPI;
-using Debug = UnityEngine.Debug;
+using Debug = VictorDev.Common.Debug;
 
 public class RefreshTokenHandler : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class RefreshTokenHandler : MonoBehaviour
         {
             Debug.Log($">>> 每隔{intervalHours}小時，重新取得Token - 到數計時...");
             Debug.Log($"\t下次重新取得Token時間：{DateTime.Now.AddHours(intervalHours).ToString()}");
-            yield return new WaitForSeconds(60 * 60 * 8);
+            yield return new WaitForSeconds( 60 * 8);
             ToRefreshToken();
         }
     }

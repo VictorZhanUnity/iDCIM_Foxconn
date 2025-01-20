@@ -7,24 +7,18 @@ using VictorDev.Common;
 using VictorDev.Net.WebAPI;
 using VictorDev.Parser;
 
-/// <summary>
-/// [DataSync¤å¥ó2.5] ¨ú±o§Y®É­È
-/// </summary>
 public class WebAPI_GetRealtimeData : SingletonMonoBehaviour<WebAPI_GetRealtimeData>
 {
-    [Header(">>> [¸ê®Æ¶µ] - ¥Ø«eªºIAQ¸ê°T®É")]
+    [Header("[è³‡æ–™é …]")]
     [SerializeField] private List<Data_Blackbox> data;
 
-    [Header(">>> [DataSync¤å¥ó2.5] ¨ú±o§Y®É­È")]
+    [Header("[WebAPI]")]
     [SerializeField] private WebAPI_Request request_GetRealtimeData;
 
-    /// <summary>
-    ///  [Event] - ¨ú±o¥Ø«eªºIAQ¸ê°T®ÉInvoke
-    /// </summary>
+    ///  [Event] - å–å¾—ç’°æ§å³æ™‚è³‡è¨Šæ™‚Invoke
     public static UnityEvent<List<Data_Blackbox>> onGetRealtimeData { get; set; } = new UnityEvent<List<Data_Blackbox>>();
 
 
-    [Header(">>> [´ú¸Õ] - µo°eªº¸ê®Æ")]
     [SerializeField]
     private List<string> sendTags = new List<string>()
     {
@@ -37,9 +31,7 @@ public class WebAPI_GetRealtimeData : SingletonMonoBehaviour<WebAPI_GetRealtimeD
             "T/H-04/Smoke/Status", "PUE"
     };
 
-    /// <summary>
-    /// [DataSync¤å¥ó2.5] ¨ú±o§Y®É­È
-    /// </summary>
+    /// å–å¾—å³æ™‚ç’°æ§è³‡è¨Š
     public static void GetRealtimeData(SendDataFormat sendData, Action<List<Data_Blackbox>> onSuccess, Action<long, string> onFailed)
     {
         Instance.request_GetRealtimeData.SetRawJsonData(JsonConvert.SerializeObject(sendData));
@@ -63,7 +55,7 @@ public class WebAPI_GetRealtimeData : SingletonMonoBehaviour<WebAPI_GetRealtimeD
         }
     }
 
-    [ContextMenu("[WebAPI] - ¨ú±o§Y®É­È")]
+    [ContextMenu("[WebAPI] - å–å¾—å³æ™‚ç’°æ§è³‡è¨Š")]
     private void Test_GetRealtimeData()
     {
         SendDataFormat data = new SendDataFormat(sendTags);
