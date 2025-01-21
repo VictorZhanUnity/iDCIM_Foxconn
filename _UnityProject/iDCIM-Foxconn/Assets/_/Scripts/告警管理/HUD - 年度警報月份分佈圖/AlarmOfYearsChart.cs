@@ -57,6 +57,7 @@ public class AlarmOfYearsChart : MonoBehaviour, IAlarmHistoryDataReceiver
     {
         DropDownYears.value = 0;
         DropDownYears.onValueChanged.AddListener((index) => GetRecordOfSelectYear());
+        GetRecordOfSelectYear();
     }
 
     private void OnDisable()

@@ -9,13 +9,18 @@ namespace VictorDev.Common
     /// </summary>
     public class NotificationManager : SingletonMonoBehaviour<NotificationManager>
     {
-        /// <summary>
+        public static void ShowMessage(string title, string msg, Action onClick = null)
+        {
+            NotifyListItemTextMessage item = Instantiate(Instance.defaultItemPrefab, Instance.ScrollRect.content);
+            item.ShowMessage(title, msg, onClick);
+        }
+        
         /// 建立訊息通知 {UI樣式組件, 標題文字, 所攜帶的資料項, 點選項目時行為, 點選關閉鈕時行為}
-        /// </summary>
         public static T CreateNotifyMessage<T>(T itemPrefab, Action<NotifyListItem> onClickItem = null, Action onClose = null) where T: NotifyListItem
         {
-            T notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
-            Instance.scrollRect.verticalNormalizedPosition = 1;
+            //T notifyItem = ObjectPoolManager.GetInstanceFromQueuePool(itemPrefab, Instance.scrollRect.content);
+            T notifyItem = Instantiate(itemPrefab, Instance.ScrollRect.content);
+            Instance.ScrollRect.verticalNormalizedPosition = 1;
 
             void OnCloseHandler(NotifyListItem target)
             {
@@ -35,17 +40,18 @@ namespace VictorDev.Common
             }
 
 
-            rayCaster.enabled = scrollRect.content.childCount > 0;
+            RayCaster.enabled = ScrollRect.content.childCount > 0;
         }
 
+      
+        
         #region [Componenets]
-        public NotifyListItem defaultItemPrefab;
-
-        private ScrollRect _scrollRect { get; set; }
-        private ScrollRect scrollRect => _scrollRect ??= transform.GetChild(0).GetComponent<ScrollRect>();
-
-        private GraphicRaycaster _rayCaster { get; set; }
-        private GraphicRaycaster rayCaster => _rayCaster ??= transform.GetComponent<GraphicRaycaster>();
+        [Header("[Prefab] 列表資料項")]
+        public NotifyListItemTextMessage defaultItemPrefab;
+        private GraphicRaycaster RayCaster => _rayCaster ??= transform.GetComponent<GraphicRaycaster>();
+        private GraphicRaycaster _rayCaster;
+        private ScrollRect ScrollRect => _scrollRect ??= transform.GetChild(0).GetComponent<ScrollRect>();
+        private ScrollRect _scrollRect;
         #endregion
     }
 }

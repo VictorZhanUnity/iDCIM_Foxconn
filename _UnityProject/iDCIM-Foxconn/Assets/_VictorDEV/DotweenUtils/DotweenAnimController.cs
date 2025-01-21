@@ -7,6 +7,7 @@ using UnityEngine.Events;
 
 namespace VictorDev.DoTweenUtils
 {
+    /// Dotween多組播放排程
     public class DotweenAnimController : MonoBehaviour
     {
         [Header(">>> [主要] - 設定目標對像")]
@@ -71,7 +72,7 @@ namespace VictorDev.DoTweenUtils
             }
             sequence.Play().SetDelay(anim.delaySec).SetAutoKill(true).OnComplete(() =>
             {
-                if (counter++ > animSequenceSet.Count - 1)
+                if (counter++ >= animSequenceSet.Count - 1)
                 {
                     counter = 0;
                     transform.SetAsFirstSibling();
@@ -81,18 +82,18 @@ namespace VictorDev.DoTweenUtils
             });
         }
 
-        /// <summary>
+      
         /// 暫停
-        /// </summary>
+      
         public void Pause()
         {
             if (resumeCoroutine != null) StopCoroutine(resumeCoroutine);
             sequence?.Pause();
         }
 
-        /// <summary>
+      
         /// 經過3秒後繼續播放
-        /// </summary>
+      
         public void Resume()
         {
             if (resumeCoroutine != null) StopCoroutine(resumeCoroutine);

@@ -53,9 +53,9 @@ public class DeviceConfigureManager : ModulePage
 
     public DeviceAssetSystemList deviceSystemList;
     public DeviceEmptyRuCreator deviceEmptyRuCreator;
-    public NotifyListItem_TextMessage notifyPrefab;
+    public NotifyListItemTextMessage notifyPrefab;
     /// <summary>
-    /// ÂIÀ»¤U¬[³]³Æ®É
+    /// ï¿½Iï¿½ï¿½ï¿½Uï¿½[ï¿½]ï¿½Æ®ï¿½
     /// </summary>
     private void OnClickRemoveDeviceHandler(Data_DeviceAsset data)
     {
@@ -66,10 +66,10 @@ public class DeviceConfigureManager : ModulePage
         deviceSystemList.AddDeviceItem(data);
         deviceController.ToClose();
 
-        NotifyListItem_TextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab);
-        notifyItem.ShowMessage("³]³Æ¤w¤U¬[!", data.deviceName);
+        NotifyListItemTextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab);
+        notifyItem.ShowMessage("ï¿½]ï¿½Æ¤wï¿½Uï¿½[!", data.deviceName);
 
-        //«Ø¥ßRUªÅ®æª«¥ó
+        //ï¿½Ø¥ï¿½RUï¿½Å®æª«ï¿½ï¿½
         for (int i = data.rackLocation; i < data.rackLocation + data.information.heightU; i++)
         {
             RackSpacer rackSpacer = deviceEmptyRuCreator.CreateRuSpace(data.rack, i);

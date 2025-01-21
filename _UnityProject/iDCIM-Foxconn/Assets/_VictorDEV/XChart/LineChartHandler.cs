@@ -23,7 +23,7 @@ namespace _VictorDEV.XChart
         }
         
         /// 設置Serie資料 {serie索引，float資料清單}
-        public void SetSeriaDatas(int serieIndex, List<int> datas, string numericFormatter = "0.#")
+        public void SetSeriaDatas(int serieIndex, List<int> datas)
         {
             //確認是否存在於資料內
             DictionaryVisualizer<int, List<int>> targetData = seriaDatas.FirstOrDefault(data => data.key == serieIndex);
@@ -32,9 +32,17 @@ namespace _VictorDEV.XChart
             else
                 targetData.value = datas;
             //設置資料
-            LineChartInstance.series[serieIndex].data.Clear();
-            LineChartInstance.series[serieIndex].label.numericFormatter = numericFormatter;
             datas.ForEach(data=> LineChartInstance.AddData(serieIndex, data));
+        }
+
+        public void SetSeriaDatas(int serieIndex, string formater ="{c}", string numericFormatter = "0.#")
+        {
+            LabelStyle label = LineChartInstance.series[serieIndex].label;
+            if (label != null)
+            {
+                label.formatter = formater;
+                label.numericFormatter = numericFormatter;
+            }
         }
 
         /// 清除圖表的data值與X Axis

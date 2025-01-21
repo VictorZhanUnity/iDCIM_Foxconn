@@ -18116,6 +18116,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scenePrefabInstances:
+  - _gameObject: {fileID: 1182138187}
+    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/[Graphy].prefab
+  - _gameObject: {fileID: 1182138186}
+    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/FPS
+      - Module.prefab
+  - _gameObject: {fileID: 1182138185}
+    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/RAM
+      - Module.prefab
+  - _gameObject: {fileID: 1182138184}
+    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/AUDIO
+      - Module.prefab
+  - _gameObject: {fileID: 1182138183}
+    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/ADVANCED
+      - Module.prefab
+  - _gameObject: {fileID: 1419136020}
+    _prefab: Assets/Plugins/IngameDebugConsole/IngameDebugConsole.prefab
   - _gameObject: {fileID: 1689602096}
     _prefab: "Assets/_/Models/\u9D3B\u9A30\u6A5F\u623FFIT_TPE/FIT_TPE_DC_DC_20241106-\u7DE8\u8F2F\u5F8C.prefab"
   - _gameObject: {fileID: 1689602095}
@@ -18986,22 +19002,6 @@ MonoBehaviour:
   - _gameObject: {fileID: 4906964012896342138}
     _prefab: "Assets/_/Scripts/WebAPI/- \u53D6\u5F97\u5373\u6642\u503C/[Singleton]
       - WebAPI_GetRealtimeData.prefab"
-  - _gameObject: {fileID: 1182138187}
-    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/[Graphy].prefab
-  - _gameObject: {fileID: 1182138186}
-    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/FPS
-      - Module.prefab
-  - _gameObject: {fileID: 1182138185}
-    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/RAM
-      - Module.prefab
-  - _gameObject: {fileID: 1182138184}
-    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/AUDIO
-      - Module.prefab
-  - _gameObject: {fileID: 1182138183}
-    _prefab: Assets/_/_UnityAssetPackages/Graphy - Ultimate Stats Monitor/Prefab/Internal/ADVANCED
-      - Module.prefab
-  - _gameObject: {fileID: 1419136020}
-    _prefab: Assets/Plugins/IngameDebugConsole/IngameDebugConsole.prefab
 --- !u!4 &736117122
 Transform:
   m_ObjectHideFlags: 11
@@ -45792,7 +45792,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 925832375240206445, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 40
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 925832375240206445, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -45800,11 +45800,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1075073989200015591, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1075073989200015591, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1075073989200015591, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_AnchorMin.y
@@ -45924,7 +45924,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8345799161370699747, guid: d40d1dfbb74c232459021aeeac973cf7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -74081,10 +74081,10 @@ SceneRoots:
   m_Roots:
   - {fileID: 15603319}
   - {fileID: 1219978315}
+  - {fileID: 1051160415}
   - {fileID: 1503692938}
   - {fileID: 449852317}
   - {fileID: 525114135}
   - {fileID: 736117122}
   - {fileID: 1880771974}
   - {fileID: 1707235433}
-  - {fileID: 1051160415}

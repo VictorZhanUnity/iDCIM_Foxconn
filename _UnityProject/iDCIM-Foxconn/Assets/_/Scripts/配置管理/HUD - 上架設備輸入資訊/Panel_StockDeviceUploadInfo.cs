@@ -16,7 +16,7 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
     [SerializeField] private ListItem_Device_RE listItem;
 
     [Header(">>> [Prefab] - 訊息通知")]
-    [SerializeField] private NotifyListItem_TextMessage notifyPrefab;
+    [SerializeField] private NotifyListItemTextMessage notifyPrefab;
 
     [Header(">>> 上架設備成功時Invoke")]
     public UnityEvent<ListItem_Device_RE> onUploadDeviceComplete = new UnityEvent<ListItem_Device_RE>();
@@ -83,7 +83,7 @@ public class Panel_StockDeviceUploadInfo : MonoBehaviour
         listItem.ConfirmUploadDevice();
         onUploadDeviceComplete.Invoke(listItem);
 
-        NotifyListItem_TextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab);
+        NotifyListItemTextMessage notifyItem = NotificationManager.CreateNotifyMessage(notifyPrefab);
         notifyItem.ShowMessage("設備上架成功!", (listItem.data as Data_DeviceAsset).deviceName);
     }
 

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using VictorDev.Common;
+using Debug = UnityEngine.Debug;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -39,6 +40,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape)) Exit();
+        if(Input.GetKeyDown(KeyCode.B)) NotificationManager.ShowMessage("Hello", "DFSDFSDF", onClickHandler);
+        return;
+
+        void onClickHandler()
+        {
+            Debug.Log("Clicked");
+        }
     }
 
     public void Exit() => Application.Quit();
