@@ -26,7 +26,6 @@ namespace VictorDev.ColorUtils
 
         private void OnEnable()
         {
-            print("Called");
             if (target == null)
             {
                 if (target.TryGetComponent(out Image img)) target = img;
@@ -45,12 +44,15 @@ namespace VictorDev.ColorUtils
             if (isBlink) ToBlink();
             else ToNormal();
         }
+        
+        [ContextMenu("ToBlink")]
         public void ToBlink()
         {
             blink?.Kill();
             blink = ColorHandler.ToBlink(target, alarmColor1, alarmColor2, duration, ease);
         }
 
+        [ContextMenu("ToNormal")]
         public void ToNormal()
         {
             blink?.Kill();

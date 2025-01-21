@@ -40,13 +40,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape)) Exit();
-        if(Input.GetKeyDown(KeyCode.B)) NotificationManager.ShowMessage("Hello", "DFSDFSDF", onClickHandler);
-        return;
 
-        void onClickHandler()
-        {
-            Debug.Log("Clicked");
-        }
     }
 
     public void Exit() => Application.Quit();

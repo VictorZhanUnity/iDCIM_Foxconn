@@ -24,13 +24,13 @@ namespace VictorDev.Common
         private void OnEnable()
         {
             ButtonClose.onClick.AddListener(()=>Close(true));
-            AnimController.onDotweenFinished.AddListener((obj)=>Close(true));
+           // AnimController.onDotweenFinished.AddListener((obj)=>Close(true));
         }
         private void OnDisable()
         {
             ButtonRow.onClick.RemoveAllListeners();
             ButtonClose.onClick.RemoveListener(()=>Close(true));
-            AnimController.onDotweenFinished.RemoveListener((obj)=>Close(true));
+           // AnimController.onDotweenFinished.RemoveListener((obj)=>Close(true));
         }
         public void OnPointerEnter(PointerEventData eventData) => AnimController.Pause();
         public void OnPointerExit(PointerEventData eventData) => AnimController.Resume();

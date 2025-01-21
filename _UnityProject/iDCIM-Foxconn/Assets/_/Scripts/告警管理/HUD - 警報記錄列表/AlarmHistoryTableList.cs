@@ -16,7 +16,7 @@ using static AlarmHistoryDataManager;
 public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
 {
     [Header(">>> [Event] - 當項目被點擊時Invoke")]
-    public UnityEvent<Data_AlarmHistoryData> onItemClicked = new();
+    public UnityEvent<Data_Blackbox.Alarm> onItemClicked = new();
 
     [Header(">>> [Prefab] - 列表項目")] [SerializeField]
     private Button itemPrefab;
@@ -110,15 +110,15 @@ public class AlarmHistoryTableList : MonoBehaviour, IAlarmHistoryDataReceiver
         scrollRect.verticalNormalizedPosition = 1;
 
         //創建項目
-        dataSet.ToList().ForEach(obj =>
+        dataSet.ToList().ForEach(data =>
         {
             Button item = Instantiate(itemPrefab, scrollRect.content);
-            item.onClick.AddListener(() => onItemClicked?.Invoke(filterData[0]));
-            item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(obj.setting.label);
-            item.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = obj.setting.icon;
-            item.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(obj.alarm.AlarmTime.ToString());
-            item.transform.GetChild(2).GetComponent<TextMeshProUGUI>().SetText(obj.historyData.tagName);
-            item.transform.GetChild(3).GetComponent<TextMeshProUGUI>().SetText(obj.alarm.alarmMessage);
+            item.onClick.AddListener(() => onItemClicked.Invoke(data.alarm));
+            item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(data.setting.label);
+            item.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = data.setting.icon;
+            item.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(data.alarm.AlarmTime.ToString());
+            item.transform.GetChild(2).GetComponent<TextMeshProUGUI>().SetText(data.historyData.tagName);
+            item.transform.GetChild(3).GetComponent<TextMeshProUGUI>().SetText(data.alarm.alarmMessage);
         });
         
         //設定告警則數

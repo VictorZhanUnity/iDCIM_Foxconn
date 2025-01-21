@@ -29,6 +29,9 @@ public class BlackboxDataManager : Module
 
     [Header(">>> [Event] 更新時間")]
     public UnityEvent<string> onUpdateTimeEvent = new UnityEvent<string>();
+    
+    
+    public AlarmHistoryManager alarmHistoryManager;
 
     private WaitForSeconds _waitForSeconds;
     
@@ -60,6 +63,7 @@ public class BlackboxDataManager : Module
         //發送資料
         receivers.ForEach(receiver => receiver?.ReceiveData(datas));
         onGetBlockboxData?.Invoke(datas);
+        alarmHistoryManager.ReceiveData(datas);
         //更新時間
         DateTime updateDateTime = DateTime.Now;
         onUpdateTimeEvent?.Invoke(updateDateTime.ToString(DateTimeHandler.FullDateTimeFormat));

@@ -3,28 +3,54 @@ using UnityEngine;
 
 namespace VictorDev.DoTweenUtils
 {
-    [RequireComponent(typeof(CanvasGroup))]
     public class DotweenEnabledFader : MonoBehaviour
     {
-        public float duration = 0.3f;
-        public Ease ease = Ease.OutQuad;
-        public float delaySec = 0;
-        public bool isRandomDelay = false;
+        [Header("若無則擷取物件本身")] public CanvasGroup canvasGroup;
 
-        private void OnEnable()
+        public void Show()
         {
             DOTween.Kill(canvasGroup);
-
-            canvasGroup.DOFade(1, duration).From(0).SetEase(ease).SetAutoKill(true)
-            .SetDelay(isRandomDelay ? Random.Range(0, delaySec) : delaySec)
-            .OnUpdate(OnUpdateHandler);
+            canvasGroup.DOFade(1, duration).From(0).SetEase(_ease).SetAutoKill(true).OnUpdate(OnUpdateHandler);
         }
 
         private void OnUpdateHandler()
         {
             canvasGroup.interactable = canvasGroup.blocksRaycasts = (canvasGroup.alpha == 1);
         }
-        private CanvasGroup _canvasGroup { get; set; }
-        private CanvasGroup canvasGroup => _canvasGroup ??= GetComponent<CanvasGroup>();
+
+        public void Closs()
+        {
+             //= canvasGroup.DOFade(1, duration).From(0).SetEase(_ease).SetAutoKill(true).OnUpdate(OnUpdateHandler);
+        }
+
+
+        #region Initailize
+
+        private void OnEnable() => Show();
+        private void OnDisable() => Closs();
+
+        private void Awake()
+        {
+            if (canvasGroup == null)
+            {
+                if (TryGetComponent(out canvasGroup) == false)
+                {
+                    canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Components
+
+        [Header(">>> 動畫設定")] public bool isMoveable = true;
+        public Vector3 fromPos;
+        public bool isScaleable = true;
+        public Vector3 fromScale;
+        private readonly Ease _ease = Ease.OutQuad;
+        public float duration = 0.3f;
+
+        #endregion
     }
 }

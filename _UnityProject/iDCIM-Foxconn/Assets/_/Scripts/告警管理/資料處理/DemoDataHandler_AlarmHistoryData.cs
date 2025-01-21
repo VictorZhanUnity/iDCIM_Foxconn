@@ -45,6 +45,7 @@ public class DemoDataHandler_AlarmHistoryData : DemoDataHandler
             {
                 Alarm data = new Alarm()
                 {
+                    tagName = tagName,
                     alarmTime = DateTimeHandler.GetRandomDateTimeInYear(year, year == DateTime.Today.Year)
                         .ToString(DateTimeHandler.Format_GlobalTime),
                     alarmMessage = alarmMessageSet.FirstOrDefault(keyPair =>
