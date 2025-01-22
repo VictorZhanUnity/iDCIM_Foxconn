@@ -20,26 +20,18 @@ namespace VictorDev.Common
         [Header("[僅顯示用] 排除替換之外Transfomr對像")]
         [SerializeField] private List<Transform> excludeList;
 
-        /// <summary>
         /// 存儲每個物件及其原始材質的字典 {物件Transform, 材質陣列}
-        /// </summary>
         private Dictionary<Transform, Material[]> originalMaterials { get; set; } = new Dictionary<Transform, Material[]>();
 
-        /// <summary>
         /// 根據關鍵字，針對目標物件底下所有子物件進行比對，找出名字包含關鍵字的子物件
-        /// </summary>
         public static List<Transform> FindTargetObjects(List<string> keyWords) => ObjectHandler.FindObjectsByKeywords(Instance.targetTransform, keyWords);
 
-        /// <summary>
         /// 根據關鍵字，針對目標物件底下所有子物件進行比對，找出名字包含關鍵字的子物件
-        /// </summary>
         public static List<Transform> FindTargetObjects(string keyWord) => ObjectHandler.FindObjectsByKeyword(Instance.targetTransform, keyWord);
 
-        /// <summary>
         ///  替換當前物件及所有子物件的材質
         ///  <para>+ 用HashSet以便材質的比對</para>
         ///  <para>+ 會先自動復原全部材質</para>
-        /// </summary>
         public static void ReplaceMaterialWithExclude(HashSet<Transform> exlcudeTargets = null, Material material = null)
         {
             RestoreOriginalMaterials();
@@ -89,10 +81,8 @@ namespace VictorDev.Common
             });
         }
 
-        /// <summary>
         /// [遞迴] 替換物件及其子物件的材質
         /// <para>+ 排除的對像(選填)</para>
-        /// </summary>
         private void ReplaceMaterialRecursively(Transform objTransform, Material material, HashSet<Transform> exlcudeTargets = null)
         {
             if (exlcudeTargets != null)
@@ -155,9 +145,8 @@ namespace VictorDev.Common
         }
 
 
-        // <summary>
+        [ContextMenu("- 恢復原始材質")]
         ///  恢復原始材質
-        /// </summary>
         public static void RestoreOriginalMaterials()
         {
             foreach (var kvp in Instance.originalMaterials)

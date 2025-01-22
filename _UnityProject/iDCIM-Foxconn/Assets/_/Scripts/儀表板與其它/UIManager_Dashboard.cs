@@ -10,7 +10,7 @@ public class UIManager_Dashboard : MonoBehaviour
    // [SerializeField] private MaterialHandler materialHandler;
 
     /// <summary>
-    /// ¼È¦s¼Ò«¬, ¨Ñ§÷½è´À´«¶i¦æ«¢§Æªí¤ñ¹ï
+    /// ï¿½È¦sï¿½Ò«ï¿½, ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½æ«¢ï¿½Æªï¿½ï¿½ï¿½ï¿½
     /// </summary>
     protected HashSet<Transform> models { get; set; } = new HashSet<Transform>();
 
