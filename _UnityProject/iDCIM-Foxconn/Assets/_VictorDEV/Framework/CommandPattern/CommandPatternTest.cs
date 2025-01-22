@@ -58,8 +58,10 @@ public class CommandPatternTest : MonoBehaviour
     public void OnMoveHandler(Vector3 direction)
     {
         direction *= Time.deltaTime * moveSpeed;
-        Action toDo = () => player.Translate(direction);
-        Action unDo = () => player.Translate(direction * -1);
+        /*Action toDo = () => player.Translate(direction);
+        Action unDo = () => player.Translate(direction * -1);*/
+        Action toDo = () => player.DOMove(player.position + direction*moveSpeed, 0.5f).SetEase(Ease.OutQuad);
+        Action unDo = () => player.DOMove(player.position + direction*moveSpeed*-1, 0.5f).SetEase(Ease.OutQuad);
         CommandManager.Execute(toDo, unDo);
     }
 

@@ -3760,7 +3760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 581036278}
-  moveSpeed: 300
+  moveSpeed: 30
   ease: 6
   prefab: {fileID: 2009235611}
 --- !u!4 &2042051937
@@ -3830,11 +3830,11 @@ SceneRoots:
   - {fileID: 1619128969}
   - {fileID: 1040835874}
   - {fileID: 2115528706}
-  - {fileID: 2042051937}
   - {fileID: 1741533514}
   - {fileID: 581036278}
-  - {fileID: 1744531436}
   - {fileID: 2037012161}
   - {fileID: 1940956309}
+  - {fileID: 1744531436}
+  - {fileID: 2042051937}
   - {fileID: 471380058}
   - {fileID: 2009235616}

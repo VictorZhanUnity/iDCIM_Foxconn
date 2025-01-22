@@ -9,11 +9,16 @@ using Debug = VictorDev.Common.Debug;
 
 public class AlarmHistoryManager : ModulePage, IIAQDataReceiver
 {
+    private bool _isAlarmActivated = false;
+    public void SetAlarmActivated(bool isActivated) => _isAlarmActivated = isActivated;
+    
     public UnityEvent onShowEvent = new UnityEvent();
     public UnityEvent<Data_Blackbox.Alarm> onClickAlarmMessage = new UnityEvent<Data_Blackbox.Alarm>();
     
     public void ReceiveData(List<Data_Blackbox> datas)
     {
+        if (_isAlarmActivated == false) return;
+        
       List<Data_Blackbox.Alarm> alarmList= datas.Where(data => data.tagName.Contains("Status", StringComparison.OrdinalIgnoreCase) && data.alarm != null)
            .Select(data=>data.alarm).ToList();
       

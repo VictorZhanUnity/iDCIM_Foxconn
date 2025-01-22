@@ -47,6 +47,7 @@ public class LoginManager : Module
         void OnFailedHandler(long responseCode, string msg)
         {
             onLoginFailed?.Invoke();
+            Debug.Log("OnFailedHandler");
         }
         WebAPI_LoginManager.SignIn(inputAccount.text.Trim(), inputPassword.text.Trim(), OnSuccessHandler, OnFailedHandler);
     }

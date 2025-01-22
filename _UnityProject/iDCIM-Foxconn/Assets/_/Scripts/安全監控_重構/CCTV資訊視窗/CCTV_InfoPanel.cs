@@ -7,17 +7,17 @@ using VictorDev.RTSP;
 public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
 {
     [Space(20)]
-    [Header(">>> ÂIÀ»¥ş¿Ã¹õ«ö¶s®ÉInvoke")]
+    [Header(">>> ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½Invoke")]
     public UnityEvent<CCTV_InfoPanel> onClickZoomButtn = new UnityEvent<CCTV_InfoPanel>();
 
-    [Header(">>> ²Õ¥ó")]
+    [Header(">>> ï¿½Õ¥ï¿½")]
     [SerializeField] private Button btnZoom;
     [SerializeField] private RtspScreen rtspScreen;
 
-    /// ³B²z§é½u
-    public RectTransform lineSegment1;   // ²Ä¤@¬q½u±ø (¼Ò«¬ -> ¤¤¶¡©äÂI)
-    public RectTransform lineSegment2;   // ²Ä¤G¬q½u±ø (©äÂI -> UI)
-    public Vector2 offset = new Vector2(50, 50); // §é½uªº©äÂI°¾²¾¶q
+    /// ï¿½Bï¿½zï¿½ï¿½u
+    public RectTransform lineSegment1;   // ï¿½Ä¤@ï¿½qï¿½uï¿½ï¿½ (ï¿½Ò«ï¿½ -> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½I)
+    public RectTransform lineSegment2;   // ï¿½Ä¤Gï¿½qï¿½uï¿½ï¿½ (ï¿½ï¿½ï¿½I -> UI)
+    public Vector2 offset = new Vector2(50, 50); // ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½q
     public Transform targetModel;
     private RectTransform selfRect, parentRect;
     private Camera parentCanvasCamera, mainCamera;
@@ -44,7 +44,10 @@ public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
     }
     private void UpdateLineSiblingIndex()
     {
-        lineSegment1.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
+        //lineSegment1.transform.SetAsFirstSibling();
+       // lineSegment2.transform.SetAsFirstSibling();
+
+       lineSegment1.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
         lineSegment2.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
     }
 
@@ -76,10 +79,9 @@ public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
 
     void Update()
     {
-        // 1. 3D¼Ò«¬ªº¿Ã¹õ®y¼Ğ
+        // 1. 3Dåº§æ¨™è½‰æ›è¢å¹•åº§æ¨™
         Vector3 modelScreenPos = mainCamera.WorldToScreenPoint(targetModel.position);
-
-        // 2. ¿Ã¹õ®y¼ĞÂàCanvas§½³¡®y¼Ğ
+        // 2. ï¿½Ã¹ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½Canvasï¿½ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             parentRect,
             modelScreenPos,
@@ -87,29 +89,29 @@ public class CCTV_InfoPanel : InfoPanel<SoData_RTSP_Channel>
             out Vector2 modelCanvasPos
         );
 
-        // 3. UIª«¥óªºCanvas§½³¡®y¼Ğ
+        // 3. UIï¿½ï¿½ï¿½ï¿½Canvasï¿½ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½
         Vector2 dragUICanvasPos = selfRect.anchoredPosition;
 
-        // 4. ­pºâ©äÂIªº¦ì¸m
+        // 4. ï¿½pï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½m
         Vector2 midPoint = (modelCanvasPos + dragUICanvasPos) / 2 + offset;
 
-        // 5. §ó·s²Ä¤@¬q½u±ø (¼Ò«¬ -> ©äÂI)
-        UpdateLine(lineSegment1, modelCanvasPos, midPoint);
+        // 5. ï¿½ï¿½sï¿½Ä¤@ï¿½qï¿½uï¿½ï¿½ (ï¿½Ò«ï¿½ -> ï¿½ï¿½ï¿½I)
+       // UpdateLine(lineSegment1, modelCanvasPos, midPoint);
 
-        // 6. §ó·s²Ä¤G¬q½u±ø (©äÂI -> UI)
-        UpdateLine(lineSegment2, midPoint, dragUICanvasPos);
+        // 6. ï¿½ï¿½sï¿½Ä¤Gï¿½qï¿½uï¿½ï¿½ (ï¿½ï¿½ï¿½I -> UI)
+       // UpdateLine(lineSegment2, midPoint, dragUICanvasPos);
     }
 
-    // §ó·s³æ¬q½u±ø
+    // ï¿½ï¿½sï¿½ï¿½qï¿½uï¿½ï¿½
     void UpdateLine(RectTransform line, Vector2 start, Vector2 end)
     {
         Vector2 direction = end - start;
-        float length = direction.magnitude; // ­pºâ½u±øªø«×
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg; // ­pºâ½u±ø¨¤«×
+        float length = direction.magnitude; // ï¿½pï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg; // ï¿½pï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        line.anchoredPosition = start; // °_ÂI¦ì¸m
-        line.rotation = Quaternion.Euler(0, 0, angle); // ±ÛÂà¨¤«×
-        line.sizeDelta = new Vector2(length, line.sizeDelta.y); // §ó·s½u±øªø«×
+        line.anchoredPosition = start; // ï¿½_ï¿½Iï¿½ï¿½m
+        line.rotation = Quaternion.Euler(0, 0, angle); // ï¿½ï¿½ï¿½à¨¤ï¿½ï¿½
+        line.sizeDelta = new Vector2(length, line.sizeDelta.y); // ï¿½ï¿½sï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
     private void OnDestroy()
