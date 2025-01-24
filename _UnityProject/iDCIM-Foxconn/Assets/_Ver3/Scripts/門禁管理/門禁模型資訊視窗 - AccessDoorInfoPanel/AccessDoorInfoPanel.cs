@@ -12,6 +12,12 @@ public class AccessDoorInfoPanel : AccessRecordDataReceiver
     public override void ReceiveData(DataAccessRecord data)
     {
         _todayRecordList.Clear();
+        if (data.pageData.users.Count == 0)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
         _todayRecordList = data.pageData.users.Where(user => DateTimeHandler.isDateInToday(user.DateAccessTime)).OrderBy(data => data.accessTime).ToList();
         RecordTable.ShowData(_todayRecordList);
     }

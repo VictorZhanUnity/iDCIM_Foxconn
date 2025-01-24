@@ -25,6 +25,7 @@ namespace _VictorDEV.XChart
         /// 設置Serie資料 {serie索引，float資料清單}
         public void SetSeriaDatas(int serieIndex, List<int> datas)
         {
+            LineChartInstance.series[serieIndex].data.Clear();
             //確認是否存在於資料內
             DictionaryVisualizer<int, List<int>> targetData = seriaDatas.FirstOrDefault(data => data.key == serieIndex);
             if (targetData == null)

@@ -7,19 +7,19 @@ namespace _VictorDEV.DateTimeUtils
     /// DateTime日期格式
     public static class DateTimeHandler
     {
-        /// 2024.11.24 13:33:22
+        /// 2024-11-24 13:33:22
         public static string FullDateTimeFormat => $"{FullDateFormat} {FullTimeFormat}";
 
-        /// 2024.11.24 13:33
+        /// 2024-11-24 13:33
         public static string FullDateTimeMinuteFormat => $"{FullDateFormat}\n{HourMinuteFormat}";
 
-        /// 2024.11.24T13:33:22
+        /// 2024-11-24T13:33:22
         public static string FullDateTimeFormatWithT => $"{FullDateFormat}T{FullTimeFormat}";
 
-        /// 2024.11.24
-        public static string FullDateFormat => "yyyy.MM.dd";
+        /// 2024-11-24
+        public static string FullDateFormat => "yyyy-MM-dd";
 
-        /// 2024.11.24 (週六)
+        /// 2024-11-24 (週六)
         public static string FullDateFormatWithWeekDay(DateTime dateTime) =>
             dateTime.ToString($"{FullDateFormat} (ddd)", new CultureInfo("zh-TW"));
 

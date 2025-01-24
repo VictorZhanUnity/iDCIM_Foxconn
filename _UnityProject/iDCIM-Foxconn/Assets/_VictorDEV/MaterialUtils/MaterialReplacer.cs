@@ -12,8 +12,33 @@ namespace VictorDev.MaterialUtils
         public static void ReplaceMaterialRecursively(Transform target, Material material,
             List<Transform> excludeTargets = null)
         {
+            if (excludeTargets != null)
+            {
+                //當目標對像不在排除名單內時
+                if (excludeTargets.Contains(target) == false)
+                {
+                    ReplaceMaterial(target, material);
+                    // 遞迴處理所有子物件
+                    foreach (Transform child in target)
+                    {
+                        ReplaceMaterialRecursively(child, material, excludeTargets);
+                    }
+                }
+            }
+            else
+            {
+                //當沒有排除名單時，直接替換
+                ReplaceMaterial(target, material);
+                // 遞迴處理所有子物件
+                foreach (Transform child in target)
+                {
+                    ReplaceMaterialRecursively(child, material);
+                }
+            }
+
+
             // 只要是排除對像，其對像底下所有子物件皆被排除
-            if (excludeTargets != null && excludeTargets.Contains(target) == false)
+            /*if (excludeTargets != null && excludeTargets.Contains(target) == false)
             {
                 ReplaceMaterial(target, material);
                 // 遞迴處理所有子物件
@@ -21,7 +46,7 @@ namespace VictorDev.MaterialUtils
                 {
                     ReplaceMaterialRecursively(child, material, excludeTargets);
                 }
-            }
+            }*/
         }
 
         /// 替換Targets(陣列)為指定材質
@@ -62,6 +87,23 @@ namespace VictorDev.MaterialUtils
 
         #region Restore Material
 
+        /// 復原全部對像的原始材質
+        public static void RestoreAllMaterials()
+        {
+            foreach (var kvp in _originalMaterials)
+            {
+                RestoreMaterial(kvp.Key);
+            }
+
+            /*// 將鍵保存到 List 中
+            List<Transform> keys = _originalMaterials.Keys.ToList();
+            //用倒序遍尋，變動Dictionary內容排列就不會報錯
+            for (int i =  keys.Count-1; i >=0; i++)
+            {
+                RestoreMaterial(keys[i]);
+            }*/
+        }
+
         /// 復原對像(陣列)的原始材質，並從Dictionary裡移除
         public static void RestoreMaterial(List<Transform> targets) =>
             targets.ForEach(target => RestoreMaterial(target));
@@ -77,7 +119,7 @@ namespace VictorDev.MaterialUtils
                 }
             }
 
-            _originalMaterials.Remove(target);
+            // _originalMaterials.Remove(target);
         }
 
         #endregion

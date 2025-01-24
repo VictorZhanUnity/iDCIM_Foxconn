@@ -69,6 +69,8 @@ public class XChartDataHandler : MonoBehaviour
         ClearSeriesData();
         Serie target = chart.series.FirstOrDefault(serie => serie.serieName == serieName);
         seriesData.ForEach(data => target.AddData(data));
+
+        yAxis.max = Mathf.Max(10, seriesData.Max()+3);
     }
 
     // <summary>
