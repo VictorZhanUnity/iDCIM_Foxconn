@@ -1,43 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace VictorDev.MaterialUtils
 {
     public class MeshGroupFinder : MonoBehaviour
     {
-        public string tagName;
-        
-        // 目標物件
-        [Header("Target Model")] public GameObject targetModel;
-        
-        // 指定的名稱條件 (只有名稱包含此字串的物件才會被納入群組)
-        [Header("需包含任一關鍵字")] public List<string> keywords = new List<string>()
+        [ContextMenu("- 尋找相鄰的模型")]
+        private void FindClosetMeshGroup()
         {
-            "M_彎頭", "異徑接頭", "T_接頭"
-        };
-        
-        [Header(">>> 邊界擴展的範圍值")]
-        private float boundsExpansion = 0.000001f;
-        
-        // 找到的鄰近群組清單 (在 Inspector 顯示)
-        [Header("Group Found")] [SerializeField]
-        private List<Transform> group = new List<Transform>();
-        
-        // 需排除的關鍵字
-        [Header("需排除的關鍵字")] public List<string> keywordExclude;
-        
-        [ContextMenu("ToShow")]
-        public void ToShow() => ModelMaterialHandler.ToShow(group);
-
-        [ContextMenu("- Find Group")]
-        /// 遞迴尋找與目標物件相鄰的整個群組
-        public void FindMeshGroup()
-        {
-            group.Clear(); // 清空之前的結果
+            modelFindGroup.Clear(); // 清空之前的搜尋結果
 
             if (targetModel == null)
             {
@@ -60,15 +32,13 @@ namespace VictorDev.MaterialUtils
                 GameObject current = toCheck.Dequeue();
 
                 // 將其加入結果列表
-                group.Add(current.transform);
+                modelFindGroup.Add(current.transform);
 
                 // 獲取當前物件的 Renderer 和邊界
                 Renderer currentRenderer = current.GetComponent<Renderer>();
                 if (currentRenderer == null) continue;
                 Bounds currentBounds = currentRenderer.bounds;
 
-                bool isFit = false;
-                
                 // 遍歷場景中的所有物件
                 GameObject[] allObjects = FindObjectsOfType<GameObject>();
                 foreach (GameObject obj in allObjects)
@@ -80,7 +50,7 @@ namespace VictorDev.MaterialUtils
                     Renderer objRenderer = obj.GetComponent<Renderer>();
                     if (objRenderer == null) continue;
 
-                    currentBounds.Expand(boundsExpansion);
+                    currentBounds.Expand(BoundsExpansion);
                     // 先判斷邊界是否相交
                     if (currentBounds.Intersects(objRenderer.bounds))
                     {
@@ -90,7 +60,7 @@ namespace VictorDev.MaterialUtils
                         {
                             continue;
                         }
-                        
+
                         // 將物件加入隊列並標記為已檢查
                         toCheck.Enqueue(obj);
                         checkedObjects.Add(obj);
@@ -99,22 +69,46 @@ namespace VictorDev.MaterialUtils
                     }
                 }
             }
-            
+
             // 後檢查名稱條件
             //group = group.Where(target=>keywords.Any(word=>target.name.Contains(word))).ToList();
 
-            
-            Debug.Log($"找到一組包含 {group.Count} 個物件的群組。");
+            Debug.Log($"找到一組包含 {modelFindGroup.Count} 個物件的群組。");
         }
 
-        // 在 Inspector 顯示更新按鈕
+        [ContextMenu("- 顯示管線(不會先恢復所有模型材質)")]
+        public void ToShow() => ModelMaterialHandler.ToShow(modelFindGroup);
+
+        /*// 在 Inspector 顯示更新按鈕
         private void OnValidate()
         {
-            if (group != null && group.Count > 0)
+            if (modelFindGroup != null && modelFindGroup.Count > 0)
             {
-                group = new List<Transform>(group);
+                modelFindGroup = new List<Transform>(modelFindGroup);
             }
-        }
-    }
+        }*/
 
+        #region Components
+
+        // 目標物件，從此物件開始依規則向外偵測
+        [Header(">>> 目標物件")] public GameObject targetModel;
+
+        // 指定的名稱條件 (只有名稱包含此字串的物件才會被納入群組)
+        [Header("需包含任一關鍵字")] public List<string> keywords = new List<string>()
+        {
+            "彎頭", "異徑", "T_接頭"
+        };
+
+        // 需排除的關鍵字
+        [Header("需排除的關鍵字")] public List<string> keywordExclude;
+
+        // 找到的鄰近群組清單 (在 Inspector 顯示)
+        [Header("[僅顯示] - 相鄰的模型物件")] [SerializeField]
+        private List<Transform> modelFindGroup = new List<Transform>();
+
+        /// 每個物件的偵測範圍
+        private const float BoundsExpansion = 0.00001f;
+
+        #endregion
+    }
 }

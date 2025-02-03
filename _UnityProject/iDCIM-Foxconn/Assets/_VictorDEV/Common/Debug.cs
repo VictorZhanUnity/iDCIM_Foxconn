@@ -15,13 +15,15 @@ namespace VictorDev.Common
             }
         }
 
-        public static void Log(object message) => 
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.Log(message));
+        public static void Log(object message, bool isPrintArrow = true)
+        {
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.Log(isPrintArrow ? "" : ">>> " + message));
+        }
 
-        public static void LogWarning(object message) =>
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogWarning(message));
+        public static void LogWarning(object message, bool isPrintArrow = true) =>
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogWarning(isPrintArrow? "": ">>> " + message));
 
-        public static void LogError(object message) =>
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogError(message));
+        public static void LogError(object message, bool isPrintArrow = true) =>
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogError(isPrintArrow? "": ">>> " + message));
     }
 }
