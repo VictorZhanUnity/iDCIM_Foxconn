@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -39,10 +40,16 @@ public class PipeAgentManager : PipeTypeSelector
     /// 顯示指定管線類型
     public void ShowPipe(string pipeType)
     {
-        this.pipeType = pipeType.Trim().StringToEnum<PipeType>();
-        ToShowByPipeType();
+        if (pipeType.Equals("ALL", StringComparison.OrdinalIgnoreCase)) ShowAllPipes();
+        else
+        {
+            this.pipeType = pipeType.Trim().StringToEnum<PipeType>();
+            ToShowByPipeType();
+        }
     }
-    
-    [ContextMenu("- 所有模型顯示材質")]
+    [ContextMenu("- 顯示所有管線")]
+    public void ShowAllPipes() => ShowPipe(pipeAgents);
+
+    [ContextMenu("- 顯示所有模型材質")]
     public void RestoreAllMaterials() => ModelMaterialHandler.ToShowAll();
 }
