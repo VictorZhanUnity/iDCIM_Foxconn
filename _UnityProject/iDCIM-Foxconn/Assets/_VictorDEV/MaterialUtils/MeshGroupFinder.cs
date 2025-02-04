@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace VictorDev.MaterialUtils
@@ -65,7 +66,6 @@ namespace VictorDev.MaterialUtils
                         toCheck.Enqueue(obj);
                         checkedObjects.Add(obj);
                         //obj.tag = tagName;
-                        obj.AddComponent<MeshCollider>();
                     }
                 }
             }
@@ -79,14 +79,29 @@ namespace VictorDev.MaterialUtils
         [ContextMenu("- 顯示管線(不會先恢復所有模型材質)")]
         public void ToShow() => ModelMaterialHandler.ToShow(modelFindGroup);
 
-        /*// 在 Inspector 顯示更新按鈕
-        private void OnValidate()
+        [ContextMenu("- 添加Collider")]
+        public void AddCollider()
         {
-            if (modelFindGroup != null && modelFindGroup.Count > 0)
+            modelFindGroup.ForEach(target =>
             {
-                modelFindGroup = new List<Transform>(modelFindGroup);
-            }
-        }*/
+                if (target.TryGetComponent(out MeshCollider meshCollider) == false)
+                {
+                    target.AddComponent<MeshCollider>();
+                }
+            });
+        }
+
+        [ContextMenu("- 移除Collider")]
+        public void RemoveCollider()
+        {
+            modelFindGroup.ForEach(target =>
+            {
+                if (target.TryGetComponent(out MeshCollider meshCollider))
+                {
+                    DestroyImmediate(meshCollider);
+                }
+            });
+        }
 
         #region Components
 
@@ -105,10 +120,10 @@ namespace VictorDev.MaterialUtils
         // 找到的鄰近群組清單 (在 Inspector 顯示)
         [Header("[僅顯示] - 相鄰的模型物件")] [SerializeField]
         private List<Transform> modelFindGroup = new List<Transform>();
+        public List<Transform> ModelFindGroup => modelFindGroup;
 
         /// 每個物件的偵測範圍
         private const float BoundsExpansion = 0.00001f;
-
         #endregion
     }
 }

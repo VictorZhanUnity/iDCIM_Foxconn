@@ -5,10 +5,8 @@ using UnityEngine;
 /// [抽像類別] - 管線選擇器
 public abstract class PipeTypeSelector : MonoBehaviour
 {
-    #region Components
     [HideInInspector] public PipeType pipeType;
     public Enum PipeName;
-    #endregion
 }
 
 #region Editor
@@ -56,7 +54,7 @@ public class PipeTypeSelectorEditor : Editor
             case PipeType.空調:
                 CreateDropdown(AirConditioningType.一般空調);
                 break;
-            case PipeType.一般用水:
+            case PipeType.給排水:
                 CreateDropdown(WaterType.生活用水);
                 break;
             case PipeType.消防:

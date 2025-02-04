@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VictorDev.Common;
 using VictorDev.MaterialUtils;
 
 /// 管線種類管理器
@@ -10,26 +11,38 @@ public class PipeAgentManager : PipeTypeSelector
     private List<PipeAgent> pipeAgents = new List<PipeAgent>();
 
     [ContextMenu("- 尋找場景上所有的PipeAgent")]
-    private void FindPipeAgents() => pipeAgents = FindObjectsOfType<PipeAgent>().ToList();
+    private void FindPipeAgents() =>
+        pipeAgents = FindObjectsOfType<PipeAgent>().OrderBy(agent => agent.pipeType).ToList();
 
     [ContextMenu("- 依所選管線種類進行篩選顯示")]
     public void ToShowByPipeType()
     {
-        RestoreAllMaterials();
-        List<PipeAgent> targets = pipeAgents.Where(agent => agent.pipeType.Equals(pipeType)).ToList();
-       if(targets.Count > 0) targets.ForEach(agent => agent.ToShow());
-       else ModelMaterialHandler.ToHideAll();
+        List<PipeAgent> result = pipeAgents.Where(agent => agent.pipeType.Equals(pipeType)).ToList();
+        ShowPipe(result);
     }
 
     [ContextMenu("- 依所選管線類別進行篩選顯示")]
     public void ToShowByPipeList()
     {
+        List<PipeAgent> result = pipeAgents.Where(agent => agent.PipeName.Equals(PipeName)).ToList();
+        ShowPipe(result);
+    }
+
+    private void ShowPipe(List<PipeAgent> targets)
+    {
         RestoreAllMaterials();
-        List<PipeAgent> targets = pipeAgents.Where(agent => agent.PipeName.Equals(PipeName)).ToList();
-        if(targets.Count > 0) targets.ForEach(agent => agent.ToShow());
+        List<Transform> modelGroup = targets.SelectMany(agent => agent.ModelFindGroup).ToList();
+        if (modelGroup.Count > 0) ModelMaterialHandler.ToShow(modelGroup);
         else ModelMaterialHandler.ToHideAll();
     }
 
+    /// 顯示指定管線類型
+    public void ShowPipe(string pipeType)
+    {
+        this.pipeType = pipeType.Trim().StringToEnum<PipeType>();
+        ToShowByPipeType();
+    }
+    
     [ContextMenu("- 所有模型顯示材質")]
     public void RestoreAllMaterials() => ModelMaterialHandler.ToShowAll();
 }

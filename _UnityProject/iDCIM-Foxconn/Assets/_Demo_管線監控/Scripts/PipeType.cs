@@ -30,7 +30,7 @@ public static class IDcimpPipeHelper
             PipeType.電力 => typeof(ElectricityType),
             PipeType.冷卻水 => typeof(CoolingWaterType),
             PipeType.空調 => typeof(AirConditioningType),
-            PipeType.一般用水 => typeof(WaterType),
+            PipeType.給排水 => typeof(WaterType),
             PipeType.消防 => typeof(FireType),
             _ => null
         };
@@ -41,9 +41,9 @@ public static class IDcimpPipeHelper
 public enum PipeType
 {
     電力 = 0,
-    冷卻水 = 1,
-    空調 = 2,
-    一般用水 = 3,
+    空調 = 1,
+    給排水 = 2,
+    冷卻水 = 3,
     消防 = 4,
 }
 
@@ -52,13 +52,6 @@ public enum ElectricityType
 {
     高低壓變電站 = 0,
     發電機 = 1,
-}
-
-/// 冰水系統
-public enum CoolingWaterType
-{
-    冷凝水 = 0,
-    冷卻廢水 = 1,
 }
 
 /// 空調系統
@@ -75,6 +68,13 @@ public enum WaterType
     生活用水 = 0,
     污水 = 1,
     雨水 = 2,
+}
+
+/// 冷卻水系統
+public enum CoolingWaterType
+{
+    冷凝水 = 0,
+    冷卻廢水 = 1,
 }
 
 /// 消防系統
