@@ -41,8 +41,7 @@ namespace VictorDev.MaterialUtils
                 Bounds currentBounds = currentRenderer.bounds;
 
                 // 遍歷場景中的所有物件
-                GameObject[] allObjects = FindObjectsOfType<GameObject>();
-                foreach (GameObject obj in allObjects)
+                foreach (GameObject obj in AllObjects)
                 {
                     // 跳過已檢查的物件
                     if (checkedObjects.Contains(obj)) continue;
@@ -124,6 +123,12 @@ namespace VictorDev.MaterialUtils
 
         /// 每個物件的偵測範圍
         private const float BoundsExpansion = 0.00001f;
+
+        /// 場景上所有物件，以PosY遞減排序
+        private List<GameObject> AllObjects =>
+            _allObjects ??= FindObjectsOfType<GameObject>().OrderByDescending(obj=> obj.transform.position.y).ToList();
+        private List<GameObject> _allObjects;
+
         #endregion
     }
 }
