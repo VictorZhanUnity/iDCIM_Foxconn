@@ -2,14 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using VictorDev.MaterialUtils;
 
-[ExecuteAlways]
+/// 管理管線物件與其顯示圖標
 [RequireComponent(typeof(MeshGroupFinder))]
 public class PipeAgent : PipeTypeSelector
 {
-    private MeshGroupFinder MeshGroupFinderInstance => _meshGroupFinder ??= GetComponent<MeshGroupFinder>();
-    private MeshGroupFinder _meshGroupFinder;
-    public List<Transform> ModelFindGroup => MeshGroupFinderInstance.ModelFindGroup;
-
     public void ToShow() => MeshGroupFinderInstance.ToShow();
 
     private void OnValidate()
@@ -19,4 +15,11 @@ public class PipeAgent : PipeTypeSelector
             name = $"{GetType().Name}_{pipeType}";
         }
     }
+
+    #region Components
+    private MeshGroupFinder MeshGroupFinderInstance => _meshGroupFinder ??= GetComponent<MeshGroupFinder>();
+    private MeshGroupFinder _meshGroupFinder;
+    public List<Transform> ModelFindGroup => MeshGroupFinderInstance.ModelFindGroup;
+
+    #endregion
 }

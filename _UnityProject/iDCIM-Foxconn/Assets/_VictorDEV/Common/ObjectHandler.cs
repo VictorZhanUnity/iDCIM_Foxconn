@@ -106,9 +106,7 @@ namespace VictorDev.Common
             }
         }
 
-        /// <summary>
         /// 檢查List裡面是否有實作T類別，將不符合的從List裡移除
-        /// </summary>
         public static List<MonoBehaviour> CheckTypoOfList<T>(List<MonoBehaviour> list) where T : class
         {
             #region 取得上一層呼叫的資訊
@@ -126,7 +124,27 @@ namespace VictorDev.Common
                     list.Remove(target);
                 }
             }
+            return list;
+        }
 
+        /// 檢查List裡面是否有繼承T類別，將不符合的從List裡移除
+        public static List<MonoBehaviour> CheckSubTypoOfList<T>(List<MonoBehaviour> list) where T : class
+        {
+            #region 取得上一層呼叫的資訊
+            StackTrace stackTrace = new StackTrace();
+            StackFrame frame = stackTrace.GetFrame(1);
+            var method = frame.GetMethod();
+            #endregion
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                MonoBehaviour target = list[i];
+                if (target != null && target.GetType().IsSubclassOf(typeof(T)) == false)
+                {
+                    Debug.Log($">>> [接收器：{method.DeclaringType?.Name}] - 物件：{{{target.name}}} 並非繼承{typeof(T).Name}, 已從列表移除.");
+                    list.Remove(target);
+                }
+            }
             return list;
         }
     }

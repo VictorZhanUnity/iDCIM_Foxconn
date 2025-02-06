@@ -110,7 +110,7 @@ namespace VictorDev.MaterialUtils
         // 指定的名稱條件 (只有名稱包含此字串的物件才會被納入群組)
         [Header("需包含任一關鍵字")] public List<string> keywords = new List<string>()
         {
-            "彎頭", "異徑", "T_接頭"
+            "彎頭", "異徑", "T_接頭", "三通"
         };
 
         // 需排除的關鍵字

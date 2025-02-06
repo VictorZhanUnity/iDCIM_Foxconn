@@ -19,6 +19,7 @@ public class PipeAgentManager : PipeTypeSelector
     public void ToShowByPipeType()
     {
         List<PipeAgent> result = pipeAgents.Where(agent => agent.pipeType.Equals(pipeType)).ToList();
+        pipeAgents.Except(result).ToList().ForEach(agent => agent.gameObject.SetActive(false));
         ShowPipe(result);
     }
 
@@ -26,19 +27,22 @@ public class PipeAgentManager : PipeTypeSelector
     public void ToShowByPipeList()
     {
         List<PipeAgent> result = pipeAgents.Where(agent => agent.PipeName.Equals(PipeName)).ToList();
+        pipeAgents.Except(result).ToList().ForEach(agent => agent.gameObject.SetActive(false));
         ShowPipe(result);
     }
 
+    /// 顯示傳來的PipeAgent
     private void ShowPipe(List<PipeAgent> targets)
     {
         RestoreAllMaterials();
+        targets.ForEach(agent => agent.gameObject.SetActive(true));
         List<Transform> modelGroup = targets.SelectMany(agent => agent.ModelFindGroup).ToList();
         if (modelGroup.Count > 0) ModelMaterialHandler.ToShow(modelGroup);
         else ModelMaterialHandler.ToHideAll();
     }
 
     /// 顯示指定管線類型
-    public void ShowPipe(string pipeType)
+    public void ShowPipeByType(string pipeType)
     {
         if (pipeType.Equals("ALL", StringComparison.OrdinalIgnoreCase)) ShowAllPipes();
         else

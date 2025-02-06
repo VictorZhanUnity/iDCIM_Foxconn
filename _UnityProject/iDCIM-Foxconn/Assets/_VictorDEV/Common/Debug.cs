@@ -17,13 +17,13 @@ namespace VictorDev.Common
 
         public static void Log(object message, bool isPrintArrow = true)
         {
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.Log(isPrintArrow ? "" : ">>> " + message));
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.Log((isPrintArrow ? "" : ">>> ") + message.ToString()));
         }
 
         public static void LogWarning(object message, bool isPrintArrow = true) =>
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogWarning(isPrintArrow? "": ">>> " + message));
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogWarning((isPrintArrow? "": ">>> ") + message));
 
         public static void LogError(object message, bool isPrintArrow = true) =>
-            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogError(isPrintArrow? "": ">>> " + message));
+            CheckIsEditorEnviorment(() => UnityEngine.Debug.LogError((isPrintArrow? "": ">>> ") + message));
     }
 }

@@ -5,12 +5,17 @@ namespace VictorDev.Common
     /// 依指定3D物件之座標，轉成螢幕2D座標進行定位
     public class PositionTo2DPoint : MonoBehaviour
     {
-        [SerializeField] private Vector2 posOffset;
-
         void Update()
         {
+            Vector3 targetPos = target3DObject.position;
+            if (isCenterPivot && target3DObject.TryGetComponent(out MeshRenderer meshRenderer))
+            {
+                Bounds bounds = meshRenderer.bounds;
+                targetPos = bounds.center;
+            }
+
             // 1. 轉換 3D 世界座標到螢幕座標
-            Vector3 screenPos = MainCamera.WorldToScreenPoint(target3DObject.position);
+            Vector3 screenPos = MainCamera.WorldToScreenPoint(targetPos);
 
             // 2. 取得 Canvas 尺寸
 
@@ -29,7 +34,12 @@ namespace VictorDev.Common
 
         #region Components
 
-        public Transform target3DObject; // 目標3D物件
+        [Header(">>> 是否置中(目前需有MeshRenderer)")] [SerializeField]
+        private bool isCenterPivot = true;
+
+        [Header(">>> 偏移設定")] [SerializeField] private Vector2 posOffset;
+
+        [Header(">>> 目標3D物件")] public Transform target3DObject;
         private Camera MainCamera => _mainCamera ??= Camera.main; // 指定主要攝影機
         private Camera _mainCamera; // 指定主要攝影機
         private RectTransform RectTrans => _rectTrans ??= GetComponent<RectTransform>();
